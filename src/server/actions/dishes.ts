@@ -1,14 +1,14 @@
 "use server";
 
-import { and, eq, isNotNull, sql } from "drizzle-orm";
+import { and, eq, isNotNull } from "drizzle-orm";
 import { returnServerError } from "next-safe-action";
 import { revalidatePath } from "next/cache";
 
 import type { ActionErrorCode } from "@/lib/errors";
-import { getDb, type Executor } from "@/server/db/client";
-import { dishes, dishIngredients, dishNotes, dishSteps, favorites } from "@/server/db/schema";
+import { getDb } from "@/server/db/client";
+import { dishes, dishNotes, favorites } from "@/server/db/schema";
 import { findOwnDish } from "@/server/features/dishes/policy";
-import { resolveIngredientIds } from "@/server/features/ingredients/dictionary";
+import { dishValues, lockDishCount, writeContents } from "@/server/features/dishes/write";
 import { loadDishAllowance } from "@/server/features/dishes/queries";
 import {
   dishIdSchema,
@@ -16,7 +16,6 @@ import {
   dishNoteSchema,
   favoriteSchema,
   updateDishSchema,
-  type DishInput,
 } from "@/server/features/dishes/schema";
 
 import { userAction } from "./_clients";
@@ -24,56 +23,6 @@ import { userAction } from "./_clients";
 /** The box, every dish page and their edit forms. */
 function refreshDishes() {
   revalidatePath("/[locale]/dishes", "layout");
-}
-
-/**
- * Serialises dish-count changes per person, so two tabs adding the 50th dish
- * at once can't both succeed (AGENT_RULES §3.6).
- */
-async function lockDishCount(tx: Executor, userId: string) {
-  await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${`dishes:${userId}`}, 0))`);
-}
-
-function dishValues(input: DishInput) {
-  return {
-    name: input.name,
-    difficulty: input.difficulty,
-    course: input.course,
-    servings: input.servings,
-    seasons: input.seasons,
-    dietaryTags: input.dietaryTags,
-    caloriesKcal: input.caloriesKcal,
-    proteinG: input.proteinG,
-    carbsG: input.carbsG,
-    fatG: input.fatG,
-  };
-}
-
-/**
- * Ingredients and steps are written as a whole, in the order the form sent
- * them. Lines whose name is a dictionary entry are linked to it, so matching,
- * aisles and the shopping merge know what they are.
- */
-async function writeContents(tx: Executor, dishId: string, input: DishInput) {
-  const ingredientIds = await resolveIngredientIds(input.ingredients.map((i) => i.name));
-  await tx.delete(dishIngredients).where(eq(dishIngredients.dishId, dishId));
-  await tx.delete(dishSteps).where(eq(dishSteps.dishId, dishId));
-  await tx
-    .insert(dishIngredients)
-    .values(
-      input.ingredients.map((i, position) => ({ dishId, position, ...i, ingredientId: ingredientIds[position] })),
-    );
-  if (input.steps.length > 0) {
-    await tx.insert(dishSteps).values(
-      input.steps.map((s, position) => ({
-        dishId,
-        position,
-        text: s.text,
-        timerSeconds: s.timerMinutes === null ? null : s.timerMinutes * 60,
-        prepDayBefore: s.prepDayBefore,
-      })),
-    );
-  }
 }
 
 /** Adds a dish if the plan has room (`plan_limits.dishes`); otherwise the upgrade sheet opens. */
