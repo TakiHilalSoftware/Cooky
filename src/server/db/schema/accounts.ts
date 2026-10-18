@@ -1,4 +1,4 @@
-import { index, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { index, integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 import { id, timestamps } from "./_columns";
 import { user } from "./auth";
@@ -39,3 +39,16 @@ export const consents = pgTable(
 );
 
 export type ProfileRow = typeof profiles.$inferSelect;
+
+/**
+ * Failed password logins per email, for progressive lockout (PRD §3.1). Keyed
+ * by a keyed hash of the email: no address is stored, and rows exist for
+ * unknown emails too, so lockout behaves the same whether an account exists.
+ */
+export const loginAttempts = pgTable("login_attempts", {
+  emailKey: text("email_key").primaryKey(),
+  failures: integer("failures").notNull().default(0),
+  lockedUntil: timestamp("locked_until", { withTimezone: true }),
+  lastFailureAt: timestamp("last_failure_at", { withTimezone: true }).notNull().defaultNow(),
+  ...timestamps,
+});
