@@ -95,3 +95,58 @@ describe("env", () => {
     await expect(loadEnv()).rejects.toThrow(/invalid environment variables/i);
   });
 });
+
+describe("EMAIL_FROM", () => {
+  it("lets a local app boot with an unusable sender (only email is affected)", async () => {
+    vi.stubEnv("EMAIL_FROM", "angel@gmail.com");
+    const { env } = await loadEnv();
+    expect(env.EMAIL_FROM).toBe("angel@gmail.com");
+  });
+
+  it.each(["angel@gmail.com", "Cooky <someone@outlook.com>", "Cooky", "Cooky <not-an-email>"])(
+    "fails a deployed build with sender %j, explaining the fix",
+    async (from) => {
+      const logged = vi.spyOn(console, "error").mockImplementation(() => {});
+      vi.stubEnv("VERCEL_ENV", "production");
+      for (const [key, value] of Object.entries(DEPLOYED_REQUIRED)) vi.stubEnv(key, value);
+      vi.stubEnv("EMAIL_FROM", from);
+      await expect(loadEnv()).rejects.toThrow(/invalid environment variables/i);
+      expect(JSON.stringify(logged.mock.calls)).toContain("EMAIL_FROM");
+    },
+  );
+});
+
+describe("emailFromProblem", () => {
+  it.each(["Cooky <onboarding@resend.dev>", "hello@cooky.example", "Cooky <Hello@Mail.Cooky.example>"])(
+    "accepts %s",
+    async (from) => {
+      const { emailFromProblem } = await loadEnv();
+      expect(emailFromProblem(from)).toBeNull();
+    },
+  );
+
+  it("explains why a public mail domain can't work and what to use instead", async () => {
+    const { emailFromProblem } = await loadEnv();
+    const problem = emailFromProblem("angel@gmail.com");
+    expect(problem).toContain("gmail.com");
+    expect(problem).toContain("onboarding@resend.dev");
+  });
+
+  it("explains the expected shape of a malformed sender", async () => {
+    const { emailFromProblem } = await loadEnv();
+    expect(emailFromProblem("Cooky")).toContain("Cooky <hello@yourdomain.com>");
+  });
+});
+
+describe("senderAddress", () => {
+  it.each([
+    ["Cooky <Hello@Cooky.example>", "hello@cooky.example"],
+    ["Cooky <hello@cooky.example>   ", "hello@cooky.example"],
+    ["hello@cooky.example", "hello@cooky.example"],
+    ["Cooky", null],
+    ["Cooky <nope>", null],
+  ])("%j → %j", async (value, expected) => {
+    const { senderAddress } = await loadEnv();
+    expect(senderAddress(value)).toBe(expected);
+  });
+});
