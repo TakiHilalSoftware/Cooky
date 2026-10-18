@@ -4,16 +4,28 @@ import { z } from "zod";
 
 import type { ActionErrorCode } from "@/lib/errors";
 
-const { logError, captureException } = vi.hoisted(() => ({ logError: vi.fn(), captureException: vi.fn() }));
+const { logError, captureException, getSession, withinBurstLimit } = vi.hoisted(() => ({
+  logError: vi.fn(),
+  captureException: vi.fn(),
+  getSession: vi.fn(),
+  withinBurstLimit: vi.fn(),
+}));
 
 vi.mock("@/server/observability/logger", () => ({ logger: { error: logError } }));
 vi.mock("@sentry/nextjs", () => ({ captureException }));
+vi.mock("@/server/auth/session", () => ({ getSession }));
+vi.mock("@/server/quota/burst", () => ({ withinBurstLimit }));
+vi.mock("next/headers", () => ({ headers: async () => new Headers({ "x-forwarded-for": "203.0.113.7, 10.0.0.1" }) }));
 
-const { publicAction } = await import("./_clients");
+const { publicAction, userAction } = await import("./_clients");
+
+const activeSession = { user: { id: "u1", email: "amina@example.com", name: "Amina" }, session: { id: "s1" } };
 
 beforeEach(() => {
   logError.mockClear();
   captureException.mockClear();
+  getSession.mockReset();
+  withinBurstLimit.mockReset().mockResolvedValue(true);
 });
 
 describe("publicAction", () => {
@@ -62,5 +74,28 @@ describe("publicAction", () => {
     expect(result.validationErrors).toBeDefined();
     expect(result.serverError).toBeUndefined();
     expect(handler).not.toHaveBeenCalled();
+  });
+});
+
+describe("userAction", () => {
+  const whoAmI = userAction
+    .metadata({ actionName: "whoAmI" })
+    .action(async ({ ctx }) => ({ id: ctx.user.id, ip: ctx.ip }));
+
+  it("rejects callers without a valid session before the handler runs", async () => {
+    getSession.mockResolvedValue(null);
+    await expect(whoAmI()).resolves.toEqual({ serverError: "unauthorized" });
+  });
+
+  it("gives the handler the signed-in user and the client IP", async () => {
+    getSession.mockResolvedValue(activeSession);
+    await expect(whoAmI()).resolves.toEqual({ data: { id: "u1", ip: "203.0.113.7" } });
+    expect(withinBurstLimit).toHaveBeenCalledWith("userWrite", "u1");
+  });
+
+  it("stops callers over their burst limit with rate_limited", async () => {
+    getSession.mockResolvedValue(activeSession);
+    withinBurstLimit.mockResolvedValue(false);
+    await expect(whoAmI()).resolves.toEqual({ serverError: "rate_limited" });
   });
 });

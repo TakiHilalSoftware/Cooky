@@ -1,13 +1,23 @@
+import { getSessionCookie } from "better-auth/cookies";
 import createIntlMiddleware from "next-intl/middleware";
-import { NextRequest, type NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { routing } from "@/i18n/routing";
+import { signedOutRedirect } from "@/server/auth/gate";
 import { env } from "@/server/env";
 import { buildCsp } from "@/server/security/headers";
 
 const intl = createIntlMiddleware(routing);
 
 export default function proxy(request: NextRequest): NextResponse {
+  const { pathname, search } = request.nextUrl;
+  const loginRedirect = signedOutRedirect(
+    pathname,
+    search,
+    Boolean(getSessionCookie(request, { cookiePrefix: "cooky" })),
+  );
+  if (loginRedirect) return NextResponse.redirect(new URL(loginRedirect, request.url));
+
   const nonce = btoa(crypto.randomUUID());
   const csp = buildCsp({
     nonce,
