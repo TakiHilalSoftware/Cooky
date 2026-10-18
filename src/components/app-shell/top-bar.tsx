@@ -28,6 +28,9 @@ export function TopBar({ account }: TopBarProps) {
           <Logo />
         </Link>
         <div className="flex items-center gap-1">
+          <Button asChild variant="ghost" className="hidden md:inline-flex">
+            <Link href="/pricing">{t("common.pricing")}</Link>
+          </Button>
           <LanguageSwitcher />
           <ThemeToggle />
           {account ? <AccountMenu account={account} /> : null}

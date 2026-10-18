@@ -34,6 +34,12 @@ export function HomeHero({ signedIn }: { signedIn: boolean }) {
               </>
             )}
           </div>
+          <Link
+            href="/pricing"
+            className="inline-flex min-h-11 items-center text-sm font-medium text-primary-strong underline-offset-4 hover:underline"
+          >
+            {t("seePricing")}
+          </Link>
         </div>
         <TilePanel className="aspect-[5/2] w-full sm:aspect-[3/1] lg:aspect-square lg:max-w-md lg:justify-self-end" />
       </section>
