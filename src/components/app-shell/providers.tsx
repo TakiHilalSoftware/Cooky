@@ -3,6 +3,7 @@
 import { ThemeProvider } from "next-themes";
 import type { ReactNode } from "react";
 
+import { UpgradeSheetProvider } from "@/components/paywall/upgrade-sheet-provider";
 import { DirectionProvider } from "@/components/ui/direction";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,14 +22,14 @@ type ProvidersProps = {
   savedTheme: ThemePreference | null;
 };
 
-/** UI-only providers: theme, text direction for Radix, tooltips and toasts. */
+/** UI-only providers: theme, text direction for Radix, tooltips, toasts and the upgrade sheet. */
 export function Providers({ children, dir, nonce, savedTheme }: ProvidersProps) {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange nonce={nonce}>
       <PreferencesSync savedTheme={savedTheme}>
         <DirectionProvider dir={dir}>
           <TooltipProvider delayDuration={300}>
-            {children}
+            <UpgradeSheetProvider>{children}</UpgradeSheetProvider>
             <TimeZoneSync />
             <Toaster dir={dir} position="bottom-center" />
           </TooltipProvider>
