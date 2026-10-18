@@ -1,6 +1,6 @@
 import "server-only";
 
-import { headers } from "next/headers";
+import { authRequestHeaders } from "@/server/auth/request-headers";
 import { cache } from "react";
 
 import { auth } from "./auth";
@@ -11,7 +11,7 @@ import { auth } from "./auth";
  * signed out everywhere.
  */
 export const getSession = cache(async () => {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await auth.api.getSession({ headers: await authRequestHeaders() });
   if (!session || session.user.status !== "active") return null;
   return session;
 });
