@@ -127,6 +127,7 @@ The CSP `connect-src` allows only `'self'` and Pusher. `img-src` allows `'self'`
   - `instrumentation-client.ts`: it runs before React and can't import a server-only module, and it reads only `NEXT_PUBLIC_SENTRY_DSN`.
   - `src/server/security/headers.ts`: it skips `server-only` because `next.config.ts` loads it at build time. It holds policy strings, no secrets.
 - `tests/lint/boundaries.test.ts` runs ESLint on deliberate violations, so a weakened boundary rule fails CI.
+- Better Auth is called with `authRequestHeaders()`: the request headers with the Cookie header rebuilt from the live `cookies()` store, so a session replaced inside an action (2FA, password change) is seen immediately.
 - Expected action failures use next-safe-action's built-in `returnServerError(code)`. Anything thrown is logged and becomes `unavailable` in `handleServerError` (`src/server/actions/_clients.ts`).
 - Data only reaches the client through Server Component props or Server Action return values. **No client `fetch` for data.**
 
@@ -214,7 +215,9 @@ Drizzle schema in `src/server/db/schema/`. Ownership and sharing rules live in `
    - **Downgrade** marks over-limit content read-only by checks (`dishes count > limit` → block create); nothing is deleted.
 4. **Auth Pipeline (Better Auth):**
    - Email/password and Google/Apple. Email verification is required. 2FA and passkeys come from plugins.
-   - Better Auth handles its own rate limiting, plus Upstash for signup per IP and the HIBP check before setting a password.
+   - Better Auth handles its own rate limiting (production only), plus Upstash burst limits in our actions (production only) and the HIBP check before setting a password.
+   - **Progressive lockout** (`src/server/auth/lockout*.ts`): failed password logins per email (stored as a keyed hash, also for unknown emails) lock for 1 min / 5 min / 30 min / 2 h at 5 / 10 / 15 / 20 failures; forgotten after a quiet day, a correct password or a password reset. It runs in Better Auth's before/after hooks on `/sign-in/email`, so it guards both our action and the raw endpoint. 2FA codes use the plugin's own lockout (5 tries → 15 min).
+   - 2FA (TOTP + 10 backup codes) and passkeys come from Better Auth plugins. Passkey ceremonies run through Server Actions (options → `@simplewebauthn/browser` → verify); the browser never calls `/api/auth` directly.
    - The proxy does only a fast cookie-presence gate. The data layer validates the session against the DB on every request (cached per request).
    - Signing out or a password change revokes sessions. A cascade removes those devices' push subscriptions, and the client wipes offline data.
    - Auth emails are sent through the outbox → Resend.

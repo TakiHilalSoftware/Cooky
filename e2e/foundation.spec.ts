@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
-import fr from "../messages/fr.json";
+import fr from "../messages/fr.json" with { type: "json" };
 
 /** Phase 0 exit criteria plus the PRD §3.10 floor every later page inherits. */
 

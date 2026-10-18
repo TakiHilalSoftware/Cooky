@@ -85,6 +85,10 @@ cooky/
 │   │   ├── feedback/               # Shared states: EmptyState, ErrorState, PageSkeleton, IconButton
 │   │   │                           # (label required → tooltip + accessible name), toastUndo (6 s)
 │   │   ├── marketing/              # Landing sections (hero, tile panel; feature cards, pricing in Phase 3)
+│   │   ├── forms/                  # TextField, PasswordInput, CodeInput, SubmitButton, FormAlert, focus/messages helpers
+│   │   ├── auth/                   # Sign-up, log-in, 2FA step, passkey log-in, reset/verify forms
+│   │   ├── security/               # Settings → Security cards (password, 2FA, passkeys, devices)
+│   │   ├── settings/               # Settings nav + section frame
 │   │   ├── app-shell/              # Sidebar, bottom nav, top bar, search palette, intro modal,
 │   │   │                           # weather chip (condition → icon/animation only), unread dot
 │   │   ├── paywall/                # Upgrade sheet, tries-left meter (values from props)

@@ -5,6 +5,7 @@ import { LEGAL_VERSIONS } from "@config/legal";
 
 import { browser } from "./support/browser";
 import { auditActions, db, latestEmailJob, resetData, userByEmail } from "./support/db";
+import { expectRedirect, NEW_PASSWORD, openEmailLink, PASSWORD, signUpAndVerify } from "./support/flows";
 import { BREACHED_PASSWORD, hibp } from "./support/hibp";
 
 // Email delivery is observed through the outbox; the real send is replaced so
@@ -12,15 +13,11 @@ import { BREACHED_PASSWORD, hibp } from "./support/hibp";
 const sendEmail = vi.hoisted(() => vi.fn(async () => {}));
 vi.mock("@/server/notify/email/send", () => ({ sendEmail }));
 
-const { auth } = await import("@/server/auth/auth");
 const { getSession } = await import("@/server/auth/session");
 const actions = await import("@/server/actions/auth");
 const { drainOutbox, MAX_ATTEMPTS } = await import("@/server/outbox/drain");
 const { PermanentJobError } = await import("@/server/outbox/errors");
 const schema = await import("@/server/db/schema");
-
-const PASSWORD = "correct horse battery staple";
-const NEW_PASSWORD = "a brand new kitchen password";
 
 beforeAll(() => hibp.listen({ onUnhandledFrame: "error" }));
 afterAll(() => hibp.close());
@@ -30,25 +27,6 @@ beforeEach(async () => {
   browser.headers.set("accept-language", "fr-FR,fr;q=0.9");
   sendEmail.mockReset().mockResolvedValue(undefined);
 });
-
-/** Follows an emailed link through Better Auth's route handler, like a browser click. */
-async function openEmailLink(url: string) {
-  const response = await auth.handler(new Request(url, { headers: browser.requestHeaders() }));
-  browser.absorb(response);
-  return response;
-}
-
-async function signUpAndVerify(email = "amina@example.com") {
-  await actions.signUp({ name: "Amina Benali", email, password: PASSWORD, acceptTerms: true, locale: "fr" });
-  const job = await latestEmailJob();
-  await openEmailLink(job!.payload.url!);
-  browser.reset();
-}
-
-/** Server Actions that redirect throw Next's navigation signal; this unwraps it. */
-async function expectRedirect(promise: Promise<unknown>, to: string) {
-  await expect(promise).rejects.toMatchObject({ digest: expect.stringContaining(to) });
-}
 
 describe("sign up", () => {
   it("creates an unverified account with profile, consents, audit entry and a confirmation email", async () => {
@@ -162,7 +140,9 @@ describe("email confirmation and log in", () => {
     const user = await userByEmail("amina@example.com");
     expect(user?.emailVerified).toBe(true);
     expect((await getSession())?.user.email).toBe("amina@example.com");
-    expect(await auditActions(user!.id)).toEqual(expect.arrayContaining(["auth.email_verified", "auth.login"]));
+    expect(await auditActions(user!.id)).toEqual(
+      expect.arrayContaining(["auth.email_verified", "auth.session_created"]),
+    );
   });
 
   it("sends an expired or forged link back with an error, not a session", async () => {

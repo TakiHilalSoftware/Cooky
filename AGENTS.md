@@ -9,7 +9,9 @@ Run `pnpm check` before handing off. Never commit or push unless asked.
 - In tests, mock `next/headers` with `nextHeaders()` from `tests/setup/next-headers.ts` (the real adapter), never with `new Headers()`. A native mock once hid a crash in every public Server Action.
 - `proxy.ts` replaces `middleware.ts`. Error boundaries receive `retry` (not `reset`) and `error: unknown`.
 - `cacheComponents` / PPR stay off: they're incompatible with the nonce CSP (see docs/ARCHITECTURE.md §2).
-- Green tests aren't enough: exercise changed flows in `pnpm dev` before handing off.
+- Inside a Server Action, `headers()` keeps the cookies the request arrived with; `cookies()` sees ones set during it. Pass `authRequestHeaders()` (not `headers()`) to `auth.api.*`, or a session swap (2FA, password change) looks signed out mid-flow.
+- Relative times and dates must use next-intl's `now`/`timeZone` from `src/i18n/request.ts`, never `new Date()` in a component, or hydration fails.
+- Green tests aren't enough: exercise changed flows in `pnpm dev` before handing off (Playwright + Chromium's virtual WebAuthn authenticator covers passkeys).
 
 <!-- BEGIN:nextjs-agent-rules -->
 

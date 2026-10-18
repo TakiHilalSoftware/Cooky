@@ -10,7 +10,7 @@ export async function resetData() {
   // Listing tables (rather than dropping the schema) keeps the migrations table intact.
   await getDb().execute(
     sql.raw(
-      `truncate table "user", "session", "account", "verification", "rate_limit", profiles, consents, audit_log, outbox restart identity cascade`,
+      `truncate table "user", "session", "account", "verification", "rate_limit", profiles, consents, audit_log, outbox, login_attempts, two_factor, passkey restart identity cascade`,
     ),
   );
 }

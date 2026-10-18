@@ -15,6 +15,8 @@ globalThis.ResizeObserver ??= ResizeObserverStub;
 Element.prototype.scrollIntoView ??= function scrollIntoView() {};
 Element.prototype.hasPointerCapture ??= () => false;
 Element.prototype.releasePointerCapture ??= () => {};
+// input-otp positions its caret with elementFromPoint, which jsdom lacks.
+document.elementFromPoint ??= () => null;
 
 // next-themes reads the OS color scheme through matchMedia.
 window.matchMedia ??= (query: string) => ({
