@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditCardIcon, ShieldCheckIcon, UserRoundIcon } from "lucide-react";
+import { CreditCardIcon, DatabaseIcon, ShieldCheckIcon, UserRoundIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
@@ -11,6 +11,7 @@ const SECTIONS = [
   { href: "/settings", key: "account", icon: UserRoundIcon },
   { href: "/settings/security", key: "security", icon: ShieldCheckIcon },
   { href: "/settings/billing", key: "billing", icon: CreditCardIcon },
+  { href: "/settings/data", key: "data", icon: DatabaseIcon },
 ] as const;
 
 /** Sections of Settings: a sidebar on wide screens, a scrollable row of tabs on phones. */
