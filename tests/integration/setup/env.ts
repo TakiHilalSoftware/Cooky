@@ -19,8 +19,12 @@ for (const key of [
   "QSTASH_TOKEN",
   "QSTASH_CURRENT_SIGNING_KEY",
   "QSTASH_NEXT_SIGNING_KEY",
-  "GOOGLE_CLIENT_ID",
-  "GOOGLE_CLIENT_SECRET",
+  "APPLE_CLIENT_ID",
+  "APPLE_CLIENT_SECRET",
 ]) {
   delete process.env[key];
 }
+
+// Google sign-in runs for real against a mocked token endpoint (tests/integration/support/google.ts).
+process.env.GOOGLE_CLIENT_ID = "test-google-client-id";
+process.env.GOOGLE_CLIENT_SECRET = "test-google-client-secret";

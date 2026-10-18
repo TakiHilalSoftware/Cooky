@@ -95,10 +95,13 @@ describe("language", () => {
     await authActions.signOut();
     browser.reset();
 
+    // Deliver what sign-up queued first, so only the reset email is left to check.
+    await drainOutbox({ limit: 10 });
     sendEmail.mockClear();
     await authActions.requestPasswordReset({ email: "amina@example.com", locale: "ar" });
     await drainOutbox({ limit: 10 });
-    const [, email] = sendEmail.mock.calls.at(-1) as unknown as [string, { subject: string }];
+    expect(sendEmail).toHaveBeenCalledOnce();
+    const [, email] = sendEmail.mock.calls[0] as unknown as [string, { subject: string }];
     expect(email.subject).toBe("إعادة تعيين كلمة مرور Cooky");
   });
 });
