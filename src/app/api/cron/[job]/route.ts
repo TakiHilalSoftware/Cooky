@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { reconcileBilling } from "@/server/billing/reconcile";
+import { purgeDeletedDishes } from "@/server/features/dishes/cleanup";
 import { isAuthorizedJobCall } from "@/server/outbox/authorize";
 import { releaseStaleReservations } from "@/server/quota/tries";
 
@@ -8,6 +9,7 @@ import { releaseStaleReservations } from "@/server/quota/tries";
 const JOBS = {
   "billing-reconcile": () => reconcileBilling(),
   "release-reservations": async () => ({ released: await releaseStaleReservations() }),
+  "purge-deleted-dishes": async () => ({ purged: await purgeDeletedDishes() }),
 } as const;
 
 export async function POST(request: Request, { params }: RouteContext<"/api/cron/[job]">) {
