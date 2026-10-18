@@ -50,6 +50,8 @@ import { createDish, updateDish } from "@/server/actions/dishes";
 import type { DishFormDto } from "@/server/features/dishes/dto";
 import { dishInputSchema } from "@/server/features/dishes/schema";
 
+import { IngredientNameField } from "./ingredient-name-field";
+
 type IngredientRow = { key: number; amount: string; unit: Unit | ""; name: string; note: string };
 type StepRow = { key: number; text: string; timerMinutes: string; prepDayBefore: boolean };
 type FormState = {
@@ -377,14 +379,18 @@ export function DishForm({ dish }: { dish?: DishFormDto }) {
                   className="col-span-2 sm:col-span-1"
                 >
                   {(props) => (
-                    <Input
+                    <IngredientNameField
                       {...props}
                       name={`${base}.name`}
                       data-focus-key={`ingredient-${row.key}`}
                       placeholder={index === 0 ? tf("ingredientNamePlaceholder") : undefined}
                       maxLength={DISH_BOUNDS.ingredientNameMax}
                       value={row.name}
-                      onChange={(e) => setIngredient(index, { name: e.target.value })}
+                      onChange={(name) => setIngredient(index, { name })}
+                      // A picked staple brings its usual unit, unless one was already chosen.
+                      onPick={(s) =>
+                        row.unit === "" && s.defaultUnit && setIngredient(index, { name: s.name, unit: s.defaultUnit })
+                      }
                     />
                   )}
                 </RowField>

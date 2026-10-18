@@ -8,6 +8,7 @@ import { renderWithIntl } from "../../../tests/setup/render";
 
 const actions = vi.hoisted(() => ({ createDish: vi.fn(), updateDish: vi.fn() }));
 vi.mock("@/server/actions/dishes", () => actions);
+vi.mock("@/server/actions/ingredients", () => ({ suggestIngredients: vi.fn(async () => ({ data: [] })) }));
 const router = vi.hoisted(() => ({ push: vi.fn() }));
 vi.mock("@/i18n/navigation", () => ({ useRouter: () => router }));
 const onActionError = vi.hoisted(() => vi.fn());
@@ -31,7 +32,7 @@ describe("DishForm (new)", () => {
     expect(screen.getByText("Some details need fixing. They're highlighted below.")).toBeInTheDocument();
     expect(screen.getByLabelText("Name")).toHaveFocus();
     expect(screen.getByLabelText("Name")).toHaveAccessibleDescription("Give the dish a name.");
-    expect(within(rows()[0]!).getByLabelText("Ingredient")).toHaveAccessibleDescription(
+    expect(within(rows()[0]!).getByRole("combobox", { name: "Ingredient" })).toHaveAccessibleDescription(
       "Name the ingredient, or remove this row.",
     );
     expect(actions.createDish).not.toHaveBeenCalled();
@@ -45,10 +46,10 @@ describe("DishForm (new)", () => {
     await user.type(screen.getByLabelText("Name"), "  Harira  ");
     await user.type(within(rows()[0]!).getByLabelText("Amount"), "1,5");
     await user.selectOptions(within(rows()[0]!).getByLabelText("Unit"), "l");
-    await user.type(within(rows()[0]!).getByLabelText("Ingredient"), "Water");
+    await user.type(within(rows()[0]!).getByRole("combobox", { name: "Ingredient" }), "Water");
     await user.click(screen.getByRole("button", { name: "Add ingredient" }));
     // The new row's ingredient field takes the focus, so typing continues there.
-    expect(within(rows()[1]!).getByLabelText("Ingredient")).toHaveFocus();
+    expect(within(rows()[1]!).getByRole("combobox", { name: "Ingredient" })).toHaveFocus();
     await user.keyboard("Salt");
     await user.click(screen.getByRole("button", { name: "Move Ingredient 2 up" }));
     await user.click(screen.getByRole("radio", { name: "Hard" }));
@@ -85,7 +86,7 @@ describe("DishForm (new)", () => {
     const user = userEvent.setup();
     renderWithIntl(<DishForm />);
     await user.type(screen.getByLabelText("Name"), "Tea");
-    await user.type(within(rows()[0]!).getByLabelText("Ingredient"), "Mint");
+    await user.type(within(rows()[0]!).getByRole("combobox", { name: "Ingredient" }), "Mint");
     await user.type(within(rows()[0]!).getByLabelText("Amount"), "a handful");
     await user.click(screen.getByRole("button", { name: "Add dish" }));
     expect(within(rows()[0]!).getByLabelText("Amount")).toHaveFocus();
@@ -97,7 +98,7 @@ describe("DishForm (new)", () => {
     actions.createDish.mockResolvedValue({ serverError: "quota_exceeded" });
     renderWithIntl(<DishForm />);
     await user.type(screen.getByLabelText("Name"), "Tea");
-    await user.type(within(rows()[0]!).getByLabelText("Ingredient"), "Mint");
+    await user.type(within(rows()[0]!).getByRole("combobox", { name: "Ingredient" }), "Mint");
     await user.click(screen.getByRole("button", { name: "Add dish" }));
     await waitFor(() => expect(onActionError).toHaveBeenCalledWith("quota_exceeded", "dishes"));
     expect(router.push).not.toHaveBeenCalled();
