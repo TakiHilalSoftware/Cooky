@@ -1,15 +1,17 @@
 import "server-only";
 
 import * as Sentry from "@sentry/nextjs";
-import { createSafeActionClient, returnServerError } from "next-safe-action";
+import { createSafeActionClient, isNavigationError, returnServerError } from "next-safe-action";
 import { headers } from "next/headers";
 import { z } from "zod";
 
 import type { ActionErrorCode } from "@/lib/errors";
+import type { MeteredFeature } from "@/lib/plan-features";
 import { clientIp } from "@/server/auth/request-info";
 import { getSession, isAdmin } from "@/server/auth/session";
 import { logger } from "@/server/observability/logger";
 import { withinBurstLimit, type BurstRule } from "@/server/quota/burst";
+import { commit, refund, reserve } from "@/server/quota/tries";
 
 /**
  * Turns an unexpected failure into the generic `unavailable` code. The real
@@ -69,3 +71,27 @@ export const adminAction = userAction.use(async ({ next }) => {
   if (!session || !isAdmin(session)) returnServerError<ActionErrorCode>("forbidden");
   return next();
 });
+
+/**
+ * Actions that spend a try (ARCHITECTURE §5.2): reserve before the work, then
+ * commit if it succeeded or refund if it failed, so provider outages never
+ * cost the person a try. Out of tries → `quota_exceeded`; not on the plan →
+ * `plan_required` (the UI opens the upgrade sheet for both).
+ */
+export function meteredAction(feature: MeteredFeature) {
+  return userAction.use(async ({ next, ctx }) => {
+    const reserved = await reserve(ctx.user.id, feature);
+    if (!reserved.ok) returnServerError<ActionErrorCode>(reserved.reason);
+    try {
+      const result = await next({ ctx: { reservation: reserved.reservation } });
+      if (result.success) await commit(reserved.reservation);
+      else await refund(reserved.reservation);
+      return result;
+    } catch (error) {
+      // A redirect after successful work still spends the try; anything else gives it back.
+      if (isNavigationError(error)) await commit(reserved.reservation);
+      else await refund(reserved.reservation);
+      throw error;
+    }
+  });
+}
