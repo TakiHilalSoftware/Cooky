@@ -6,6 +6,7 @@ import {
   isMeteredFeature,
   type CountedFeature,
   type GatedFeature,
+  type LimitPeriod,
   type MeteredFeature,
   type PlanFeature,
 } from "@/lib/plan-features";
@@ -128,6 +129,7 @@ export async function hasFeature(userId: string, feature: GatedFeature): Promise
 export type UsageSnapshot = {
   feature: PlanFeature;
   limit: number | null;
+  period: LimitPeriod;
   used: number;
   /** Tries still available now (reservations in flight count as taken). */
   remaining: number | null;
@@ -155,6 +157,7 @@ export async function usageFor(userId: string, feature: MeteredFeature, now = ne
   return {
     feature,
     limit,
+    period,
     used,
     remaining: limit === null ? null : Math.max(limit - taken, 0),
     resetsAt: periodEndFor(period, periodStart, entitlement.billingAnchor),

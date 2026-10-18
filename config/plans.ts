@@ -11,6 +11,9 @@ export type Plan = (typeof PLANS)[number];
 export type PaidPlan = (typeof PAID_PLANS)[number];
 export type BillingInterval = (typeof INTERVALS)[number];
 
+/** Plans from lowest to highest, for "is this an upgrade?". */
+export const PLAN_RANK: Record<Plan, number> = { free: 0, plus: 1, pro: 2 };
+
 /** Display prices in euro cents. Stripe holds the real prices (pnpm stripe:sync). */
 export const PLAN_PRICES: Record<PaidPlan, Record<BillingInterval, number>> = {
   plus: { month: 399, year: 3599 },

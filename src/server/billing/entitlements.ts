@@ -2,12 +2,11 @@ import "server-only";
 
 import { eq } from "drizzle-orm";
 
-import { PAYMENT_GRACE_DAYS, type Plan } from "@config/plans";
+import { PAYMENT_GRACE_DAYS, PLAN_RANK, type Plan } from "@config/plans";
 import type { Executor } from "@/server/db/client";
 import { entitlements, subscriptions } from "@/server/db/schema";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-const RANK: Record<Plan, number> = { free: 0, plus: 1, pro: 2 };
 
 type SubscriptionRow = typeof subscriptions.$inferSelect;
 
@@ -48,10 +47,10 @@ export async function recomputeEntitlement(
 
   const best = (await tx.select().from(subscriptions).where(eq(subscriptions.userId, userId)))
     .filter((sub) => grantsPlan(sub, now))
-    .sort((a, b) => RANK[b.plan] - RANK[a.plan])[0];
+    .sort((a, b) => PLAN_RANK[b.plan] - PLAN_RANK[a.plan])[0];
 
   const compRunning = current?.source === "comp" && (!current.periodEnd || current.periodEnd > now);
-  if (compRunning && (!best || RANK[best.plan] <= RANK[current.plan])) return { from, to: from };
+  if (compRunning && (!best || PLAN_RANK[best.plan] <= PLAN_RANK[current.plan])) return { from, to: from };
 
   if (!best) {
     await tx.delete(entitlements).where(eq(entitlements.userId, userId));

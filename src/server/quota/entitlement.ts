@@ -9,12 +9,14 @@ import { entitlements, planLimits } from "@/server/db/schema";
 
 export type Entitlement = {
   plan: Plan;
+  /** Where a paid plan comes from; null on Free. */
+  source: "stripe" | "comp" | "trial" | null;
   /** Start of the billing period (monthly allowances are anchored here); null on Free. */
   billingAnchor: Date | null;
   periodEnd: Date | null;
 };
 
-const FREE: Entitlement = { plan: "free", billingAnchor: null, periodEnd: null };
+const FREE: Entitlement = { plan: "free", source: null, billingAnchor: null, periodEnd: null };
 
 /**
  * A paid entitlement whose period ended more than a day ago is treated as
@@ -31,7 +33,7 @@ export async function getEntitlement(
   const [row] = await executor.select().from(entitlements).where(eq(entitlements.userId, userId)).limit(1);
   if (!row || row.plan === "free") return FREE;
   if (row.periodEnd && now.getTime() - row.periodEnd.getTime() > STALE_AFTER_MS) return FREE;
-  return { plan: row.plan, billingAnchor: row.periodStart, periodEnd: row.periodEnd };
+  return { plan: row.plan, source: row.source, billingAnchor: row.periodStart, periodEnd: row.periodEnd };
 }
 
 export type PlanLimit = { limit: number | null; period: LimitPeriod };
