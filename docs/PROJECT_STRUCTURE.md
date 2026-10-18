@@ -88,7 +88,7 @@ cooky/
 │   │   ├── forms/                  # TextField, PasswordInput, CodeInput, SubmitButton, FormAlert, focus/messages helpers
 │   │   ├── auth/                   # Sign-up, log-in, 2FA step, passkey log-in, reset/verify forms
 │   │   ├── security/               # Settings → Security cards (password, 2FA, passkeys, devices)
-│   │   ├── settings/               # Settings nav + section frame
+│   │   ├── settings/               # Settings nav + section frame, Profile and Appearance cards
 │   │   ├── app-shell/              # Sidebar, bottom nav, top bar, search palette, intro modal,
 │   │   │                           # weather chip (condition → icon/animation only), unread dot
 │   │   ├── paywall/                # Upgrade sheet, tries-left meter (values from props)
@@ -97,6 +97,9 @@ cooky/
 │   │   └── <feature>/              # cook/, dishes/, planner/, shopping/, messages/, timer/, …
 │   ├── lib/                        # Isomorphic, side-effect-free helpers ONLY (no secrets, no rules, no limits)
 │   │   ├── format/                 # Dates, durations, numbers, units per locale
+│   │   ├── appearance.ts           # Accents, themes, text sizes (one list for DB enums, schemas, UI, tests)
+│   │   ├── initials.ts             # Avatar initials (script-aware)
+│   │   ├── validation-keys.ts      # Every `validation.*` message key a schema may produce
 │   │   ├── errors.ts               # Action error codes → translation keys
 │   │   └── sentry-privacy.ts       # What Sentry may collect (nothing personal)
 │   ├── i18n/                       # Routing, request config, navigation helpers

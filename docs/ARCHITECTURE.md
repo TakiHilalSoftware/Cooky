@@ -140,7 +140,7 @@ Drizzle schema in `src/server/db/schema/`. Ownership and sharing rules live in `
 ### 4.1 Identity & Security
 - **Better Auth tables:** `user`, `session`, `account` (password + Google/Apple), `verification`, plus the two-factor and passkey plugin tables, and the admin plugin's role/ban fields. **Generate them with the Better Auth CLI into the Drizzle schema. Don't hand-write them.** App additions on `user` (`additionalFields`): `status` (active|pending_deletion), `deletion_requested_at`. Suspension uses the admin plugin's ban.
 - **`consents`**: `user_id`, `document` (terms|privacy), `version`, `accepted_at`
-- **`profiles`**: `user_id` PK, `display_name`, `avatar_key` (R2), `city`, `lat`, `lon`, `hemisphere`, `timezone`, `locale`, `accent`, `theme`, `text_size`, `units` (metric|imperial), `dietary_prefs[]`, `ramadan_mode`, `share_activity`, `intro_seen[]`, notification prefs, `quiet_hours`
+- **`profiles`** (Phase 1 uses display name, locale, accent, theme, text size; the rest arrive with their phases. The signed-in person's accent and text size are rendered on `<html>` by the locale layout so pages arrive styled; the theme follows the profile across devices, while signed-out visitors keep the browser's own choice): `user_id` PK, `display_name`, `avatar_key` (R2), `city`, `lat`, `lon`, `hemisphere`, `timezone`, `locale`, `accent`, `theme`, `text_size`, `units` (metric|imperial), `dietary_prefs[]`, `ramadan_mode`, `share_activity`, `intro_seen[]`, notification prefs, `quiet_hours`
 - **`push_subscriptions`**: `user_id`, `session_id` (FK → session, **cascade**: revoking a device removes its push), `endpoint` (unique), `p256dh`, `auth`, `locale`
 
 ### 4.2 Billing & Tries
