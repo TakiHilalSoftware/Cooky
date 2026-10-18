@@ -100,7 +100,9 @@ cooky/
 │   │   │                           # (values from props)
 │   │   ├── offline/                # THE IndexedDB exception: list + recipe snapshot, replay queue, wipe on logout
 │   │   ├── onboarding/             # Starter-pack grid, first-week checklist
-│   │   └── <feature>/              # cook/, dishes/, planner/, shopping/, messages/, timer/, …
+│   │   ├── dishes/                 # My Dishes: box + filters (next/form GET), dish form, dish page (server-side scaling
+│   │   │                           # via ?servings=), favorites, notes, delete with Undo on the box, allowance notices
+│   │   └── <feature>/              # cook/, planner/, shopping/, messages/, timer/, …
 │   ├── lib/                        # Isomorphic, side-effect-free helpers ONLY (no secrets, no rules, no limits)
 │   │   ├── format/                 # Dates, durations, numbers, units per locale
 │   │   ├── appearance.ts           # Accents, themes, text sizes (one list for DB enums, schemas, UI, tests)

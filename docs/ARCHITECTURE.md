@@ -154,7 +154,7 @@ Drizzle schema in `src/server/db/schema/`. Ownership and sharing rules live in `
 - **`stripe_events`**: `id` PK (Stripe event id), `type`, `processed_at` (idempotency)
 
 ### 4.3 Recipes
-- **`dishes`**: `user_id`, `name`, `difficulty`, `course`, `seasons[]`, `servings`, `dietary_tags[]`, `visibility` (private|friends|groups), `image_key`, `calories_kcal`, `protein_g`, `carbs_g`, `fat_g`, `catalog_dish_id` (FK set null), `copied_from_dish_id` (FK set null), `search` (tsvector)
+- **`dishes`**: `user_id`, `name`, `difficulty`, `course`, `seasons[]`, `servings`, `dietary_tags[]`, `visibility` (private|friends|groups), `image_key`, `calories_kcal`, `protein_g`, `carbs_g`, `fat_g`, `catalog_dish_id` (FK set null), `copied_from_dish_id` (FK set null), `search` (tsvector), `deleted_at` (set on delete so Undo can restore it; `/api/cron/purge-deleted-dishes` removes it for good after 24 h). The dish cap (`plan_limits.dishes`) is checked under a per-user advisory lock; over the cap after a downgrade the box is read-only (view, cook, delete; no add or edit)
 - **`dish_ingredients`**: `dish_id`, `position`, `name`, `amount` (numeric), `unit` (enum), `note`, `ingredient_id` (FK set null), `catalog_ingredient_id` (FK set null)
 - **`dish_steps`**: `dish_id`, `position`, `text`, `timer_seconds`, `prep_day_before` (bool)
 - **`ingredients`** (dictionary): names per locale + variants, `aisle`, `default_unit`, `is_common_staple`
@@ -214,7 +214,7 @@ Drizzle schema in `src/server/db/schema/`. Ownership and sharing rules live in `
    - Stripe → `/api/webhooks/stripe`: verify the signature on the raw body → fetch the subscription fresh from Stripe (events can arrive out of order) → in one transaction: dedupe on `stripe_events`, upsert `subscriptions`, recompute `entitlements`, audit plan changes, queue lifecycle emails (trial ending, payment failed, cancellation, receipt) in the outbox. A failure returns 500 and keeps nothing, so Stripe's retry starts clean.
    - **Grace:** the first `invoice.payment_failed` stamps `payment_failed_at` (retries don't move it); `past_due` keeps the plan for 7 days from then; `invoice.paid` clears it. A running admin comp is never downgraded by billing.
    - The success page reads entitlements from the DB, never from the query string. `openBillingPortal()` works the same way.
-   - A nightly reconcile (`/api/cron/billing-reconcile`) re-syncs every non-canceled subscription and recomputes every entitlement, which also ends expired grace periods and covers lost webhooks. `/api/cron/release-reservations` frees tries whose request never reported back.
+   - A nightly reconcile (`/api/cron/billing-reconcile`) re-syncs every non-canceled subscription and recomputes every entitlement, which also ends expired grace periods and covers lost webhooks. `/api/cron/release-reservations` frees tries whose request never reported back. `/api/cron/purge-deleted-dishes` (daily) removes dishes deleted more than a day ago.
    - **Downgrade** marks over-limit content read-only by checks (`dishes count > limit` → block create); nothing is deleted.
 4. **Auth Pipeline (Better Auth):**
    - Email/password and Google/Apple. Email verification is required. 2FA and passkeys come from plugins.
