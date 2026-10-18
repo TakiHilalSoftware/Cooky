@@ -16,6 +16,10 @@ export const outboxJobSchema = z.discriminatedUnion("kind", [
       url: z.url().optional(),
     }),
   }),
+  z.object({
+    kind: z.literal("backup_import"),
+    payload: z.object({ importId: z.uuid() }),
+  }),
 ]);
 
 export type OutboxJob = z.infer<typeof outboxJobSchema>;

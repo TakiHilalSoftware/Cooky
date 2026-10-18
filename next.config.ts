@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   typedRoutes: true,
   poweredByHeader: false,
+  experimental: {
+    // Recipe backups go up to 5 MB (PRD §3.2); the default 1 MB would refuse them.
+    // Each action still validates and caps its own input.
+    serverActions: { bodySizeLimit: "6mb" },
+  },
   turbopack: {
     rules: {
       "*.css": {

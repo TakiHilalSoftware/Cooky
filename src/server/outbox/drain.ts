@@ -47,8 +47,8 @@ export async function drainOutbox({ limit }: { limit: number }): Promise<DrainRe
     try {
       const job = outboxJobSchema.parse({ kind: row.kind, payload: row.payload });
       await handleJob(job);
-      // Drop the single-use link from the stored payload once it has been delivered.
-      const { url: _delivered, ...kept } = job.payload;
+      // Drop an email's single-use link from the stored payload once it has been delivered.
+      const kept = job.kind === "email" ? { ...job.payload, url: undefined } : job.payload;
       await db.update(outbox).set({ status: "done", payload: kept, lastError: null }).where(eq(outbox.id, row.id));
       result.done++;
     } catch (err) {

@@ -3,6 +3,7 @@ import "server-only";
 import { eq } from "drizzle-orm";
 
 import { getDb } from "@/server/db/client";
+import { runBackupImport } from "@/server/features/backup/service";
 import { profiles, user } from "@/server/db/schema";
 import { renderEmail } from "@/server/notify/email/render";
 import { sendEmail } from "@/server/notify/email/send";
@@ -13,6 +14,8 @@ export async function handleJob(job: OutboxJob): Promise<void> {
   switch (job.kind) {
     case "email":
       return sendTemplatedEmail(job.payload);
+    case "backup_import":
+      return runBackupImport(job.payload.importId);
   }
 }
 
