@@ -127,6 +127,12 @@ export const serverSchema = {
   RESEND_API_KEY: required(z.string().startsWith("re_")),
   EMAIL_FROM: emailFrom,
 
+  // Stripe (§4). Test-mode keys locally; the webhook secret comes from `pnpm stripe:listen`.
+  STRIPE_SECRET_KEY: required(z.string().regex(/^(sk|rk)_(test|live)_/)),
+  STRIPE_WEBHOOK_SECRET: required(z.string().startsWith("whsec_")),
+  // Stripe Tax (PRD §3.7) needs the business address set in the dashboard first.
+  STRIPE_AUTOMATIC_TAX: z.enum(["on", "off"]).default("off"),
+
   // Upstash (§5, §6): burst limits and the outbox drain schedule.
   UPSTASH_REDIS_REST_URL: required(z.url()),
   UPSTASH_REDIS_REST_TOKEN: required(z.string().min(1)),

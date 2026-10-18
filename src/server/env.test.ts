@@ -20,6 +20,8 @@ const DEPLOYED_REQUIRED = {
   GOOGLE_CLIENT_ID: "google-id",
   GOOGLE_CLIENT_SECRET: "google-secret",
   RESEND_API_KEY: "re_test_123",
+  STRIPE_SECRET_KEY: "sk_test_123",
+  STRIPE_WEBHOOK_SECRET: "whsec_123",
   EMAIL_FROM: "Cooky <hello@cooky.example>",
   UPSTASH_REDIS_REST_URL: "https://redis.upstash.example",
   UPSTASH_REDIS_REST_TOKEN: "redis-token",
