@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOutIcon, SettingsIcon } from "lucide-react";
+import { CreditCardIcon, LogOutIcon, SettingsIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useAction } from "next-safe-action/hooks";
 
@@ -59,6 +59,12 @@ export function AccountMenu({ account }: { account: AccountSummaryDto }) {
           <Link href="/settings">
             <SettingsIcon aria-hidden="true" />
             {t("settings")}
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild className="min-h-10">
+          <Link href="/settings/billing">
+            <CreditCardIcon aria-hidden="true" />
+            {t("billing")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem

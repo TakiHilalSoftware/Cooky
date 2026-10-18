@@ -1,7 +1,8 @@
 "use client";
 
-import { ShieldCheckIcon, UserRoundIcon } from "lucide-react";
+import { CreditCardIcon, ShieldCheckIcon, UserRoundIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
 
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -9,12 +10,19 @@ import { cn } from "@/lib/utils";
 const SECTIONS = [
   { href: "/settings", key: "account", icon: UserRoundIcon },
   { href: "/settings/security", key: "security", icon: ShieldCheckIcon },
+  { href: "/settings/billing", key: "billing", icon: CreditCardIcon },
 ] as const;
 
 /** Sections of Settings: a sidebar on wide screens, a scrollable row of tabs on phones. */
 export function SettingsNav() {
   const t = useTranslations("settings");
   const pathname = usePathname();
+  const activeRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    // On phones the tabs scroll sideways; keep the current one in view (e.g. "Plan & billing", the last tab).
+    activeRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [pathname]);
   return (
     <nav aria-label={t("navLabel")} className="-mx-4 overflow-x-auto px-4 lg:mx-0 lg:overflow-visible lg:px-0">
       <ul className="flex gap-1 lg:flex-col">
@@ -24,6 +32,7 @@ export function SettingsNav() {
             <li key={href}>
               <Link
                 href={href}
+                ref={active ? activeRef : undefined}
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex min-h-11 items-center gap-2.5 rounded-xl px-3 text-sm font-medium whitespace-nowrap transition-colors",
