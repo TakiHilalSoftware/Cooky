@@ -37,8 +37,17 @@ export default defineConfig({
       },
       {
         extends: true,
-        // Actions against a real Postgres; populated from Phase 1 (needs DATABASE_URL).
-        test: { name: "integration", environment: "node", include: ["tests/integration/**/*.test.ts"] },
+        // Actions against a real Postgres (TEST_DATABASE_URL), rebuilt from the migrations.
+        test: {
+          name: "integration",
+          environment: "node",
+          include: ["tests/integration/**/*.test.ts"],
+          globalSetup: ["./tests/integration/setup/global-setup.ts"],
+          setupFiles: ["./tests/integration/setup/env.ts", "./tests/integration/support/browser.ts"],
+          fileParallelism: false,
+          testTimeout: 30_000,
+          hookTimeout: 60_000,
+        },
       },
     ],
   },
