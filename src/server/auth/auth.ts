@@ -5,6 +5,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError, createAuthMiddleware, isAPIError } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
+import { admin } from "better-auth/plugins/admin";
 import { haveIBeenPwned } from "better-auth/plugins/haveibeenpwned";
 import { twoFactor } from "better-auth/plugins/two-factor";
 import { v7 as uuidv7 } from "uuid";
@@ -20,6 +21,17 @@ import { clearFailedLogins, lockedUntil, recordFailedLogin } from "./lockout";
 import { clientIp } from "./request-info";
 
 const DAY = 60 * 60 * 24;
+
+/**
+ * Social providers that are configured. Google is required in deployed builds;
+ * Apple is optional (it needs the paid developer programme). The log-in and
+ * sign-up pages only show buttons for these.
+ */
+export const SOCIAL_PROVIDERS = [
+  ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET ? (["google"] as const) : []),
+  ...(env.APPLE_CLIENT_ID && env.APPLE_CLIENT_SECRET ? (["apple"] as const) : []),
+];
+export type SocialProvider = (typeof SOCIAL_PROVIDERS)[number];
 const SIGN_IN_EMAIL = "/sign-in/email";
 
 /** The email a sign-in request is about, normalised like Better Auth does. */
@@ -41,6 +53,22 @@ export const auth = betterAuth({
       status: { type: ["active", "pending_deletion"], required: true, defaultValue: "active", input: false },
       deletionRequestedAt: { type: "date", required: false, input: false },
     },
+  },
+
+  socialProviders: {
+    ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
+      ? { google: { clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET } }
+      : {}),
+    ...(env.APPLE_CLIENT_ID && env.APPLE_CLIENT_SECRET
+      ? { apple: { clientId: env.APPLE_CLIENT_ID, clientSecret: env.APPLE_CLIENT_SECRET } }
+      : {}),
+  },
+
+  // PRD §3.1: accounts are linked by verified email. Better Auth only links when
+  // the provider verified the address and the existing account verified it too,
+  // so nobody can pre-register someone else's email and inherit their Google login.
+  account: {
+    accountLinking: { enabled: true },
   },
 
   emailAndPassword: {
@@ -169,6 +197,9 @@ export const auth = betterAuth({
       accountLockout: { enabled: true, maxFailedAttempts: 5, durationSeconds: 15 * 60 },
       backupCodeOptions: { amount: 10, length: 10 },
     }),
+    // Roles and suspension (ban). Suspended accounts can't sign in, and their
+    // sessions are revoked when the ban is applied.
+    admin({ defaultRole: "user", adminRoles: ["admin"] }),
     passkey({
       rpID: new URL(env.BETTER_AUTH_URL).hostname,
       rpName: "Cooky",
