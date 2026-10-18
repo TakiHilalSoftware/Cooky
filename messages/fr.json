@@ -149,7 +149,8 @@
       "passkeyHint": "Utilisez votre empreinte, votre visage ou le verrouillage de l'écran.",
       "passkeyWorking": "En attente de votre appareil…",
       "passkeyNotRecognised": "Cette clé d'accès n'est liée à aucun compte Cooky. Connectez-vous plutôt avec votre e-mail.",
-      "passkeyCancelled": "La connexion par clé d'accès a été annulée. Réessayez ou connectez-vous avec votre e-mail."
+      "passkeyCancelled": "La connexion par clé d'accès a été annulée. Réessayez ou connectez-vous avec votre e-mail.",
+      "suspended": "Ce compte a été suspendu. Si vous pensez qu'il s'agit d'une erreur, répondez à n'importe quel e-mail reçu de Cooky."
     },
     "forgot": {
       "title": "Réinitialiser votre mot de passe",
@@ -199,6 +200,15 @@
       "expired": "Cette connexion a pris trop de temps. Reconnectez-vous pour recommencer.",
       "locked": "Trop de codes incorrects. Patientez 15 minutes, puis réessayez.",
       "startOver": "Retour à la connexion"
+    },
+    "social": {
+      "google": "Continuer avec Google",
+      "apple": "Continuer avec Apple",
+      "working": "Ouverture de la page de connexion…",
+      "consent": "En continuant avec Google ou Apple, vous acceptez les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy>.",
+      "failed": "La connexion avec Google ou Apple n'a pas fonctionné. Réessayez ou utilisez votre e-mail.",
+      "notLinked": "Cet e-mail a déjà un compte Cooky qui n'est pas encore confirmé. Confirmez-le depuis l'e-mail que nous vous avons envoyé, puis réessayez.",
+      "suspended": "Ce compte a été suspendu. Si vous pensez qu'il s'agit d'une erreur, répondez à n'importe quel e-mail reçu de Cooky."
     }
   },
   "account": {

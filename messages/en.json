@@ -149,7 +149,8 @@
       "passkeyHint": "Use your fingerprint, face or screen lock.",
       "passkeyWorking": "Waiting for your device…",
       "passkeyNotRecognised": "That passkey isn't linked to a Cooky account. Log in with your email instead.",
-      "passkeyCancelled": "Passkey sign-in was cancelled. Try again, or log in with your email."
+      "passkeyCancelled": "Passkey sign-in was cancelled. Try again, or log in with your email.",
+      "suspended": "This account has been suspended. If you think this is a mistake, reply to any email you've received from Cooky."
     },
     "forgot": {
       "title": "Reset your password",
@@ -199,6 +200,15 @@
       "expired": "This sign-in took too long. Log in again to start over.",
       "locked": "Too many wrong codes. Wait 15 minutes, then try again.",
       "startOver": "Back to log in"
+    },
+    "social": {
+      "google": "Continue with Google",
+      "apple": "Continue with Apple",
+      "working": "Opening the sign-in page…",
+      "consent": "By continuing with Google or Apple, you agree to the <terms>Terms of Service</terms> and the <privacy>Privacy Policy</privacy>.",
+      "failed": "Signing in with Google or Apple didn't work. Try again, or use your email.",
+      "notLinked": "This email already has a Cooky account that isn't confirmed yet. Confirm it from the email we sent you, then try again.",
+      "suspended": "This account has been suspended. If you think this is a mistake, reply to any email you've received from Cooky."
     }
   },
   "account": {
