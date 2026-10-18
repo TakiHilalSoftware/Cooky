@@ -12,7 +12,9 @@ const breachedHash = createHash("sha1").update(BREACHED_PASSWORD).digest("hex").
 export const hibp = setupServer(
   http.get("https://api.pwnedpasswords.com/range/:prefix", ({ params }) => {
     const prefix = String(params.prefix).toUpperCase();
-    const body = breachedHash.startsWith(prefix) ? `${breachedHash.slice(5)}:12345\r\n` : "0000000000000000000000000000000000A:1\r\n";
+    const body = breachedHash.startsWith(prefix)
+      ? `${breachedHash.slice(5)}:12345\r\n`
+      : "0000000000000000000000000000000000A:1\r\n";
     return HttpResponse.text(body);
   }),
 );

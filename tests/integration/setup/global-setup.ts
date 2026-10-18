@@ -17,7 +17,8 @@ export default async function setup() {
 
   const target = new URL(url);
   const dbName = target.pathname.slice(1);
-  if (!/^[a-z0-9_]+_test$/.test(dbName)) throw new Error(`Refusing to reset "${dbName}": test databases must end in _test.`);
+  if (!/^[a-z0-9_]+_test$/.test(dbName))
+    throw new Error(`Refusing to reset "${dbName}": test databases must end in _test.`);
 
   const admin = new Client({ connectionString: Object.assign(new URL(url), { pathname: "/postgres" }).toString() });
   await admin.connect();
@@ -26,7 +27,9 @@ export default async function setup() {
   await admin.end();
 
   const pool = new Pool({ connectionString: url });
-  await pool.query("drop schema if exists public cascade; drop schema if exists drizzle cascade; create schema public;");
+  await pool.query(
+    "drop schema if exists public cascade; drop schema if exists drizzle cascade; create schema public;",
+  );
   await migrate(drizzle({ client: pool }), { migrationsFolder: "drizzle" });
   await pool.end();
 }

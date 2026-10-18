@@ -16,6 +16,9 @@ export default defineConfig({
     globals: true,
     restoreMocks: true,
     unstubEnvs: true,
+    // next-intl's ESM imports "next/navigation" without an extension, which
+    // Node's ESM resolver rejects; let Vite transform and resolve it instead.
+    server: { deps: { inline: ["next-intl", "better-auth"] } },
     projects: [
       {
         extends: true,
