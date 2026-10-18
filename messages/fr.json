@@ -11,7 +11,11 @@
     "tryAgain": "Réessayer",
     "backToHome": "Retour à l'accueil",
     "undo": "Annuler",
-    "opensInNewTab": "s’ouvre dans un nouvel onglet"
+    "opensInNewTab": "s’ouvre dans un nouvel onglet",
+    "cancel": "Annuler",
+    "copy": "Copier",
+    "copied": "Copié",
+    "or": "ou"
   },
   "language": {
     "label": "Langue",
@@ -92,6 +96,15 @@
       "button": "Choisir un nouveau mot de passe",
       "expiry": "Ce lien est valable 1 heure et une seule fois.",
       "ignore": "Vous n'avez rien demandé ? Ignorez cet e-mail : votre mot de passe reste inchangé."
+    },
+    "passwordChanged": {
+      "subject": "Votre mot de passe Cooky a été modifié",
+      "preview": "Votre mot de passe Cooky vient d'être modifié.",
+      "heading": "Votre mot de passe a été modifié",
+      "body": "Le mot de passe de votre compte Cooky vient d'être modifié, et tous vos autres appareils ont été déconnectés.",
+      "button": "Réinitialiser mon mot de passe",
+      "expiry": "Si c'est bien vous, vous n'avez rien d'autre à faire.",
+      "ignore": "Si ce n'est pas vous, réinitialisez votre mot de passe tout de suite pour sécuriser votre compte."
     }
   },
   "auth": {
@@ -129,7 +142,14 @@
       "noAccount": "Nouveau sur Cooky ?",
       "signUpLink": "Créer un compte",
       "invalidCredentials": "Cet e-mail et ce mot de passe ne correspondent pas. Vérifiez-les et réessayez.",
-      "verifyEmail": "Confirmez d'abord votre e-mail. Nous venons d'envoyer un nouveau lien à {email}."
+      "verifyEmail": "Confirmez d'abord votre e-mail. Nous venons d'envoyer un nouveau lien à {email}.",
+      "locked": "Trop de mots de passe incorrects. Par sécurité, réessayez après {time} ou réinitialisez votre mot de passe.",
+      "lockedGeneric": "Trop de mots de passe incorrects. Par sécurité, patientez quelques minutes puis réessayez, ou réinitialisez votre mot de passe.",
+      "passkey": "Se connecter avec une clé d'accès",
+      "passkeyHint": "Utilisez votre empreinte, votre visage ou le verrouillage de l'écran.",
+      "passkeyWorking": "En attente de votre appareil…",
+      "passkeyNotRecognised": "Cette clé d'accès n'est liée à aucun compte Cooky. Connectez-vous plutôt avec votre e-mail.",
+      "passkeyCancelled": "La connexion par clé d'accès a été annulée. Réessayez ou connectez-vous avec votre e-mail."
     },
     "forgot": {
       "title": "Réinitialiser votre mot de passe",
@@ -160,6 +180,25 @@
       "sendNew": "Envoyer un nouveau lien",
       "sentTitle": "Vérifiez vos e-mails",
       "sentBody": "Si {email} doit encore être confirmé, un nouveau lien est en route. Il est valable 24 heures."
+    },
+    "twoFactor": {
+      "title": "Saisissez votre code de vérification",
+      "subtitle": "Ouvrez votre application d'authentification et saisissez le code à 6 chiffres pour Cooky.",
+      "codeLabel": "Code à 6 chiffres",
+      "trustDevice": "Faire confiance à cet appareil pendant 30 jours",
+      "trustDeviceHint": "Ne cochez pas cette case sur un ordinateur partagé.",
+      "submit": "Vérifier",
+      "submitting": "Vérification…",
+      "useBackup": "Utiliser plutôt un code de secours",
+      "useApp": "Utiliser plutôt mon application",
+      "backupTitle": "Saisissez un code de secours",
+      "backupSubtitle": "Chaque code de secours ne fonctionne qu'une fois.",
+      "backupLabel": "Code de secours",
+      "invalidCode": "Ce code n'a pas fonctionné. Vérifiez le dernier code de votre application et réessayez.",
+      "invalidBackup": "Ce code de secours n'a pas fonctionné. Chaque code ne fonctionne qu'une fois.",
+      "expired": "Cette connexion a pris trop de temps. Reconnectez-vous pour recommencer.",
+      "locked": "Trop de codes incorrects. Patientez 15 minutes, puis réessayez.",
+      "startOver": "Retour à la connexion"
     }
   },
   "account": {
@@ -173,7 +212,107 @@
   "settings": {
     "title": "Paramètres",
     "accountHeading": "Compte",
-    "signedInAs": "Connecté en tant que {email}"
+    "signedInAs": "Connecté en tant que {email}",
+    "navLabel": "Sections des paramètres",
+    "nav": {
+      "account": "Compte",
+      "security": "Sécurité"
+    },
+    "security": {
+      "title": "Sécurité",
+      "subtitle": "Gérez votre façon de vous connecter et les appareils connectés.",
+      "password": {
+        "heading": "Mot de passe",
+        "description": "Le modifier déconnecte tous vos autres appareils.",
+        "currentLabel": "Mot de passe actuel",
+        "newLabel": "Nouveau mot de passe",
+        "submit": "Modifier le mot de passe",
+        "submitting": "Modification…",
+        "changed": "Mot de passe modifié. Tous vos autres appareils ont été déconnectés.",
+        "wrongPassword": "Votre mot de passe actuel n'est pas correct.",
+        "noPassword": "Vous vous connectez avec Google ou Apple : il n'y a pas de mot de passe à modifier."
+      },
+      "twoFactor": {
+        "heading": "Validation en deux étapes",
+        "description": "Quand vous vous connectez avec votre mot de passe, un code d'une application d'authentification est aussi demandé.",
+        "statusOn": "Activée",
+        "statusOff": "Désactivée",
+        "enable": "Activer",
+        "disable": "Désactiver",
+        "newBackupCodes": "Obtenir de nouveaux codes de secours",
+        "passwordStep": "Confirmez votre mot de passe pour continuer.",
+        "passwordLabel": "Mot de passe",
+        "continue": "Continuer",
+        "checking": "Vérification…",
+        "wrongPassword": "Ce mot de passe n'est pas correct.",
+        "scanTitle": "Scannez ce code",
+        "scanBody": "Ouvrez une application d'authentification (comme Google Authenticator, Microsoft Authenticator ou 1Password) et scannez le code.",
+        "qrAlt": "QR code pour ajouter Cooky à votre application d'authentification",
+        "manualLabel": "Impossible de scanner ? Saisissez plutôt cette clé :",
+        "codeLabel": "Code de l'application",
+        "verify": "Vérifier et activer",
+        "verifying": "Vérification…",
+        "invalidCode": "Ce code n'a pas fonctionné. Vérifiez que l'heure de votre téléphone est juste et essayez le dernier code.",
+        "locked": "Trop de codes incorrects. Patientez 15 minutes, puis réessayez.",
+        "backupTitle": "Enregistrez vos codes de secours",
+        "backupBody": "Si vous perdez votre téléphone, chaque code vous permet de vous connecter une fois. Gardez-les en lieu sûr, par exemple dans un gestionnaire de mots de passe.",
+        "downloadCodes": "Télécharger",
+        "done": "Je les ai enregistrés",
+        "enabled": "La validation en deux étapes est activée.",
+        "disabled": "La validation en deux étapes est désactivée.",
+        "disableTitle": "Désactiver la validation en deux étapes ?",
+        "disableBody": "Votre compte ne sera protégé que par votre mot de passe. Confirmez votre mot de passe pour la désactiver.",
+        "codesTitle": "Obtenir de nouveaux codes de secours ?",
+        "codesBody": "Vos anciens codes de secours ne fonctionneront plus. Confirmez votre mot de passe pour continuer."
+      },
+      "passkeys": {
+        "heading": "Clés d'accès",
+        "description": "Connectez-vous avec votre empreinte, votre visage ou le verrouillage de l'écran plutôt qu'avec un mot de passe.",
+        "add": "Ajouter une clé d'accès",
+        "adding": "En attente de votre appareil…",
+        "empty": "Aucune clé d'accès pour l'instant. Ajoutez-en une pour vous connecter plus vite sur cet appareil.",
+        "synced": "Synchronisée sur vos appareils",
+        "singleDevice": "Enregistrée sur un seul appareil",
+        "addedOn": "Ajoutée le {date}",
+        "unnamed": "Clé d'accès",
+        "rename": "Renommer",
+        "renameTitle": "Renommer la clé d'accès",
+        "nameLabel": "Nom de la clé d'accès",
+        "save": "Enregistrer",
+        "saving": "Enregistrement…",
+        "remove": "Supprimer",
+        "removeTitle": "Supprimer cette clé d'accès ?",
+        "removeBody": "Vous ne pourrez plus vous connecter avec « {name} ». Vous pourrez l'ajouter à nouveau plus tard.",
+        "removed": "Clé d'accès supprimée.",
+        "added": "Clé d'accès ajoutée. Vous pouvez maintenant vous connecter avec.",
+        "renamed": "Clé d'accès renommée.",
+        "unsupported": "Ce navigateur ne prend pas en charge les clés d'accès.",
+        "cancelled": "L'ajout de la clé d'accès a été annulé.",
+        "failed": "Votre appareil n'a pas pu créer de clé d'accès. Réessayez."
+      },
+      "devices": {
+        "heading": "Appareils connectés",
+        "description": "Connecté quelque part que vous ne reconnaissez pas ? Déconnectez cet appareil.",
+        "thisDevice": "Cet appareil",
+        "name": "{browser} sur {os}",
+        "unknownBrowser": "Navigateur inconnu",
+        "unknownOs": "un système inconnu",
+        "lastActive": "Actif {time}",
+        "signOut": "Déconnecter",
+        "signOutLabel": "Déconnecter {device}",
+        "signOutAll": "Déconnecter tous les autres appareils",
+        "signOutAllTitle": "Déconnecter tous les autres appareils ?",
+        "signOutAllBody": "Toute personne utilisant votre compte sur un autre appareil devra se reconnecter.",
+        "signedOut": "Appareil déconnecté.",
+        "signedOutAll": "Tous les autres appareils ont été déconnectés.",
+        "onlyThisDevice": "Vous n'êtes connecté que sur cet appareil.",
+        "kind": {
+          "computer": "Ordinateur",
+          "phone": "Téléphone",
+          "tablet": "Tablette"
+        }
+      }
+    }
   },
   "legal": {
     "draftNotice": "Résumé provisoire. Le texte juridique complet sera publié avant le lancement de Cooky ; c'est cette version qui est enregistrée lors de votre inscription.",
@@ -207,6 +346,10 @@
     "passwordRequired": "Saisissez votre mot de passe.",
     "passwordTooShort": "Utilisez au moins 8 caractères.",
     "passwordTooLong": "Utilisez 128 caractères au maximum.",
-    "acceptTermsRequired": "Acceptez les Conditions et la Politique de confidentialité pour continuer."
+    "acceptTermsRequired": "Acceptez les Conditions et la Politique de confidentialité pour continuer.",
+    "codeFormat": "Saisissez le code à 6 chiffres de votre application.",
+    "backupCodeFormat": "Saisissez un code de secours tel que vous l'avez enregistré.",
+    "passkeyNameRequired": "Donnez un nom à cette clé d'accès.",
+    "passkeyNameTooLong": "Le nom doit faire moins de 40 caractères."
   }
 }

@@ -11,7 +11,11 @@
     "tryAgain": "Try again",
     "backToHome": "Back to home",
     "undo": "Undo",
-    "opensInNewTab": "opens in a new tab"
+    "opensInNewTab": "opens in a new tab",
+    "cancel": "Cancel",
+    "copy": "Copy",
+    "copied": "Copied",
+    "or": "or"
   },
   "language": {
     "label": "Language",
@@ -92,6 +96,15 @@
       "button": "Choose a new password",
       "expiry": "This link works for 1 hour and only once.",
       "ignore": "Didn't ask for this? Ignore this email and your password stays the same."
+    },
+    "passwordChanged": {
+      "subject": "Your Cooky password was changed",
+      "preview": "Your Cooky password was just changed.",
+      "heading": "Your password was changed",
+      "body": "The password for your Cooky account was just changed, and every other device was signed out.",
+      "button": "Reset my password",
+      "expiry": "If this was you, there's nothing else to do.",
+      "ignore": "If it wasn't you, reset your password right away to lock your account back down."
     }
   },
   "auth": {
@@ -129,7 +142,14 @@
       "noAccount": "New to Cooky?",
       "signUpLink": "Create an account",
       "invalidCredentials": "That email and password don't match. Check both and try again.",
-      "verifyEmail": "Confirm your email first. We just sent a new link to {email}."
+      "verifyEmail": "Confirm your email first. We just sent a new link to {email}.",
+      "locked": "Too many wrong passwords. For your safety, try again after {time}, or reset your password.",
+      "lockedGeneric": "Too many wrong passwords. For your safety, wait a few minutes and try again, or reset your password.",
+      "passkey": "Log in with a passkey",
+      "passkeyHint": "Use your fingerprint, face or screen lock.",
+      "passkeyWorking": "Waiting for your device…",
+      "passkeyNotRecognised": "That passkey isn't linked to a Cooky account. Log in with your email instead.",
+      "passkeyCancelled": "Passkey sign-in was cancelled. Try again, or log in with your email."
     },
     "forgot": {
       "title": "Reset your password",
@@ -160,6 +180,25 @@
       "sendNew": "Send a new link",
       "sentTitle": "Check your email",
       "sentBody": "If {email} still needs confirming, a new link is on its way. It works for 24 hours."
+    },
+    "twoFactor": {
+      "title": "Enter your verification code",
+      "subtitle": "Open your authenticator app and enter the 6-digit code for Cooky.",
+      "codeLabel": "6-digit code",
+      "trustDevice": "Trust this device for 30 days",
+      "trustDeviceHint": "Don't tick this on a shared computer.",
+      "submit": "Verify",
+      "submitting": "Verifying…",
+      "useBackup": "Use a backup code instead",
+      "useApp": "Use my authenticator app instead",
+      "backupTitle": "Enter a backup code",
+      "backupSubtitle": "Each backup code works only once.",
+      "backupLabel": "Backup code",
+      "invalidCode": "That code didn't work. Check the latest code in your app and try again.",
+      "invalidBackup": "That backup code didn't work. Each code works only once.",
+      "expired": "This sign-in took too long. Log in again to start over.",
+      "locked": "Too many wrong codes. Wait 15 minutes, then try again.",
+      "startOver": "Back to log in"
     }
   },
   "account": {
@@ -173,7 +212,107 @@
   "settings": {
     "title": "Settings",
     "accountHeading": "Account",
-    "signedInAs": "Signed in as {email}"
+    "signedInAs": "Signed in as {email}",
+    "navLabel": "Settings sections",
+    "nav": {
+      "account": "Account",
+      "security": "Security"
+    },
+    "security": {
+      "title": "Security",
+      "subtitle": "Control how you log in and where you're logged in.",
+      "password": {
+        "heading": "Password",
+        "description": "Changing it signs out every other device.",
+        "currentLabel": "Current password",
+        "newLabel": "New password",
+        "submit": "Change password",
+        "submitting": "Changing…",
+        "changed": "Password changed. Every other device was signed out.",
+        "wrongPassword": "Your current password isn't right.",
+        "noPassword": "You log in with Google or Apple, so there's no password to change."
+      },
+      "twoFactor": {
+        "heading": "Two-step verification",
+        "description": "When you log in with your password, also ask for a code from an authenticator app.",
+        "statusOn": "On",
+        "statusOff": "Off",
+        "enable": "Turn on",
+        "disable": "Turn off",
+        "newBackupCodes": "Get new backup codes",
+        "passwordStep": "Confirm your password to continue.",
+        "passwordLabel": "Password",
+        "continue": "Continue",
+        "checking": "Checking…",
+        "wrongPassword": "That password isn't right.",
+        "scanTitle": "Scan this code",
+        "scanBody": "Open an authenticator app (like Google Authenticator, Microsoft Authenticator or 1Password) and scan the code.",
+        "qrAlt": "QR code to add Cooky to your authenticator app",
+        "manualLabel": "Can't scan it? Type this key instead:",
+        "codeLabel": "Code from the app",
+        "verify": "Verify and turn on",
+        "verifying": "Verifying…",
+        "invalidCode": "That code didn't work. Make sure your phone's clock is right and try the latest code.",
+        "locked": "Too many wrong codes. Wait 15 minutes, then try again.",
+        "backupTitle": "Save your backup codes",
+        "backupBody": "If you lose your phone, each code lets you log in once. Keep them somewhere safe, like a password manager.",
+        "downloadCodes": "Download",
+        "done": "I've saved them",
+        "enabled": "Two-step verification is on.",
+        "disabled": "Two-step verification is off.",
+        "disableTitle": "Turn off two-step verification?",
+        "disableBody": "Your account will be protected by your password only. Confirm your password to turn it off.",
+        "codesTitle": "Get new backup codes?",
+        "codesBody": "Your old backup codes will stop working. Confirm your password to continue."
+      },
+      "passkeys": {
+        "heading": "Passkeys",
+        "description": "Log in with your fingerprint, face or screen lock instead of a password.",
+        "add": "Add a passkey",
+        "adding": "Waiting for your device…",
+        "empty": "No passkeys yet. Add one to log in faster on this device.",
+        "synced": "Synced across your devices",
+        "singleDevice": "Saved on one device",
+        "addedOn": "Added {date}",
+        "unnamed": "Passkey",
+        "rename": "Rename",
+        "renameTitle": "Rename passkey",
+        "nameLabel": "Passkey name",
+        "save": "Save",
+        "saving": "Saving…",
+        "remove": "Remove",
+        "removeTitle": "Remove this passkey?",
+        "removeBody": "You won't be able to log in with “{name}” anymore. You can add it again later.",
+        "removed": "Passkey removed.",
+        "added": "Passkey added. You can now log in with it.",
+        "renamed": "Passkey renamed.",
+        "unsupported": "This browser doesn't support passkeys.",
+        "cancelled": "Adding the passkey was cancelled.",
+        "failed": "Your device couldn't create a passkey. Try again."
+      },
+      "devices": {
+        "heading": "Logged-in devices",
+        "description": "Logged in somewhere you don't recognise? Sign that device out.",
+        "thisDevice": "This device",
+        "name": "{browser} on {os}",
+        "unknownBrowser": "Unknown browser",
+        "unknownOs": "an unknown system",
+        "lastActive": "Active {time}",
+        "signOut": "Sign out",
+        "signOutLabel": "Sign out {device}",
+        "signOutAll": "Sign out all other devices",
+        "signOutAllTitle": "Sign out all other devices?",
+        "signOutAllBody": "Anyone using your account on another device will need to log in again.",
+        "signedOut": "Device signed out.",
+        "signedOutAll": "All other devices were signed out.",
+        "onlyThisDevice": "You're only logged in on this device.",
+        "kind": {
+          "computer": "Computer",
+          "phone": "Phone",
+          "tablet": "Tablet"
+        }
+      }
+    }
   },
   "legal": {
     "draftNotice": "Draft summary. The full legal text is published before Cooky launches; this version is the one recorded when you sign up.",
@@ -207,6 +346,10 @@
     "passwordRequired": "Enter your password.",
     "passwordTooShort": "Use at least 8 characters.",
     "passwordTooLong": "Use 128 characters or fewer.",
-    "acceptTermsRequired": "Agree to the Terms and Privacy Policy to continue."
+    "acceptTermsRequired": "Agree to the Terms and Privacy Policy to continue.",
+    "codeFormat": "Enter the 6-digit code from your app.",
+    "backupCodeFormat": "Enter a backup code exactly as you saved it.",
+    "passkeyNameRequired": "Give this passkey a name.",
+    "passkeyNameTooLong": "Keep the name under 40 characters."
   }
 }
