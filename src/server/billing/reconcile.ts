@@ -17,7 +17,10 @@ import { syncSubscription } from "./sync";
  */
 export async function reconcileBilling(now = new Date()): Promise<{ synced: number; changed: number }> {
   const db = getDb();
-  const live = await db.select({ id: subscriptions.id }).from(subscriptions).where(ne(subscriptions.status, "canceled"));
+  const live = await db
+    .select({ id: subscriptions.id })
+    .from(subscriptions)
+    .where(ne(subscriptions.status, "canceled"));
   let synced = 0;
   for (const { id } of live) {
     try {

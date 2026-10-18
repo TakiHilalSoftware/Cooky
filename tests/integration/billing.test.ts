@@ -161,7 +161,13 @@ describe("Stripe webhook", () => {
     const userId = await newUser();
     await db()
       .insert(schema.entitlements)
-      .values({ userId, plan: "pro", source: "comp", periodStart: new Date(), periodEnd: new Date(Date.now() + 30 * DAY_MS) });
+      .values({
+        userId,
+        plan: "pro",
+        source: "comp",
+        periodStart: new Date(),
+        periodEnd: new Date(Date.now() + 30 * DAY_MS),
+      });
     await deliver("customer.subscription.deleted", stripeSubscription({ userId, status: "canceled" }));
     expect((await getEntitlement(userId)).plan).toBe("pro");
   });

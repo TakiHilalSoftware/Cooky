@@ -32,7 +32,10 @@ export const stripeHandlers = [
     const sub = fakeStripe.subscriptions.get(String(params.id));
     return sub
       ? HttpResponse.json(sub)
-      : HttpResponse.json({ error: { type: "invalid_request_error", message: "No such subscription" } }, { status: 404 });
+      : HttpResponse.json(
+          { error: { type: "invalid_request_error", message: "No such subscription" } },
+          { status: 404 },
+        );
   }),
   http.post(`${API}/customers`, () => {
     fakeStripe.customersCreated++;
@@ -40,16 +43,26 @@ export const stripeHandlers = [
   }),
   http.get(`${API}/prices`, ({ request }) => {
     const lookupKey = new URL(request.url).searchParams.get("lookup_keys[0]") ?? "";
-    const data = fakeStripe.prices.has(lookupKey) ? [{ id: `price_${lookupKey}`, object: "price", lookup_key: lookupKey }] : [];
+    const data = fakeStripe.prices.has(lookupKey)
+      ? [{ id: `price_${lookupKey}`, object: "price", lookup_key: lookupKey }]
+      : [];
     return HttpResponse.json({ object: "list", data, has_more: false, url: "/v1/prices" });
   }),
   http.post(`${API}/checkout/sessions`, async ({ request }) => {
     fakeStripe.checkouts.push(await form(request));
-    return HttpResponse.json({ id: "cs_test_1", object: "checkout.session", url: "https://checkout.stripe.com/c/pay/cs_test_1" });
+    return HttpResponse.json({
+      id: "cs_test_1",
+      object: "checkout.session",
+      url: "https://checkout.stripe.com/c/pay/cs_test_1",
+    });
   }),
   http.post(`${API}/billing_portal/sessions`, async ({ request }) => {
     fakeStripe.portals.push(await form(request));
-    return HttpResponse.json({ id: "bps_1", object: "billing_portal.session", url: "https://billing.stripe.com/p/session/bps_1" });
+    return HttpResponse.json({
+      id: "bps_1",
+      object: "billing_portal.session",
+      url: "https://billing.stripe.com/p/session/bps_1",
+    });
   }),
 ];
 
@@ -82,7 +95,11 @@ export function stripeSubscription(options: SubscriptionOptions) {
         {
           id: "si_1",
           object: "subscription_item",
-          price: { id: "price_x", object: "price", lookup_key: `cooky_${options.plan ?? "plus"}_${options.interval ?? "month"}` },
+          price: {
+            id: "price_x",
+            object: "price",
+            lookup_key: `cooky_${options.plan ?? "plus"}_${options.interval ?? "month"}`,
+          },
           current_period_start: start,
           current_period_end: end,
         },
