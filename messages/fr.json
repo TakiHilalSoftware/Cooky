@@ -215,7 +215,7 @@
     "signedInAs": "Connecté en tant que {email}",
     "navLabel": "Sections des paramètres",
     "nav": {
-      "account": "Compte",
+      "account": "Profil et apparence",
       "security": "Sécurité"
     },
     "security": {
@@ -312,6 +312,42 @@
           "tablet": "Tablette"
         }
       }
+    },
+    "profile": {
+      "heading": "Profil",
+      "description": "Ce que voient les amis avec qui vous partagez des recettes.",
+      "nameLabel": "Nom affiché",
+      "nameHint": "Affiché sur votre avatar et à vos amis.",
+      "save": "Enregistrer le nom",
+      "saving": "Enregistrement…",
+      "saved": "Nom affiché enregistré.",
+      "emailLabel": "E-mail",
+      "emailHint": "Vous vous connectez avec cette adresse."
+    },
+    "appearance": {
+      "heading": "Apparence",
+      "description": "Rendez Cooky agréable à lire. Les changements s'appliquent tout de suite et vous suivent sur vos autres appareils.",
+      "accentLabel": "Couleur d'accent",
+      "accents": {
+        "default": "Safran",
+        "peach": "Pêche",
+        "mint": "Menthe",
+        "sky": "Ciel",
+        "lavender": "Lavande",
+        "sand": "Sable",
+        "rose": "Rose"
+      },
+      "themeLabel": "Thème",
+      "textSizeLabel": "Taille du texte",
+      "sizes": {
+        "s": "Petite",
+        "m": "Moyenne",
+        "l": "Grande",
+        "xl": "Très grande"
+      },
+      "preview": "Planifiez, cuisinez et faites vos courses sans hésiter.",
+      "saved": "Enregistré",
+      "saveFailed": "Ce changement n'a pas pu être enregistré, il a donc été annulé. Réessayez."
     }
   },
   "legal": {

@@ -215,7 +215,7 @@
     "signedInAs": "Signed in as {email}",
     "navLabel": "Settings sections",
     "nav": {
-      "account": "Account",
+      "account": "Profile & appearance",
       "security": "Security"
     },
     "security": {
@@ -312,6 +312,42 @@
           "tablet": "Tablet"
         }
       }
+    },
+    "profile": {
+      "heading": "Profile",
+      "description": "How you appear to friends you share recipes with.",
+      "nameLabel": "Display name",
+      "nameHint": "Shown on your avatar and to friends.",
+      "save": "Save name",
+      "saving": "Saving…",
+      "saved": "Display name saved.",
+      "emailLabel": "Email",
+      "emailHint": "You log in with this address."
+    },
+    "appearance": {
+      "heading": "Appearance",
+      "description": "Make Cooky comfortable to read. Changes apply right away and follow you to your other devices.",
+      "accentLabel": "Accent colour",
+      "accents": {
+        "default": "Saffron",
+        "peach": "Peach",
+        "mint": "Mint",
+        "sky": "Sky",
+        "lavender": "Lavender",
+        "sand": "Sand",
+        "rose": "Rose"
+      },
+      "themeLabel": "Theme",
+      "textSizeLabel": "Text size",
+      "sizes": {
+        "s": "Small",
+        "m": "Medium",
+        "l": "Large",
+        "xl": "Extra large"
+      },
+      "preview": "Plan, cook and shop without the guesswork.",
+      "saved": "Saved",
+      "saveFailed": "That change couldn't be saved, so it was undone. Try again."
     }
   },
   "legal": {
