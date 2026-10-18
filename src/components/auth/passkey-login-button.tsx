@@ -10,7 +10,6 @@ import { FormAlert } from "@/components/forms/form-alert";
 import { useFormMessages } from "@/components/forms/use-form-messages";
 import { useWebAuthnSupport } from "@/components/security/use-webauthn-support";
 import { Button } from "@/components/ui/button";
-import { FieldSeparator } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
 import { passkeyLogin, passkeyLoginOptions } from "@/server/actions/auth";
 
@@ -52,7 +51,7 @@ export function PasskeyLoginButton({ next }: { next?: string }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {problem ? <FormAlert tone="error">{problem}</FormAlert> : null}
       <Button type="button" variant="outline" size="lg" className="w-full" disabled={working} onClick={logIn}>
         {working ? (
@@ -63,7 +62,6 @@ export function PasskeyLoginButton({ next }: { next?: string }) {
         {working ? t("auth.logIn.passkeyWorking") : t("auth.logIn.passkey")}
       </Button>
       <p className="text-center text-xs text-muted-foreground">{t("auth.logIn.passkeyHint")}</p>
-      <FieldSeparator>{t("common.or")}</FieldSeparator>
     </div>
   );
 }

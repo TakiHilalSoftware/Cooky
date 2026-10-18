@@ -13,6 +13,7 @@ const actions = vi.hoisted(() => ({
   resetPassword: vi.fn(),
   passkeyLoginOptions: vi.fn(),
   passkeyLogin: vi.fn(),
+  startSocialSignIn: vi.fn(),
 }));
 vi.mock("@/server/actions/auth", () => actions);
 vi.mock("@/i18n/navigation", () => ({

@@ -13,12 +13,21 @@ import { useFormMessages } from "@/components/forms/use-form-messages";
 import { Link } from "@/i18n/navigation";
 import { checkFields, type FieldErrorKeys } from "@/lib/forms";
 import { signIn } from "@/server/actions/auth";
+import type { SocialProviderId, SocialSignInError } from "@/server/features/auth/dto";
 import { signInSchema } from "@/server/features/auth/schema";
 
-import { PasskeyLoginButton } from "./passkey-login-button";
+import { SignInAlternatives } from "./sign-in-alternatives";
 
 /** `next` is where to go after logging in; the server re-validates it. */
-export function LogInForm({ next }: { next?: string }) {
+type LogInFormProps = {
+  /** Where to go after logging in; the server re-validates it. */
+  next?: string;
+  providers?: readonly SocialProviderId[];
+  /** Set when Google/Apple sent the person back without signing them in. */
+  socialError?: SocialSignInError | null;
+};
+
+export function LogInForm({ next, providers = [], socialError }: LogInFormProps) {
   const t = useTranslations("auth");
   const messages = useFormMessages();
   const format = useFormatter();
@@ -48,7 +57,16 @@ export function LogInForm({ next }: { next?: string }) {
 
   return (
     <div className="space-y-5">
-      <PasskeyLoginButton next={next} />
+      {socialError ? (
+        <FormAlert tone="error">
+          {socialError === "not_linked"
+            ? t("social.notLinked")
+            : socialError === "suspended"
+              ? t("social.suspended")
+              : t("social.failed")}
+        </FormAlert>
+      ) : null}
+      <SignInAlternatives providers={providers} next={next} withPasskey />
       <form ref={formRef} noValidate onSubmit={onSubmit} className="space-y-5">
         {result?.status === "locked" ? (
           <FormAlert tone="error">
@@ -57,6 +75,7 @@ export function LogInForm({ next }: { next?: string }) {
               : t("logIn.lockedGeneric")}
           </FormAlert>
         ) : null}
+        {status === "suspended" ? <FormAlert tone="error">{t("logIn.suspended")}</FormAlert> : null}
         {status === "invalid_credentials" ? <FormAlert tone="error">{t("logIn.invalidCredentials")}</FormAlert> : null}
         {status === "verify_email" ? (
           <FormAlert tone="error">{t("logIn.verifyEmail", { email: sentTo })}</FormAlert>

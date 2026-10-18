@@ -15,11 +15,13 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Link } from "@/i18n/navigation";
 import { checkFields, type FieldErrorKeys } from "@/lib/forms";
 import { signUp } from "@/server/actions/auth";
+import type { SocialProviderId } from "@/server/features/auth/dto";
 import { signUpSchema } from "@/server/features/auth/schema";
 
 import { CheckEmail } from "./check-email";
+import { SignInAlternatives } from "./sign-in-alternatives";
 
-export function SignUpForm() {
+export function SignUpForm({ providers = [] }: { providers?: readonly SocialProviderId[] }) {
   const t = useTranslations("auth");
   const tCommon = useTranslations("common");
   const messages = useFormMessages();
@@ -65,81 +67,84 @@ export function SignUpForm() {
   const consentId = "signup-consent";
 
   return (
-    <form ref={formRef} noValidate onSubmit={onSubmit} className="space-y-5">
-      {action.result.serverError ? (
-        <FormAlert tone="error">{messages.action(action.result.serverError)}</FormAlert>
-      ) : null}
-      <TextField
-        label={t("nameLabel")}
-        hint={t("nameHint")}
-        name="name"
-        autoComplete="name"
-        value={values.name}
-        onChange={(e) => set("name", e.target.value)}
-        error={messages.field(errors.name)}
-      />
-      <TextField
-        label={t("emailLabel")}
-        name="email"
-        type="email"
-        inputMode="email"
-        autoComplete="email"
-        spellCheck={false}
-        dir="ltr"
-        value={values.email}
-        onChange={(e) => set("email", e.target.value)}
-        error={messages.field(errors.email)}
-      />
-      <TextField
-        label={t("passwordLabel")}
-        hint={t("passwordHint")}
-        name="password"
-        autoComplete="new-password"
-        value={values.password}
-        onChange={(e) => set("password", e.target.value)}
-        error={compromised ? t("compromised") : messages.field(errors.password)}
-        renderInput={(props) => <PasswordInput {...props} />}
-      />
-      <Field orientation="horizontal" data-invalid={errors.acceptTerms ? true : undefined}>
-        <Checkbox
-          id={consentId}
-          data-field="acceptTerms"
-          checked={values.acceptTerms}
-          onCheckedChange={(checked) => set("acceptTerms", checked === true)}
-          aria-invalid={errors.acceptTerms ? true : undefined}
-          aria-describedby={errors.acceptTerms ? `${consentId}-error` : undefined}
+    <div className="space-y-5">
+      <SignInAlternatives providers={providers} withConsent />
+      <form ref={formRef} noValidate onSubmit={onSubmit} className="space-y-5">
+        {action.result.serverError ? (
+          <FormAlert tone="error">{messages.action(action.result.serverError)}</FormAlert>
+        ) : null}
+        <TextField
+          label={t("nameLabel")}
+          hint={t("nameHint")}
+          name="name"
+          autoComplete="name"
+          value={values.name}
+          onChange={(e) => set("name", e.target.value)}
+          error={messages.field(errors.name)}
         />
-        <div className="space-y-1">
-          <FieldLabel htmlFor={consentId} className="inline font-normal">
-            {t.rich("consent", {
-              terms: (chunks) => (
-                <Link
-                  href="/terms"
-                  target="_blank"
-                  className="font-medium text-primary-strong underline underline-offset-4"
-                >
-                  {chunks} <span className="sr-only">({tCommon("opensInNewTab")})</span>
-                </Link>
-              ),
-              privacy: (chunks) => (
-                <Link
-                  href="/privacy"
-                  target="_blank"
-                  className="font-medium text-primary-strong underline underline-offset-4"
-                >
-                  {chunks} <span className="sr-only">({tCommon("opensInNewTab")})</span>
-                </Link>
-              ),
-            })}
-          </FieldLabel>
-          {errors.acceptTerms ? (
-            <FieldError id={`${consentId}-error`}>{messages.field(errors.acceptTerms)}</FieldError>
-          ) : null}
-        </div>
-      </Field>
-      <SubmitButton pending={action.isPending} pendingLabel={t("signUp.submitting")}>
-        {t("signUp.submit")}
-      </SubmitButton>
-    </form>
+        <TextField
+          label={t("emailLabel")}
+          name="email"
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          spellCheck={false}
+          dir="ltr"
+          value={values.email}
+          onChange={(e) => set("email", e.target.value)}
+          error={messages.field(errors.email)}
+        />
+        <TextField
+          label={t("passwordLabel")}
+          hint={t("passwordHint")}
+          name="password"
+          autoComplete="new-password"
+          value={values.password}
+          onChange={(e) => set("password", e.target.value)}
+          error={compromised ? t("compromised") : messages.field(errors.password)}
+          renderInput={(props) => <PasswordInput {...props} />}
+        />
+        <Field orientation="horizontal" data-invalid={errors.acceptTerms ? true : undefined}>
+          <Checkbox
+            id={consentId}
+            data-field="acceptTerms"
+            checked={values.acceptTerms}
+            onCheckedChange={(checked) => set("acceptTerms", checked === true)}
+            aria-invalid={errors.acceptTerms ? true : undefined}
+            aria-describedby={errors.acceptTerms ? `${consentId}-error` : undefined}
+          />
+          <div className="space-y-1">
+            <FieldLabel htmlFor={consentId} className="inline font-normal">
+              {t.rich("consent", {
+                terms: (chunks) => (
+                  <Link
+                    href="/terms"
+                    target="_blank"
+                    className="font-medium text-primary-strong underline underline-offset-4"
+                  >
+                    {chunks} <span className="sr-only">({tCommon("opensInNewTab")})</span>
+                  </Link>
+                ),
+                privacy: (chunks) => (
+                  <Link
+                    href="/privacy"
+                    target="_blank"
+                    className="font-medium text-primary-strong underline underline-offset-4"
+                  >
+                    {chunks} <span className="sr-only">({tCommon("opensInNewTab")})</span>
+                  </Link>
+                ),
+              })}
+            </FieldLabel>
+            {errors.acceptTerms ? (
+              <FieldError id={`${consentId}-error`}>{messages.field(errors.acceptTerms)}</FieldError>
+            ) : null}
+          </div>
+        </Field>
+        <SubmitButton pending={action.isPending} pendingLabel={t("signUp.submitting")}>
+          {t("signUp.submit")}
+        </SubmitButton>
+      </form>
+    </div>
   );
 }

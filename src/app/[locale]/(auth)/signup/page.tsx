@@ -4,6 +4,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { AuthCard } from "@/components/auth/auth-card";
 import { SignUpForm } from "@/components/auth/sign-up-form";
 import { Link, redirect } from "@/i18n/navigation";
+import { SOCIAL_PROVIDERS } from "@/server/auth/auth";
 import { getAccountSummary } from "@/server/features/account/queries";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -27,7 +28,7 @@ export default async function SignUpPage() {
         </>
       }
     >
-      <SignUpForm />
+      <SignUpForm providers={SOCIAL_PROVIDERS} />
     </AuthCard>
   );
 }
