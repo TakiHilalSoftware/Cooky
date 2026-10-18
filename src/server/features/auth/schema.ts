@@ -45,3 +45,10 @@ export const resetPasswordSchema = z.object({
 
 export type SignUpInput = z.input<typeof signUpSchema>;
 export type SignInInput = z.input<typeof signInSchema>;
+
+/** Starts "Continue with Google/Apple"; the server checks the provider is configured. */
+export const socialSignInSchema = z.object({
+  provider: z.enum(["google", "apple"]),
+  next: safeNextPath,
+  locale,
+});

@@ -5,11 +5,23 @@ import { authRequestHeaders } from "@/server/auth/request-headers";
 
 import { redirect } from "@/i18n/navigation";
 import type { ActionErrorCode } from "@/lib/errors";
-import { auth } from "@/server/auth/auth";
+import { auth, SOCIAL_PROVIDERS } from "@/server/auth/auth";
 import { authErrorCode } from "@/server/auth/errors";
 import { lockedUntil } from "@/server/auth/lockout";
-import type { EmailSentResult, ResetPasswordResult, SignInResult, SignUpResult } from "@/server/features/auth/dto";
-import { emailOnlySchema, resetPasswordSchema, signInSchema, signUpSchema } from "@/server/features/auth/schema";
+import type {
+  EmailSentResult,
+  ResetPasswordResult,
+  SignInResult,
+  SignUpResult,
+  SocialSignInResult,
+} from "@/server/features/auth/dto";
+import {
+  emailOnlySchema,
+  resetPasswordSchema,
+  signInSchema,
+  signUpSchema,
+  socialSignInSchema,
+} from "@/server/features/auth/schema";
 import type { PasskeyLoginResult, TwoFactorCodeResult } from "@/server/features/security/dto";
 import { backupCodeSignInSchema, passkeyLoginSchema, twoFactorSignInSchema } from "@/server/features/security/schema";
 
@@ -64,6 +76,7 @@ export const signIn = publicAction
       const code = authErrorCode(error);
       if (code === "INVALID_EMAIL_OR_PASSWORD") return { status: "invalid_credentials" };
       if (code === "EMAIL_NOT_VERIFIED") return { status: "verify_email" };
+      if (code === "BANNED_USER") return { status: "suspended" };
       if (code === "ACCOUNT_LOCKED") {
         const until = await lockedUntil(input.email);
         return { status: "locked", retryAt: until?.toISOString() ?? null };
@@ -195,4 +208,30 @@ export const passkeyLogin = publicAction
       throw error;
     }
     return redirect({ href: input.next ?? "/settings", locale: input.locale });
+  });
+
+/**
+ * "Continue with Google/Apple": returns the provider's sign-in URL. Better
+ * Auth keeps the OAuth state in a cookie; the provider sends the person back
+ * to /api/auth/callback/<provider>, which signs them in (or creates the
+ * account, linked by verified email) and redirects to `next`.
+ */
+export const startSocialSignIn = publicAction
+  .metadata({ actionName: "startSocialSignIn" })
+  .inputSchema(socialSignInSchema)
+  .action(async ({ parsedInput: input, ctx }): Promise<SocialSignInResult> => {
+    await enforceBurst("signInIp", ctx.ip);
+    const configured: readonly string[] = SOCIAL_PROVIDERS;
+    if (!configured.includes(input.provider)) returnServerError<ActionErrorCode>("unavailable");
+    const result = await auth.api.signInSocial({
+      body: {
+        provider: input.provider,
+        callbackURL: `/${input.locale}${input.next ?? "/settings"}`,
+        errorCallbackURL: `/${input.locale}/login`,
+        disableRedirect: true,
+      },
+      headers: await authRequestHeaders(),
+    });
+    if (!result.url) returnServerError<ActionErrorCode>("unavailable");
+    return { url: result.url };
   });

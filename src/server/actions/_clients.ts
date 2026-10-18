@@ -7,7 +7,7 @@ import { z } from "zod";
 
 import type { ActionErrorCode } from "@/lib/errors";
 import { clientIp } from "@/server/auth/request-info";
-import { getSession } from "@/server/auth/session";
+import { getSession, isAdmin } from "@/server/auth/session";
 import { logger } from "@/server/observability/logger";
 import { withinBurstLimit, type BurstRule } from "@/server/quota/burst";
 
@@ -58,4 +58,14 @@ export const userAction = publicAction.use(async ({ next, ctx }) => {
       sessionId: session.session.id,
     },
   });
+});
+
+/**
+ * Actions for admins only (ARCHITECTURE §5.1). The role comes from the
+ * database session, never from the client. Used by the admin panel (Phase 7).
+ */
+export const adminAction = userAction.use(async ({ next }) => {
+  const session = await getSession();
+  if (!session || !isAdmin(session)) returnServerError<ActionErrorCode>("forbidden");
+  return next();
 });
