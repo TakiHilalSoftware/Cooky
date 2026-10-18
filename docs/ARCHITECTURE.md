@@ -157,7 +157,7 @@ Drizzle schema in `src/server/db/schema/`. Ownership and sharing rules live in `
 - **`dishes`**: `user_id`, `name`, `difficulty`, `course`, `seasons[]`, `servings`, `dietary_tags[]`, `visibility` (private|friends|groups), `image_key`, `calories_kcal`, `protein_g`, `carbs_g`, `fat_g`, `catalog_dish_id` (FK set null), `copied_from_dish_id` (FK set null), `search` (tsvector), `deleted_at` (set on delete so Undo can restore it; `/api/cron/purge-deleted-dishes` removes it for good after 24 h). The dish cap (`plan_limits.dishes`) is checked under a per-user advisory lock; over the cap after a downgrade the box is read-only (view, cook, delete; no add or edit)
 - **`dish_ingredients`**: `dish_id`, `position`, `name`, `amount` (numeric), `unit` (enum), `note`, `ingredient_id` (FK set null), `catalog_ingredient_id` (FK set null)
 - **`dish_steps`**: `dish_id`, `position`, `text`, `timer_seconds`, `prep_day_before` (bool)
-- **`ingredients`** (dictionary): names per locale + variants, `aisle`, `default_unit`, `is_common_staple`
+- **`ingredients`** (dictionary): `slug`, `name_en`/`name_fr`/`name_ar` + `variants[]` (plurals, regional Arabic), `aisle`, `default_unit`, `is_common_staple`, `search` (every name normalized by the matching service, trigram-indexed). Seeded by `pnpm db:seed:ingredients`. `dish_ingredients.ingredient_id` is linked on save when a line's normalized name is one of an entry's names or variants
 - **`dish_ratings`**: `dish_id`, `user_id`, `rating` (1–5), `review`, unique (dish, user)
 - **`dish_notes`**: (`dish_id`, `user_id`) PK, `text`
 - **`favorites`**: (`user_id`, `dish_id`) PK · **`collections`**: `user_id`, `name`, `position` · **`collection_dishes`**: (`collection_id`, `dish_id`)
@@ -237,7 +237,7 @@ Drizzle schema in `src/server/db/schema/`. Ownership and sharing rules live in `
    - `normalize()` folds case and accents, unifies Arabic letter forms (أ/إ/آ→ا, ة→ه, ى→ي), and strips the article "ال" from words longer than 3 letters.
    - `matches(line, wanted)`: every wanted word prefix-matches some word of the line, and words under 3 letters must match exactly.
    - `filter(dishes, wanted[])` → `{ mode: "all" | "any" | "none", dishes }`.
-   - Autocomplete ranks dictionary entries (staples with regional variants, catalog, user names) for the current locale using `pg_trgm`.
+   - Autocomplete (`suggestIngredients`) ranks dictionary entries by word-start match, then `pg_trgm` similarity, shown in the current locale, then the person's own unlinked names. My Dishes search uses `matches()` on dish names and ingredients, plus trigram similarity for typos.
    - The shopping merge keys on `ingredient_id` when linked, otherwise on the normalized name. Amounts are summed when units convert (g↔kg, ml↔l, tsp↔tbsp…).
 7. **Cook / Spin Pipeline:**
    - `rankDishes(extraHave?)`: load the user's dishes + pantry + weather mood + hemisphere season + dietary prefs + recent `cook_log`. Sort by missing count, then weather fit, dietary fit and recency. Return ordered DTOs (name, image URL, missing names, badges).

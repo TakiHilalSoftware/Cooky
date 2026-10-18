@@ -4,7 +4,7 @@ import { signUpAndConfirm } from "./support/account";
 import { expectAccessible, expectNoHorizontalScroll } from "./support/checks";
 
 /**
- * My Dishes (Phase 3a): empty box → add a dish → scale it → star it → note →
+ * My Dishes (Phase 3a/3b): empty box → add a dish (with ingredient autocomplete) → scale it → star it → note →
  * find it → delete with Undo. Checked for accessibility and 320 px on both
  * projects. The dish cap and read-only rules are covered by integration tests.
  */
@@ -32,7 +32,12 @@ test("add, scale, star, find, delete and undo a dish", async ({ page, baseURL },
   await ingredients.nth(0).getByLabel("Unit").selectOption("kg");
   await ingredients.nth(0).getByLabel("Ingredient", { exact: true }).fill("Chicken thighs");
   await page.getByRole("button", { name: "Add ingredient" }).click();
-  await ingredients.nth(1).getByLabel("Ingredient", { exact: true }).fill("Salt");
+  // Autocomplete from the dictionary: Tab accepts and the usual unit comes along.
+  await ingredients.nth(1).getByRole("combobox", { name: "Ingredient" }).pressSequentially("sal");
+  await expect(page.getByRole("option", { name: "Salt" })).toBeVisible();
+  await page.keyboard.press("Tab");
+  await expect(ingredients.nth(1).getByRole("combobox", { name: "Ingredient" })).toHaveValue("Salt");
+  await expect(ingredients.nth(1).getByLabel("Unit")).toHaveValue("tsp");
   await page.getByRole("button", { name: "Add step" }).click();
   await page.getByLabel("What to do").fill("Brown the chicken, then simmer.");
   await page.getByLabel("Timer (minutes)").fill("45");
