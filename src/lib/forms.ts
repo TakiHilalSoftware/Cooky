@@ -5,7 +5,7 @@ export type FieldErrorKeys = Record<string, string>;
 /**
  * Runs a Zod schema as an instant form hint (AGENT_RULES §5: the server's
  * answer still wins). Returns the parsed data, or the first message key per
- * top-level field.
+ * field, keyed by its path ("name", or "ingredients.2.name" inside lists).
  */
 export function checkFields<S extends z.ZodType>(
   schema: S,
@@ -15,7 +15,7 @@ export function checkFields<S extends z.ZodType>(
   if (result.success) return { ok: true, data: result.data };
   const errors: FieldErrorKeys = {};
   for (const issue of result.error.issues) {
-    const field = String(issue.path[0] ?? "form");
+    const field = issue.path.length > 0 ? issue.path.map(String).join(".") : "form";
     errors[field] ??= issue.message;
   }
   return { ok: false, errors };
