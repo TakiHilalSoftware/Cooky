@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 
 import { isActionErrorCode } from "@/lib/errors";
-import { isValidationKey } from "@/server/features/auth/schema";
+import { isValidationKey } from "@/lib/validation-keys";
 
 /**
  * Turns what forms receive (schema message keys, action error codes) into
