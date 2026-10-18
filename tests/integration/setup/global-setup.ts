@@ -31,5 +31,16 @@ export default async function setup() {
     "drop schema if exists public cascade; drop schema if exists drizzle cascade; create schema public;",
   );
   await migrate(drizzle({ client: pool }), { migrationsFolder: "drizzle" });
+
+  // Tier limits from the same table pnpm db:seed uses (one source of truth).
+  const { LIMITS } = await import("../../../scripts/seed-plan-limits");
+  for (const [plan, features] of Object.entries(LIMITS)) {
+    for (const [feature, row] of Object.entries(features)) {
+      await pool.query(
+        'insert into plan_limits (plan, feature, "limit", period) values ($1, $2, $3, $4) on conflict (plan, feature) do update set "limit" = excluded."limit", period = excluded.period',
+        [plan, feature, row.limit, row.period],
+      );
+    }
+  }
   await pool.end();
 }
