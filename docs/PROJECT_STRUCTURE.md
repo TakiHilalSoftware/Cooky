@@ -100,6 +100,8 @@ cooky/
 │   │   │                           # (values from props)
 │   │   ├── offline/                # THE IndexedDB exception: list + recipe snapshot, replay queue, wipe on logout
 │   │   ├── onboarding/             # Starter-pack grid, first-week checklist
+│   │   ├── collections/            # Collection chips + filter, new/rename dialog, "Collections" on the dish page
+│   │   ├── backup/                 # Settings → Your data: backup download, import with live status
 │   │   ├── dishes/                 # My Dishes: box + filters (next/form GET), dish form, dish page (server-side scaling
 │   │   │                           # via ?servings=), favorites, notes, delete with Undo on the box, allowance notices
 │   │   └── <feature>/              # cook/, planner/, shopping/, messages/, timer/, …
