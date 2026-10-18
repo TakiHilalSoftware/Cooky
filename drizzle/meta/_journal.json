@@ -50,6 +50,13 @@
       "when": 1792354995521,
       "tag": "0006_ingredients",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1792356425142,
+      "tag": "0007_collections_and_backups",
+      "breakpoints": true
     }
   ]
 }

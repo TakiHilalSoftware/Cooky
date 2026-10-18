@@ -3,12 +3,14 @@ import {
   boolean,
   index,
   integer,
+  jsonb,
   numeric,
   pgEnum,
   pgTable,
   primaryKey,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -159,4 +161,67 @@ export const favorites = pgTable(
     ...timestamps,
   },
   (t) => [primaryKey({ columns: [t.userId, t.dishId] }), index("favorites_dish_id_idx").on(t.dishId)],
+);
+
+/** Named groups of dishes ("Quick weeknights"). The count is capped per plan (`plan_limits.collections`). */
+export const collections = pgTable(
+  "collections",
+  {
+    id: id(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    position: integer("position").notNull().default(0),
+    /** Set on delete so Undo can restore it; purged a day later with deleted dishes. */
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+    ...timestamps,
+  },
+  (t) => [
+    index("collections_user_id_idx").on(t.userId, t.deletedAt),
+    // One live collection per name per person ("Ramadan" and "ramadan" are the same).
+    uniqueIndex("collections_user_name_uniq")
+      .on(t.userId, sql`lower(${t.name})`)
+      .where(sql`${t.deletedAt} is null`),
+  ],
+);
+
+export const collectionDishes = pgTable(
+  "collection_dishes",
+  {
+    collectionId: uuid("collection_id")
+      .notNull()
+      .references(() => collections.id, { onDelete: "cascade" }),
+    dishId: uuid("dish_id")
+      .notNull()
+      .references(() => dishes.id, { onDelete: "cascade" }),
+    ...timestamps,
+  },
+  (t) => [primaryKey({ columns: [t.collectionId, t.dishId] }), index("collection_dishes_dish_id_idx").on(t.dishId)],
+);
+
+export const backupImportStatusEnum = pgEnum("backup_import_status", ["queued", "running", "done", "failed"]);
+
+/**
+ * A recipe backup being imported in the background (PRD §3.2). The file's
+ * dishes are kept only until the job has run, then cleared; the summary stays.
+ */
+export const backupImports = pgTable(
+  "backup_imports",
+  {
+    id: id(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    status: backupImportStatusEnum("status").notNull().default("queued"),
+    /** The dishes from the file, validated one by one when the job runs. */
+    dishes: jsonb("dishes"),
+    total: integer("total").notNull(),
+    imported: integer("imported").notNull().default(0),
+    /** Why dishes were skipped: { duplicate, full, invalid }. */
+    skipped: jsonb("skipped").$type<Record<string, number>>(),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    ...timestamps,
+  },
+  (t) => [index("backup_imports_user_id_idx").on(t.userId, t.createdAt)],
 );

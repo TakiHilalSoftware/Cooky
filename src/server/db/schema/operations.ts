@@ -4,7 +4,7 @@ import { id, timestamps } from "./_columns";
 import { user } from "./auth";
 
 // Kinds are added by the phase that introduces them (ARCHITECTURE §4.6).
-export const outboxKindEnum = pgEnum("outbox_kind", ["email"]);
+export const outboxKindEnum = pgEnum("outbox_kind", ["email", "backup_import"]);
 export const outboxStatusEnum = pgEnum("outbox_status", ["pending", "done", "dead"]);
 
 /**
