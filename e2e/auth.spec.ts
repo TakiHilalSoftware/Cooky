@@ -1,29 +1,14 @@
 import { expect, test, type Page } from "@playwright/test";
-import { createEmailVerificationToken } from "better-auth/api";
 import * as OTPAuth from "otpauth";
+
+import { confirmationLink, PASSWORD } from "./support/account";
 
 /**
  * Phase 1 release journey (docs/ROADMAP.md): sign up → confirm the email →
  * log in → turn on 2FA → log in with a code on a second device → sign that
  * device out from the first → log out. Runs against the production build and
- * a fresh test database with email delivery off. Delivered links are scrubbed
- * from the outbox, so the confirmation link is built the way Better Auth
- * builds it: a token signed with the server's secret.
+ * a fresh test database with email delivery off.
  */
-
-try {
-  process.loadEnvFile(".env.local");
-} catch {
-  // CI provides TEST_DATABASE_URL directly.
-}
-
-const PASSWORD = "Journey kitchen password 42";
-
-/** The link the confirmation email carries (same token, same callback). */
-async function confirmationLink(baseURL: string, email: string): Promise<string> {
-  const token = await createEmailVerificationToken(process.env.BETTER_AUTH_SECRET!, email);
-  return `${baseURL}/api/auth/verify-email?token=${token}&callbackURL=${encodeURIComponent("/en/verify-email/done")}`;
-}
 
 async function logIn(page: Page, email: string) {
   await page.goto("/en/login");

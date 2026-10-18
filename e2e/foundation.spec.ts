@@ -1,24 +1,10 @@
-import AxeBuilder from "@axe-core/playwright";
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 import fr from "../messages/fr.json" with { type: "json" };
 
+import { expectAccessible, expectNoHorizontalScroll } from "./support/checks";
+
 /** Phase 0 exit criteria plus the PRD §3.10 floor every later page inherits. */
-
-async function expectNoHorizontalScroll(page: Page) {
-  const overflow = await page.evaluate(
-    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-  );
-  expect(overflow).toBeLessThanOrEqual(0);
-}
-
-async function expectAccessible(page: Page) {
-  const { violations } = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
-    .analyze();
-  const serious = violations.filter((v) => v.impact === "serious" || v.impact === "critical");
-  expect(serious.map((v) => `${v.id}: ${v.help} (${v.nodes.length})`)).toEqual([]);
-}
 
 test.describe("routing and languages", () => {
   test("the bare domain opens the default language", async ({ page }) => {

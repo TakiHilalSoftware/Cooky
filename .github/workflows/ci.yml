@@ -27,6 +27,11 @@ jobs:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/cooky_test
       DATABASE_URL_UNPOOLED: postgres://postgres:postgres@localhost:5432/cooky_test
       BETTER_AUTH_SECRET: ci-only-secret-ci-only-secret-ci-only-secret-0000
+      # Billing E2E runs in Stripe test mode when the repo has this secret, and skips without it.
+      # The spec signs webhook events itself, so the webhook and cron secrets can be CI-only values.
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_TEST_SECRET_KEY }}
+      STRIPE_WEBHOOK_SECRET: whsec_ci_only
+      CRON_SECRET: ci-only-cron-secret
     steps:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
