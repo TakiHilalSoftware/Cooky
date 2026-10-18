@@ -32,7 +32,7 @@ export function SettingsNav() {
                     : "text-muted-foreground hover:bg-muted hover:text-foreground",
                 )}
               >
-                <Icon aria-hidden="true" className="size-4" />
+                <Icon aria-hidden="true" className="size-4 shrink-0" />
                 {t(`nav.${key}`)}
               </Link>
             </li>

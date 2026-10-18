@@ -50,8 +50,8 @@ export function AccountMenu({ account }: { account: AccountSummaryDto }) {
       <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuLabel className="space-y-0.5">
           <span className="block truncate font-medium text-foreground">{account.displayName}</span>
-          <span className="block truncate text-xs font-normal text-muted-foreground" dir="ltr">
-            {account.email}
+          <span className="block truncate text-xs font-normal text-muted-foreground">
+            <bdi dir="ltr">{account.email}</bdi>
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
