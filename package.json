@@ -21,9 +21,11 @@
     "check": "pnpm lint && pnpm typecheck && pnpm test",
     "auth:generate": "node scripts/generate-auth-schema.mjs",
     "admin:set": "tsx --tsconfig scripts/tsconfig.json scripts/set-admin.ts",
-    "db:seed": "tsx --tsconfig scripts/tsconfig.json scripts/seed-plan-limits.ts",
+    "db:seed": "pnpm db:seed:limits && pnpm db:seed:ingredients",
     "stripe:listen": "node scripts/stripe-listen.mjs",
-    "stripe:sync": "tsx --tsconfig scripts/tsconfig.json scripts/stripe-sync.ts"
+    "stripe:sync": "tsx --tsconfig scripts/tsconfig.json scripts/stripe-sync.ts",
+    "db:seed:limits": "tsx --tsconfig scripts/tsconfig.json scripts/seed-plan-limits.ts",
+    "db:seed:ingredients": "tsx --tsconfig scripts/tsconfig.json scripts/seed-ingredients.ts"
   },
   "dependencies": {
     "@better-auth/passkey": "1.7.10",

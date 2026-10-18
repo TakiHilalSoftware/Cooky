@@ -42,5 +42,15 @@ export default async function setup() {
       );
     }
   }
+
+  // The ingredient dictionary, from the same list pnpm db:seed:ingredients uses.
+  const { STAPLES } = await import("../../../scripts/seed-ingredients");
+  const { searchTextFor } = await import("../../../src/server/features/ingredients/service");
+  for (const s of STAPLES) {
+    await pool.query(
+      "insert into ingredients (id, slug, name_en, name_fr, name_ar, variants, aisle, default_unit, is_common_staple, search) values (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9)",
+      [s.slug, s.nameEn, s.nameFr, s.nameAr, s.variants, s.aisle, s.defaultUnit, s.isCommonStaple, searchTextFor(s)],
+    );
+  }
   await pool.end();
 }
