@@ -8,6 +8,7 @@ import type { ActionErrorCode } from "@/lib/errors";
 import { getDb, type Executor } from "@/server/db/client";
 import { dishes, dishIngredients, dishNotes, dishSteps, favorites } from "@/server/db/schema";
 import { findOwnDish } from "@/server/features/dishes/policy";
+import { resolveIngredientIds } from "@/server/features/ingredients/dictionary";
 import { loadDishAllowance } from "@/server/features/dishes/queries";
 import {
   dishIdSchema,
@@ -48,11 +49,20 @@ function dishValues(input: DishInput) {
   };
 }
 
-/** Ingredients and steps are written as a whole, in the order the form sent them. */
+/**
+ * Ingredients and steps are written as a whole, in the order the form sent
+ * them. Lines whose name is a dictionary entry are linked to it, so matching,
+ * aisles and the shopping merge know what they are.
+ */
 async function writeContents(tx: Executor, dishId: string, input: DishInput) {
+  const ingredientIds = await resolveIngredientIds(input.ingredients.map((i) => i.name));
   await tx.delete(dishIngredients).where(eq(dishIngredients.dishId, dishId));
   await tx.delete(dishSteps).where(eq(dishSteps.dishId, dishId));
-  await tx.insert(dishIngredients).values(input.ingredients.map((i, position) => ({ dishId, position, ...i })));
+  await tx
+    .insert(dishIngredients)
+    .values(
+      input.ingredients.map((i, position) => ({ dishId, position, ...i, ingredientId: ingredientIds[position] })),
+    );
   if (input.steps.length > 0) {
     await tx.insert(dishSteps).values(
       input.steps.map((s, position) => ({

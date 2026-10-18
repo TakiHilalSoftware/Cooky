@@ -1,12 +1,13 @@
 import "server-only";
 
-import { and, asc, count, desc, eq, isNotNull, isNull, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { cache } from "react";
 
 import { getSession } from "@/server/auth/session";
 import { getDb, type Executor } from "@/server/db/client";
 import { dishes, dishIngredients, dishNotes, dishSteps, favorites } from "@/server/db/schema";
 import { getEntitlement, limitFor } from "@/server/quota/entitlement";
+import { matches } from "@/server/features/ingredients/service";
 
 import type { DishAllowanceDto, DishDto, DishFormDto, DishListDto, StepDto } from "./dto";
 import type { dishListFiltersSchema } from "./schema";
@@ -28,8 +29,23 @@ export async function loadDishAllowance(userId: string, executor: Executor = get
   return dishAllowance(row?.n ?? 0, limit);
 }
 
-/** LIKE treats % and _ as wildcards; a search for "50%" means the text. */
-const escapeLike = (text: string) => text.replace(/[\\%_]/g, (c) => `\\${c}`);
+/**
+ * Ids of the caller's dishes whose name or an ingredient matches `wanted`,
+ * by the one matching service: "oil" finds "Olive oil", never "Boiled".
+ */
+async function dishesMatching(userId: string, wanted: string): Promise<string[]> {
+  const own = and(eq(dishes.userId, userId), isNull(dishes.deletedAt));
+  const db = getDb();
+  const [named, lines] = await Promise.all([
+    db.select({ dishId: dishes.id, name: dishes.name }).from(dishes).where(own),
+    db
+      .select({ dishId: dishIngredients.dishId, name: dishIngredients.name })
+      .from(dishIngredients)
+      .innerJoin(dishes, eq(dishes.id, dishIngredients.dishId))
+      .where(own),
+  ]);
+  return [...new Set([...named, ...lines].filter((row) => matches(row.name, wanted)).map((row) => row.dishId))];
+}
 
 /** My Dishes: the caller's box, filtered, most recently changed first. */
 export const listMyDishes = cache(async (filters: DishListFilters): Promise<DishListDto | null> => {
@@ -39,10 +55,12 @@ export const listMyDishes = cache(async (filters: DishListFilters): Promise<Dish
   const db = getDb();
 
   const own = and(eq(dishes.userId, userId), isNull(dishes.deletedAt));
+  const matching = filters.q ? await dishesMatching(userId, filters.q) : [];
   const search = filters.q
     ? or(
-        // Accent-insensitive contains, plus trigram similarity for typos ("tajin" → "Tajine").
-        sql`unaccent(${dishes.name}) ilike unaccent(${`%${escapeLike(filters.q)}%`})`,
+        // The name or an ingredient matches ("lentils" finds the soup)…
+        matching.length > 0 ? inArray(dishes.id, matching) : undefined,
+        // …or the name is a close spelling ("taijne" → "Tajine").
         sql`word_similarity(${filters.q}, ${dishes.name}) > 0.4`,
       )
     : undefined;
