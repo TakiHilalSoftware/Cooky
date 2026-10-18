@@ -16,6 +16,7 @@ const { auth } = await import("@/server/auth/auth");
 const { getSession } = await import("@/server/auth/session");
 const actions = await import("@/server/actions/auth");
 const { drainOutbox, MAX_ATTEMPTS } = await import("@/server/outbox/drain");
+const { PermanentJobError } = await import("@/server/outbox/errors");
 const schema = await import("@/server/db/schema");
 
 const PASSWORD = "correct horse battery staple";
@@ -83,7 +84,13 @@ describe("sign up", () => {
   });
 
   it("answers the same way for an email that's already registered (no account enumeration)", async () => {
-    await actions.signUp({ name: "Amina", email: "amina@example.com", password: PASSWORD, acceptTerms: true, locale: "en" });
+    await actions.signUp({
+      name: "Amina",
+      email: "amina@example.com",
+      password: PASSWORD,
+      acceptTerms: true,
+      locale: "en",
+    });
     const again = await actions.signUp({
       name: "Someone else",
       email: "amina@example.com",
@@ -123,7 +130,13 @@ describe("sign up", () => {
 
 describe("email confirmation and log in", () => {
   it("won't log in an unverified account, and sends a fresh link instead", async () => {
-    await actions.signUp({ name: "Amina", email: "amina@example.com", password: PASSWORD, acceptTerms: true, locale: "en" });
+    await actions.signUp({
+      name: "Amina",
+      email: "amina@example.com",
+      password: PASSWORD,
+      acceptTerms: true,
+      locale: "en",
+    });
     const before = (await db().select().from(schema.outbox)).length;
 
     const result = await actions.signIn({ email: "amina@example.com", password: PASSWORD, locale: "en" });
@@ -133,7 +146,13 @@ describe("email confirmation and log in", () => {
   });
 
   it("confirms the email from the link, signs the person in and audits it", async () => {
-    await actions.signUp({ name: "Amina", email: "amina@example.com", password: PASSWORD, acceptTerms: true, locale: "fr" });
+    await actions.signUp({
+      name: "Amina",
+      email: "amina@example.com",
+      password: PASSWORD,
+      acceptTerms: true,
+      locale: "fr",
+    });
     const job = await latestEmailJob();
 
     const response = await openEmailLink(job!.payload.url!);
@@ -173,7 +192,11 @@ describe("email confirmation and log in", () => {
 
   it("gives the same answer for a wrong password and an unknown email", async () => {
     await signUpAndVerify();
-    const wrongPassword = await actions.signIn({ email: "amina@example.com", password: "not my password", locale: "en" });
+    const wrongPassword = await actions.signIn({
+      email: "amina@example.com",
+      password: "not my password",
+      locale: "en",
+    });
     const unknownEmail = await actions.signIn({ email: "nobody@example.com", password: PASSWORD, locale: "en" });
     expect(wrongPassword).toEqual({ data: { status: "invalid_credentials" } });
     expect(unknownEmail).toEqual(wrongPassword);
@@ -183,11 +206,17 @@ describe("email confirmation and log in", () => {
 describe("log out", () => {
   it("ends the session and audits it", async () => {
     await signUpAndVerify();
-    await expectRedirect(actions.signIn({ email: "amina@example.com", password: PASSWORD, locale: "en" }), "/en/settings");
-    const userId = (await getSession())!.user.id;
+    await expectRedirect(
+      actions.signIn({ email: "amina@example.com", password: PASSWORD, locale: "en" }),
+      "/en/settings",
+    );
+    const current = (await getSession())!;
+    const userId = current.user.id;
 
     await expect(actions.signOut()).resolves.toEqual({});
-    expect(await db().select().from(schema.session)).toHaveLength(0);
+    // Only this device's session ends; others (e.g. the one created by the email link) stay.
+    expect(await db().select().from(schema.session).where(eq(schema.session.id, current.session.id))).toHaveLength(0);
+    expect(await getSession()).toBeNull();
     expect(await auditActions(userId)).toContain("auth.session_ended");
   });
 
@@ -211,7 +240,10 @@ describe("password reset", () => {
 
   it("sets the new password, signs out every device, and the old password stops working", async () => {
     await signUpAndVerify();
-    await expectRedirect(actions.signIn({ email: "amina@example.com", password: PASSWORD, locale: "en" }), "/en/settings");
+    await expectRedirect(
+      actions.signIn({ email: "amina@example.com", password: PASSWORD, locale: "en" }),
+      "/en/settings",
+    );
     browser.reset();
 
     await actions.requestPasswordReset({ email: "amina@example.com", locale: "en" });
@@ -226,10 +258,15 @@ describe("password reset", () => {
     expect(await actions.signIn({ email: "amina@example.com", password: PASSWORD, locale: "en" })).toEqual({
       data: { status: "invalid_credentials" },
     });
-    await expectRedirect(actions.signIn({ email: "amina@example.com", password: NEW_PASSWORD, locale: "en" }), "/en/settings");
+    await expectRedirect(
+      actions.signIn({ email: "amina@example.com", password: NEW_PASSWORD, locale: "en" }),
+      "/en/settings",
+    );
 
     // The link works once.
-    await expect(actions.resetPassword({ token: token!, password: "yet another password", locale: "en" })).resolves.toEqual({
+    await expect(
+      actions.resetPassword({ token: token!, password: "yet another password", locale: "en" }),
+    ).resolves.toEqual({
       data: { status: "invalid_token" },
     });
   });
@@ -237,7 +274,13 @@ describe("password reset", () => {
 
 describe("outbox delivery", () => {
   it("delivers each email once and removes the single-use link from storage", async () => {
-    await actions.signUp({ name: "Amina", email: "amina@example.com", password: PASSWORD, acceptTerms: true, locale: "fr" });
+    await actions.signUp({
+      name: "Amina",
+      email: "amina@example.com",
+      password: PASSWORD,
+      acceptTerms: true,
+      locale: "fr",
+    });
 
     expect(await drainOutbox({ limit: 10 })).toEqual({ done: 1, retried: 0, dead: 0 });
     expect(await drainOutbox({ limit: 10 })).toEqual({ done: 0, retried: 0, dead: 0 });
@@ -252,7 +295,13 @@ describe("outbox delivery", () => {
   });
 
   it("retries a failed delivery later, then gives up after the last attempt", async () => {
-    await actions.signUp({ name: "Amina", email: "amina@example.com", password: PASSWORD, acceptTerms: true, locale: "en" });
+    await actions.signUp({
+      name: "Amina",
+      email: "amina@example.com",
+      password: PASSWORD,
+      acceptTerms: true,
+      locale: "en",
+    });
     sendEmail.mockRejectedValue(new Error("provider down"));
 
     expect(await drainOutbox({ limit: 10 })).toEqual({ done: 0, retried: 1, dead: 0 });
@@ -262,15 +311,45 @@ describe("outbox delivery", () => {
 
     // Fast-forward: make it due again until the attempts run out.
     for (let attempt = 2; attempt <= MAX_ATTEMPTS; attempt++) {
-      await db().update(schema.outbox).set({ runAfter: new Date(0) });
+      await db()
+        .update(schema.outbox)
+        .set({ runAfter: new Date(0) });
       await drainOutbox({ limit: 10 });
     }
     job = await latestEmailJob();
     expect(job).toMatchObject({ status: "dead", attempts: MAX_ATTEMPTS });
   });
 
+  it("stops at once on a failure retrying can't fix, keeping the reason for the fix", async () => {
+    await actions.signUp({
+      name: "Amina",
+      email: "amina@example.com",
+      password: PASSWORD,
+      acceptTerms: true,
+      locale: "en",
+    });
+    sendEmail.mockRejectedValue(
+      new PermanentJobError(
+        "resend validation_error: The gmail.com domain is not verified. Please, add and verify your domain.",
+      ),
+    );
+
+    expect(await drainOutbox({ limit: 10 })).toEqual({ done: 0, retried: 0, dead: 1 });
+    expect(await latestEmailJob()).toMatchObject({
+      status: "dead",
+      attempts: 1,
+      lastError: expect.stringContaining("gmail.com domain is not verified"),
+    });
+  });
+
   it("never sends the same job twice when two drains run at once", async () => {
-    await actions.signUp({ name: "Amina", email: "amina@example.com", password: PASSWORD, acceptTerms: true, locale: "en" });
+    await actions.signUp({
+      name: "Amina",
+      email: "amina@example.com",
+      password: PASSWORD,
+      acceptTerms: true,
+      locale: "en",
+    });
     const [a, b] = await Promise.all([drainOutbox({ limit: 10 }), drainOutbox({ limit: 10 })]);
     expect(a.done + b.done).toBe(1);
     expect(sendEmail).toHaveBeenCalledOnce();

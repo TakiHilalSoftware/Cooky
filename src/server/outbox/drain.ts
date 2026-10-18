@@ -6,6 +6,7 @@ import { getDb } from "@/server/db/client";
 import { outbox } from "@/server/db/schema";
 import { logger } from "@/server/observability/logger";
 
+import { PermanentJobError } from "./errors";
 import { handleJob } from "./handlers";
 import { outboxJobSchema } from "./jobs";
 
@@ -51,7 +52,8 @@ export async function drainOutbox({ limit }: { limit: number }): Promise<DrainRe
       await db.update(outbox).set({ status: "done", payload: kept, lastError: null }).where(eq(outbox.id, row.id));
       result.done++;
     } catch (err) {
-      const dead = row.attempts >= MAX_ATTEMPTS;
+      // A permanent failure (bad sender, bad key) won't fix itself: stop now.
+      const dead = err instanceof PermanentJobError || row.attempts >= MAX_ATTEMPTS;
       const message = err instanceof Error ? err.message : String(err);
       await db
         .update(outbox)
