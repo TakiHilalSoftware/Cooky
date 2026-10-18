@@ -1,15 +1,16 @@
 import { ArrowLeftIcon } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 import { PublicShell } from "@/components/app-shell/public-shell";
 import { EmptyState } from "@/components/feedback/empty-state";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { getAccountSummary } from "@/server/features/account/queries";
 
-export default function NotFound() {
-  const t = useTranslations();
+export default async function NotFound() {
+  const t = await getTranslations();
   return (
-    <PublicShell>
+    <PublicShell account={await getAccountSummary()}>
       <EmptyState
         headingLevel={1}
         className="py-20"
