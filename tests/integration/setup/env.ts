@@ -21,6 +21,7 @@ for (const key of [
   "QSTASH_NEXT_SIGNING_KEY",
   "APPLE_CLIENT_ID",
   "APPLE_CLIENT_SECRET",
+  "STRIPE_AUTOMATIC_TAX",
 ]) {
   delete process.env[key];
 }
@@ -28,3 +29,8 @@ for (const key of [
 // Google sign-in runs for real against a mocked token endpoint (tests/integration/support/google.ts).
 process.env.GOOGLE_CLIENT_ID = "test-google-client-id";
 process.env.GOOGLE_CLIENT_SECRET = "test-google-client-secret";
+
+// Stripe runs for real against an in-memory fake API (tests/integration/support/stripe.ts).
+process.env.STRIPE_SECRET_KEY = "sk_test_integration";
+process.env.STRIPE_WEBHOOK_SECRET = "whsec_integration";
+process.env.CRON_SECRET = "integration-cron-secret-0123456789abcdef";
