@@ -1,12 +1,14 @@
 import { useTranslations } from "next-intl";
 
 import { ZelligeStar } from "@/components/brand/zellige-star";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
 
 import { TilePanel } from "./tile-panel";
 
 const PILLARS = ["decide", "plan", "share"] as const;
 
-export function HomeHero() {
+export function HomeHero({ signedIn }: { signedIn: boolean }) {
   const t = useTranslations("home");
   return (
     <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
@@ -16,10 +18,22 @@ export function HomeHero() {
             {t("headline")}
           </h1>
           <p className="max-w-xl text-xl text-pretty text-muted-foreground sm:text-2xl">{t("tagline")}</p>
-          <p className="inline-flex items-center gap-2.5 rounded-full border border-border bg-card px-4 py-2 text-sm">
-            <span aria-hidden="true" className="size-2 shrink-0 rounded-full bg-primary-strong" />
-            {t("status")}
-          </p>
+          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+            {signedIn ? (
+              <Button asChild size="lg">
+                <Link href="/settings">{t("ctaSignedIn")}</Link>
+              </Button>
+            ) : (
+              <>
+                <Button asChild size="lg">
+                  <Link href="/signup">{t("ctaSignUp")}</Link>
+                </Button>
+                <Button asChild size="lg" variant="outline">
+                  <Link href="/login">{t("ctaLogIn")}</Link>
+                </Button>
+              </>
+            )}
+          </div>
         </div>
         <TilePanel className="aspect-[5/2] w-full sm:aspect-[3/1] lg:aspect-square lg:max-w-md lg:justify-self-end" />
       </section>

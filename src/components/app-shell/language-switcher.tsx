@@ -43,11 +43,14 @@ export function LanguageSwitcher() {
               variant="ghost"
               aria-label={`${t("label")}: ${t(`names.${locale}`)}`}
               aria-busy={isPending || undefined}
-              className="gap-2 px-2.5"
+              className="min-w-9 gap-2 px-2.5 pointer-coarse:min-w-11"
             >
               <LanguagesIcon aria-hidden="true" />
-              {/* The visible name is part of the accessible name (WCAG 2.5.3). */}
-              <span lang={locale}>{t(`names.${locale}`)}</span>
+              {/* Icon-only on phones. When shown, the visible name is part of the
+                  accessible name (WCAG 2.5.3). */}
+              <span lang={locale} className="hidden sm:inline">
+                {t(`names.${locale}`)}
+              </span>
             </Button>
           </DropdownMenuTrigger>
         </TooltipTrigger>
