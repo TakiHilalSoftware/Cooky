@@ -105,6 +105,42 @@
       "button": "Réinitialiser mon mot de passe",
       "expiry": "Si c'est bien vous, vous n'avez rien d'autre à faire.",
       "ignore": "Si ce n'est pas vous, réinitialisez votre mot de passe tout de suite pour sécuriser votre compte."
+    },
+    "trialEnding": {
+      "subject": "Votre essai Cooky se termine dans 3 jours",
+      "preview": "Votre essai gratuit se termine bientôt. Voici la suite.",
+      "heading": "Votre essai se termine dans 3 jours",
+      "body": "À la fin de l’essai, votre formule continue et votre carte est débitée. Envie de changer de formule ou d’annuler ? Vous pouvez le faire à tout moment d’ici là.",
+      "button": "Gérer ma formule",
+      "expiry": "Annulez avant la fin de l’essai et vous ne serez pas débité.",
+      "ignore": "Votre formule vous plaît ? Vous n’avez rien à faire."
+    },
+    "paymentFailed": {
+      "subject": "Votre paiement Cooky n’est pas passé",
+      "preview": "Mettez votre carte à jour pour garder votre formule.",
+      "heading": "Votre paiement n’est pas passé",
+      "body": "Nous n’avons pas pu débiter votre carte pour votre formule Cooky. Votre formule reste active 7 jours pendant que nous réessayons.",
+      "button": "Mettre ma carte à jour",
+      "expiry": "Sans paiement après 7 jours, votre compte passe en Gratuit. Vos plats et vos listes restent en sécurité.",
+      "ignore": "Carte déjà mise à jour ? Nous réessaierons automatiquement."
+    },
+    "cancellationConfirmed": {
+      "subject": "Votre formule Cooky est annulée",
+      "preview": "Votre formule reste active jusqu’à la fin de cette période.",
+      "heading": "Votre formule est annulée",
+      "body": "Vous gardez tout ce que comprend votre formule jusqu’à la fin de cette période de facturation. Ensuite, votre compte passe en Gratuit et vous ne serez plus débité.",
+      "button": "Garder ma formule",
+      "expiry": "Vous avez changé d’avis ? Vous pouvez relancer votre formule à tout moment avant la fin.",
+      "ignore": "Vos plats, vos listes et vos collections restent en sécurité en Gratuit."
+    },
+    "receipt": {
+      "subject": "Votre reçu Cooky",
+      "preview": "Merci pour votre paiement. Votre reçu est prêt.",
+      "heading": "Merci pour votre paiement",
+      "body": "Votre paiement pour Cooky est bien passé. Votre reçu indique le montant, la date et le détail des taxes.",
+      "button": "Voir le reçu",
+      "expiry": "Retrouvez tous vos reçus dans Paramètres, rubrique Formule et facturation.",
+      "ignore": "Ce paiement vous surprend ? Vérifiez votre formule dans Paramètres, rubrique Formule et facturation."
     }
   },
   "auth": {

@@ -13,7 +13,15 @@ import { ActionEmail } from "./action-email";
 
 const CATALOGS = { en, fr, ar } as const;
 
-export const EMAIL_TEMPLATES = ["verifyEmail", "resetPassword", "passwordChanged"] as const;
+export const EMAIL_TEMPLATES = [
+  "verifyEmail",
+  "resetPassword",
+  "passwordChanged",
+  "trialEnding",
+  "paymentFailed",
+  "cancellationConfirmed",
+  "receipt",
+] as const;
 export type EmailTemplate = (typeof EMAIL_TEMPLATES)[number];
 
 export type RenderedEmail = { subject: string; html: string; text: string };

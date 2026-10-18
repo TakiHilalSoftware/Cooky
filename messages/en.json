@@ -105,6 +105,42 @@
       "button": "Reset my password",
       "expiry": "If this was you, there's nothing else to do.",
       "ignore": "If it wasn't you, reset your password right away to lock your account back down."
+    },
+    "trialEnding": {
+      "subject": "Your Cooky trial ends in 3 days",
+      "preview": "Your free trial ends soon. Here's what happens next.",
+      "heading": "Your trial ends in 3 days",
+      "body": "When your trial ends, your plan continues and your card is charged. Want to change plans or cancel? You can do it any time before then.",
+      "button": "Manage my plan",
+      "expiry": "Cancel before the trial ends and you won't be charged.",
+      "ignore": "Happy with your plan? There's nothing to do."
+    },
+    "paymentFailed": {
+      "subject": "Your Cooky payment didn't go through",
+      "preview": "Update your card to keep your plan.",
+      "heading": "Your payment didn't go through",
+      "body": "We couldn't charge your card for your Cooky plan. Your plan stays on for 7 days while we try again.",
+      "button": "Update my card",
+      "expiry": "After 7 days without a payment, your account moves to Free. Your dishes and lists stay safe.",
+      "ignore": "Already updated your card? We'll retry automatically."
+    },
+    "cancellationConfirmed": {
+      "subject": "Your Cooky plan is cancelled",
+      "preview": "Your plan stays on until the end of this billing period.",
+      "heading": "Your plan is cancelled",
+      "body": "You keep everything in your plan until the end of this billing period. After that, your account moves to Free and you won't be charged again.",
+      "button": "Keep my plan",
+      "expiry": "Changed your mind? You can restart your plan any time before it ends.",
+      "ignore": "Your dishes, lists and collections stay safe on Free."
+    },
+    "receipt": {
+      "subject": "Your Cooky receipt",
+      "preview": "Thanks for your payment. Your receipt is ready.",
+      "heading": "Thanks for your payment",
+      "body": "Your payment for Cooky went through. Your receipt has the amount, date and tax details.",
+      "button": "View receipt",
+      "expiry": "You can find all your receipts in Settings, under Plan & billing.",
+      "ignore": "Didn't expect this payment? Check Plan & billing in Settings to see which plan you're on."
     }
   },
   "auth": {
