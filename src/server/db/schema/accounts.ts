@@ -1,12 +1,14 @@
 import { index, integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
+import { ACCENTS, TEXT_SIZES, THEMES } from "@/lib/appearance";
+
 import { id, timestamps } from "./_columns";
 import { user } from "./auth";
 
 export const localeEnum = pgEnum("locale", ["en", "fr", "ar"]);
-export const accentEnum = pgEnum("accent", ["default", "peach", "mint", "sky", "lavender", "sand", "rose"]);
-export const themeEnum = pgEnum("theme", ["system", "light", "dark"]);
-export const textSizeEnum = pgEnum("text_size", ["s", "m", "l", "xl"]);
+export const accentEnum = pgEnum("accent", ACCENTS);
+export const themeEnum = pgEnum("theme", THEMES);
+export const textSizeEnum = pgEnum("text_size", TEXT_SIZES);
 export const consentDocumentEnum = pgEnum("consent_document", ["terms", "privacy"]);
 
 /** One row per user. Columns arrive with the phase that uses them. */
