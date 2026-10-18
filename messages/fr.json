@@ -15,7 +15,8 @@
     "cancel": "Annuler",
     "copy": "Copier",
     "copied": "Copié",
-    "or": "ou"
+    "or": "ou",
+    "pricing": "Tarifs"
   },
   "language": {
     "label": "Langue",
@@ -54,7 +55,8 @@
     },
     "ctaSignUp": "Créer mon compte gratuit",
     "ctaLogIn": "Se connecter",
-    "ctaSignedIn": "Accéder à mon compte"
+    "ctaSignedIn": "Accéder à mon compte",
+    "seePricing": "Voir les formules et les tarifs"
   },
   "notFound": {
     "title": "Cette page n'est pas au menu",
@@ -253,7 +255,8 @@
     "logOut": "Se déconnecter",
     "loggingOut": "Déconnexion…",
     "logIn": "Se connecter",
-    "signUp": "S'inscrire"
+    "signUp": "S'inscrire",
+    "billing": "Formule et facturation"
   },
   "settings": {
     "title": "Paramètres",
@@ -262,7 +265,8 @@
     "navLabel": "Sections des paramètres",
     "nav": {
       "account": "Profil et apparence",
-      "security": "Sécurité"
+      "security": "Sécurité",
+      "billing": "Formule et facturation"
     },
     "security": {
       "title": "Sécurité",
@@ -433,5 +437,221 @@
     "backupCodeFormat": "Saisissez un code de secours tel que vous l'avez enregistré.",
     "passkeyNameRequired": "Donnez un nom à cette clé d'accès.",
     "passkeyNameTooLong": "Le nom doit faire moins de 40 caractères."
+  },
+  "plans": {
+    "free": {
+      "name": "Gratuit",
+      "tagline": "Tout ce qu’il faut pour cuisiner chaque jour."
+    },
+    "plus": {
+      "name": "Plus",
+      "tagline": "Plus d’aide de l’IA et de place pour une boîte à recettes qui grandit."
+    },
+    "pro": {
+      "name": "Pro",
+      "tagline": "Pour celles et ceux qui reçoivent et cuisinent en famille."
+    }
+  },
+  "features": {
+    "names": {
+      "assistant": "Assistant IA",
+      "voice": "Dictée vocale",
+      "import": "Import depuis un lien",
+      "spins": "Roue des plats",
+      "dishes": "Plats dans votre boîte à recettes",
+      "collections": "Collections",
+      "upcoming_events": "Événements à venir",
+      "friend_groups": "Groupes d’amis",
+      "backup_import": "Import de sauvegarde",
+      "household_list": "Liste partagée du foyer",
+      "ical_feed": "Flux de calendrier",
+      "ai_suggest": "Suggestions IA pour les menus"
+    },
+    "descriptions": {
+      "assistant": "Demandez quoi cuisiner, remplacez un ingrédient ou préparez un menu. Chaque question utilise un essai.",
+      "voice": "Dictez une recette au lieu de la taper. Chaque enregistrement utilise un essai.",
+      "import": "Collez le lien d’une recette et Cooky remplit le plat. Chaque import utilise un essai.",
+      "spins": "Vous hésitez ? Laissez Cooky choisir un plat pour vous. Chaque tour utilise un essai.",
+      "dishes": "Vos propres recettes et celles que vous gardez depuis Découvrir.",
+      "collections": "Regroupez vos plats, par exemple « Soirs de semaine » ou « Déjeuner de l’Aïd ».",
+      "upcoming_events": "Les dîners et réceptions dont vous préparez le menu.",
+      "friend_groups": "Partagez des plats avec votre famille ou vos amis en une fois.",
+      "backup_import": "Récupérez vos plats depuis un fichier de sauvegarde Cooky.",
+      "household_list": "Une seule liste de courses que tout le foyer peut modifier.",
+      "ical_feed": "Retrouvez votre planning de repas dans Google, Apple ou Outlook Agenda.",
+      "ai_suggest": "L’Assistant propose les plats de vos événements et remplit votre semaine. Utilise les essais de l’Assistant."
+    },
+    "amounts": {
+      "assistant": "{count, plural, one {# question} other {# questions}}",
+      "voice": "{count, plural, one {# dictée} other {# dictées}}",
+      "import": "{count, plural, one {# import} other {# imports}}",
+      "spins": "{count, plural, one {# tour} other {# tours}}",
+      "dishes": "{count, plural, one {# plat} other {# plats}}",
+      "collections": "{count, plural, one {# collection} other {# collections}}",
+      "upcoming_events": "{count, plural, one {# événement à venir} other {# événements à venir}}",
+      "friend_groups": "{count, plural, one {# groupe} other {# groupes}}"
+    }
+  },
+  "limits": {
+    "perMonth": "{amount} par mois",
+    "perDay": "{amount} par jour",
+    "cap": "Jusqu’à {amount}",
+    "unlimited": "Illimité",
+    "unlimitedHint": "Illimité dans le cadre d’un usage raisonnable : les rafales très rapides sont ralenties pour que Cooky reste rapide pour tout le monde.",
+    "included": "Inclus",
+    "notIncluded": "Non inclus",
+    "pricePer": "{price} {interval, select, year {par an} other {par mois}}"
+  },
+  "tries": {
+    "left": "{remaining} sur {limit} restants",
+    "noneLeft": "Plus aucun",
+    "unlimited": "Illimité",
+    "notOnPlan": "Pas dans votre formule",
+    "resetsOn": "Se renouvelle le {date}",
+    "resetsIn": "Se renouvelle {time}",
+    "compact": "{remaining, plural, =0 {Plus aucun essai} one {# essai restant} other {# essais restants}}",
+    "meterLabel": "Essais : {feature}"
+  },
+  "billingActions": {
+    "redirecting": "Redirection vers Stripe…",
+    "alreadySubscribed": "Vous avez déjà une formule. Ouverture de la facturation pour la modifier…",
+    "noBillingAccount": "Rien à gérer pour l’instant. Choisissez d’abord une formule."
+  },
+  "pricing": {
+    "title": "Formules et tarifs",
+    "heading": "Choisissez la formule qui convient à votre cuisine",
+    "intro": "Cuisiner, planifier et faire les courses, c’est gratuit pour tout le monde. Les formules payantes ajoutent plus d’aide de l’IA, plus de place et des façons de cuisiner ensemble.",
+    "cancelledTitle": "Paiement annulé",
+    "cancelledBody": "Vous n’avez pas été débité. Choisissez une formule quand vous voulez.",
+    "intervalLabel": "Fréquence de facturation",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "yearlySave": "Jusqu’à {percent} d’économie",
+    "freePrice": "Gratuit, pour toujours",
+    "perMonth": "par mois",
+    "perYear": "par an",
+    "yearlyEquivalent": "Environ {price} par mois, soit {percent} de moins qu’en mensuel.",
+    "monthlyHint": "Facturé chaque mois. Annulable à tout moment.",
+    "yourPlan": "Votre formule",
+    "trialCta": "Commencer l’essai gratuit de {days} jours",
+    "trialNote": "Gratuit pendant {days} jours, puis {price}. Annulez avant et vous ne serez pas débité.",
+    "upgradeCta": "Passer à {plan}",
+    "switchCta": "Changer pour {plan}",
+    "manageCta": "Gérer ma formule",
+    "signUpFree": "S’inscrire gratuitement",
+    "freeCurrentNote": "Vous êtes en Gratuit. Aucune carte nécessaire.",
+    "portalNote": "Les changements de formule et les résiliations se font sur la page de facturation sécurisée de Stripe.",
+    "compNote": "Cooky vous offre la formule {plan} : vous ne serez pas débité.",
+    "featuresLabel": "Ce que comprend {plan}",
+    "includedLabel": "Inclus",
+    "notIncludedLabel": "Non inclus",
+    "everyPlanHeading": "Toutes les formules comprennent",
+    "everyPlan": {
+      "cook": "Découvrir, Cuisiner, Planning et Calendrier",
+      "cookingMode": "Le mode cuisine et les minuteurs nommés",
+      "scaling": "L’ajustement des recettes au nombre d’invités",
+      "shopping": "Une liste de courses fusionnée qui marche hors ligne",
+      "kitchen": "Favoris, notes et Ma cuisine",
+      "sharing": "Les liens de partage publics"
+    },
+    "finePrint": "Prix en euros. Les éventuelles taxes sont affichées au paiement, avant de payer.",
+    "faqHeading": "Vos questions, nos réponses",
+    "faq": {
+      "trial": {
+        "q": "Comment fonctionne l’essai gratuit ?",
+        "a": "Votre première formule payante commence par {days} jours gratuits. Annulez avant la fin de l’essai et vous ne payez rien. Un seul essai par compte."
+      },
+      "cancel": {
+        "q": "Puis-je résilier à tout moment ?",
+        "a": "Oui, depuis Paramètres → Formule et facturation. Vous gardez votre formule jusqu’à la fin de la période payée, puis vous passez en Gratuit."
+      },
+      "downgrade": {
+        "q": "Que deviennent mes plats si je passe en Gratuit ?",
+        "a": "Rien n’est supprimé. Si vous dépassez ce que permet Gratuit, vous pouvez toujours tout consulter et cuisiner. Vous ne pouvez simplement plus en ajouter tant que vous n’êtes pas repassé sous la limite ou que vous ne changez pas de formule."
+      },
+      "tries": {
+        "q": "Qu’est-ce qu’un essai ?",
+        "a": "Les fonctions d’IA et d’import utilisent des essais : une question, une dictée, un import ou un tour de roue. Si quelque chose échoue de notre côté, l’essai vous est rendu. Les essais Gratuit se renouvellent le 1er de chaque mois, ceux des formules payantes à votre date de facturation, et les tours de roue chaque jour."
+      },
+      "switch": {
+        "q": "Puis-je passer de Plus à Pro ?",
+        "a": "Oui, à tout moment, depuis Paramètres → Formule et facturation. Stripe ajuste le prix pour le reste de votre période de facturation."
+      },
+      "payment": {
+        "q": "Comment payer ?",
+        "a": "Les paiements passent par Stripe, un prestataire de paiement sécurisé. Cooky ne voit jamais votre numéro de carte. Vous pouvez mettre votre carte à jour ou télécharger vos factures à tout moment."
+      }
+    }
+  },
+  "billing": {
+    "title": "Formule et facturation",
+    "subtitle": "Votre formule, vos essais et vos informations de paiement.",
+    "plan": {
+      "heading": "Votre formule",
+      "description": "Ce que vous avez et ce qui se passe ensuite.",
+      "source": {
+        "free": "Gratuit",
+        "trial": "Essai gratuit",
+        "paid": "Payante",
+        "comp": "Offerte par Cooky"
+      },
+      "interval": {
+        "month": "Facturée chaque mois",
+        "year": "Facturée chaque année"
+      },
+      "renews": "Se renouvelle le {date} pour {price}.",
+      "trialConverts": "Votre essai gratuit se termine le {date}. Ensuite, c’est {price}, sauf si vous annulez avant.",
+      "ends": "Résiliée. Vous gardez {plan} jusqu’au {date}, puis vous passez en Gratuit. Vous ne serez plus débité.",
+      "compEnds": "Offerte par Cooky jusqu’au {date}. Ensuite, vous passez en Gratuit. Vous ne serez pas débité.",
+      "compForever": "Offerte par Cooky, sans date de fin. Vous ne serez pas débité.",
+      "active": "Votre formule est active.",
+      "free": "Gratuit, sans limite de durée. Passez à une formule payante quand vous voulez pour plus d’aide de l’IA, plus de plats et des listes partagées.",
+      "trialAvailable": "Votre essai gratuit de {days} jours est toujours disponible.",
+      "comparePlans": "Comparer les formules",
+      "keepPlan": "Garder ma formule",
+      "manage": "Gérer la facturation",
+      "manageHint": "Changez de formule, mettez votre carte à jour, téléchargez vos factures ou résiliez, sur la page sécurisée de Stripe."
+    },
+    "grace": {
+      "title": "Votre dernier paiement n’est pas passé",
+      "body": "Mettez votre carte à jour avant le {date} pour garder {plan}. Ensuite, vous passez en Gratuit. Vos plats et vos listes restent en sécurité.",
+      "cta": "Mettre ma carte à jour"
+    },
+    "checkout": {
+      "successTitle": "Vous êtes en {plan}",
+      "successTrial": "Votre essai gratuit dure jusqu’au {date}. Nous vous enverrons un e-mail avant la fin.",
+      "successPaid": "Merci ! Tout ce que comprend {plan} est prêt.",
+      "dismiss": "Fermer",
+      "pendingTitle": "Encore un instant…",
+      "pendingBody": "Stripe a confirmé votre paiement. Nous activons votre formule ; cela prend en général quelques secondes.",
+      "slowTitle": "C’est plus long que d’habitude",
+      "slowBody": "Si vous avez terminé le paiement, votre formule apparaîtra ici d’ici quelques minutes et vous recevrez un e-mail. Inutile de payer à nouveau.",
+      "checkAgain": "Vérifier à nouveau"
+    },
+    "usage": {
+      "heading": "Essais",
+      "description": "Les fonctions d’IA et d’import utilisent des essais. Si quelque chose échoue de notre côté, l’essai vous est rendu.",
+      "getMore": "En avoir plus",
+      "getMoreLabel": "En avoir plus : {feature}"
+    }
+  },
+  "upgrade": {
+    "usedUp": "Vous avez utilisé vos {amount} {period, select, day {aujourd’hui} other {ce mois-ci}}",
+    "atCap": "Vous avez atteint {amount}",
+    "atCapBody": "C’est le maximum de la formule {plan}. Tout ce que vous avez reste consultable et cuisinable.",
+    "gated": "{feature} fait partie de la formule {plan}",
+    "more": "Besoin de plus de {amount} {period, select, day {par jour} other {par mois}} ?",
+    "resets": "Vos essais reviennent le {date}.",
+    "safe": "Consulter et cuisiner ne sont jamais bloqués, et rien de ce que vous avez créé n’est perdu.",
+    "topPlan": "Vous êtes en {plan}, notre formule la plus complète.",
+    "optionsLabel": "Formules avec plus",
+    "trialNote": "Gratuit pendant {days} jours, puis {price}. Annulable à tout moment.",
+    "compare": "Comparer toutes les formules",
+    "notNow": "Plus tard",
+    "gotIt": "Compris",
+    "close": "Fermer",
+    "loading": "Vérification de votre formule…",
+    "errorTitle": "Impossible de charger vos options",
+    "errorBody": "Vérifiez votre connexion et réessayez, ou comparez les formules."
   }
 }

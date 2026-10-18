@@ -15,7 +15,8 @@
     "cancel": "Cancel",
     "copy": "Copy",
     "copied": "Copied",
-    "or": "or"
+    "or": "or",
+    "pricing": "Pricing"
   },
   "language": {
     "label": "Language",
@@ -54,7 +55,8 @@
     },
     "ctaSignUp": "Create your free account",
     "ctaLogIn": "Log in",
-    "ctaSignedIn": "Go to your account"
+    "ctaSignedIn": "Go to your account",
+    "seePricing": "See plans and pricing"
   },
   "notFound": {
     "title": "This page isn't on the menu",
@@ -253,7 +255,8 @@
     "logOut": "Log out",
     "loggingOut": "Logging out…",
     "logIn": "Log in",
-    "signUp": "Sign up"
+    "signUp": "Sign up",
+    "billing": "Plan & billing"
   },
   "settings": {
     "title": "Settings",
@@ -262,7 +265,8 @@
     "navLabel": "Settings sections",
     "nav": {
       "account": "Profile & appearance",
-      "security": "Security"
+      "security": "Security",
+      "billing": "Plan & billing"
     },
     "security": {
       "title": "Security",
@@ -433,5 +437,221 @@
     "backupCodeFormat": "Enter a backup code exactly as you saved it.",
     "passkeyNameRequired": "Give this passkey a name.",
     "passkeyNameTooLong": "Keep the name under 40 characters."
+  },
+  "plans": {
+    "free": {
+      "name": "Free",
+      "tagline": "Everything you need to cook every day."
+    },
+    "plus": {
+      "name": "Plus",
+      "tagline": "More AI help and room for a growing recipe box."
+    },
+    "pro": {
+      "name": "Pro",
+      "tagline": "For hosts and households who cook together."
+    }
+  },
+  "features": {
+    "names": {
+      "assistant": "AI Assistant",
+      "voice": "Voice dictation",
+      "import": "Import from a link",
+      "spins": "Spin the wheel",
+      "dishes": "Dishes in your recipe box",
+      "collections": "Collections",
+      "upcoming_events": "Upcoming events",
+      "friend_groups": "Friend groups",
+      "backup_import": "Backup import",
+      "household_list": "Shared household list",
+      "ical_feed": "Calendar feed",
+      "ai_suggest": "AI Suggest for menus"
+    },
+    "descriptions": {
+      "assistant": "Ask what to cook, swap an ingredient or plan a menu. Each question uses one try.",
+      "voice": "Speak a recipe instead of typing it. Each recording uses one try.",
+      "import": "Paste a recipe link and Cooky fills in the dish. Each import uses one try.",
+      "spins": "Can't decide? Let Cooky pick a dish for you. Each spin uses one try.",
+      "dishes": "Your own recipes and the ones you save from Discover.",
+      "collections": "Group dishes, like “Weeknight” or “Eid lunch”.",
+      "upcoming_events": "Dinners and gatherings you're planning a menu for.",
+      "friend_groups": "Share dishes with family or friends in one go.",
+      "backup_import": "Bring your dishes back from a Cooky backup file.",
+      "household_list": "One shopping list that everyone at home can edit.",
+      "ical_feed": "See your meal plan in Google, Apple or Outlook Calendar.",
+      "ai_suggest": "The Assistant suggests courses for events and fills your week. Uses Assistant tries."
+    },
+    "amounts": {
+      "assistant": "{count, plural, one {# question} other {# questions}}",
+      "voice": "{count, plural, one {# dictation} other {# dictations}}",
+      "import": "{count, plural, one {# import} other {# imports}}",
+      "spins": "{count, plural, one {# spin} other {# spins}}",
+      "dishes": "{count, plural, one {# dish} other {# dishes}}",
+      "collections": "{count, plural, one {# collection} other {# collections}}",
+      "upcoming_events": "{count, plural, one {# upcoming event} other {# upcoming events}}",
+      "friend_groups": "{count, plural, one {# group} other {# groups}}"
+    }
+  },
+  "limits": {
+    "perMonth": "{amount} a month",
+    "perDay": "{amount} a day",
+    "cap": "Up to {amount}",
+    "unlimited": "Unlimited",
+    "unlimitedHint": "Unlimited with fair use: very fast bursts are slowed down so Cooky stays quick for everyone.",
+    "included": "Included",
+    "notIncluded": "Not included",
+    "pricePer": "{price} {interval, select, year {a year} other {a month}}"
+  },
+  "tries": {
+    "left": "{remaining} of {limit} left",
+    "noneLeft": "None left",
+    "unlimited": "Unlimited",
+    "notOnPlan": "Not on your plan",
+    "resetsOn": "Resets on {date}",
+    "resetsIn": "Resets {time}",
+    "compact": "{remaining, plural, =0 {No tries left} one {# try left} other {# tries left}}",
+    "meterLabel": "{feature} tries"
+  },
+  "billingActions": {
+    "redirecting": "Taking you to Stripe…",
+    "alreadySubscribed": "You already have a plan. Opening billing so you can change it…",
+    "noBillingAccount": "There's nothing to manage yet. Pick a plan first."
+  },
+  "pricing": {
+    "title": "Plans and pricing",
+    "heading": "Pick the plan that fits your kitchen",
+    "intro": "Cooking, planning and shopping are free for everyone. Paid plans add more AI help, more room and ways to cook together.",
+    "cancelledTitle": "Checkout cancelled",
+    "cancelledBody": "You weren't charged. Pick a plan whenever you're ready.",
+    "intervalLabel": "Billing period",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "yearlySave": "Save up to {percent}",
+    "freePrice": "Free, forever",
+    "perMonth": "per month",
+    "perYear": "per year",
+    "yearlyEquivalent": "About {price} a month, {percent} less than paying monthly.",
+    "monthlyHint": "Billed every month. Cancel anytime.",
+    "yourPlan": "Your plan",
+    "trialCta": "Start {days}-day free trial",
+    "trialNote": "Free for {days} days, then {price}. Cancel before and you won't be charged.",
+    "upgradeCta": "Upgrade to {plan}",
+    "switchCta": "Switch to {plan}",
+    "manageCta": "Manage plan",
+    "signUpFree": "Sign up free",
+    "freeCurrentNote": "You're on Free. No card needed.",
+    "portalNote": "Plan changes and cancellations happen on Stripe's secure billing page.",
+    "compNote": "You have {plan} as a gift from Cooky, so you won't be charged.",
+    "featuresLabel": "What's in {plan}",
+    "includedLabel": "Included",
+    "notIncludedLabel": "Not included",
+    "everyPlanHeading": "Every plan includes",
+    "everyPlan": {
+      "cook": "Discover, Cook, Planner and Calendar",
+      "cookingMode": "Cooking mode and named timers",
+      "scaling": "Recipe scaling for any number of guests",
+      "shopping": "A merged shopping list that works offline",
+      "kitchen": "Favorites, notes and My kitchen",
+      "sharing": "Public share links"
+    },
+    "finePrint": "Prices are in euros. Any tax is shown at checkout, before you pay.",
+    "faqHeading": "Questions, answered",
+    "faq": {
+      "trial": {
+        "q": "How does the free trial work?",
+        "a": "Your first paid plan starts with {days} free days. Cancel before the trial ends and you pay nothing. Each account gets one trial."
+      },
+      "cancel": {
+        "q": "Can I cancel anytime?",
+        "a": "Yes, from Settings → Plan & billing. You keep your plan until the end of the period you paid for, then move to Free."
+      },
+      "downgrade": {
+        "q": "What happens to my dishes if I move to Free?",
+        "a": "Nothing is deleted. If you have more than Free allows, you can still view and cook everything. You just can't add more until you're under the limit or upgrade."
+      },
+      "tries": {
+        "q": "What's a try?",
+        "a": "AI and import features use tries: one question, one dictation, one import or one spin. If something fails on our side, the try is given back. Free tries reset on the 1st of each month, paid plans on your billing day, and spins every day."
+      },
+      "switch": {
+        "q": "Can I switch between Plus and Pro?",
+        "a": "Yes, any time, from Settings → Plan & billing. Stripe adjusts the price for the rest of your billing period."
+      },
+      "payment": {
+        "q": "How do I pay?",
+        "a": "Payments go through Stripe, a secure payment provider. Cooky never sees your card number. You can update your card or download invoices any time."
+      }
+    }
+  },
+  "billing": {
+    "title": "Plan & billing",
+    "subtitle": "Your plan, your tries and your payment details.",
+    "plan": {
+      "heading": "Your plan",
+      "description": "What you're on and what happens next.",
+      "source": {
+        "free": "Free",
+        "trial": "Free trial",
+        "paid": "Paid",
+        "comp": "Gift from Cooky"
+      },
+      "interval": {
+        "month": "Billed monthly",
+        "year": "Billed yearly"
+      },
+      "renews": "Renews on {date} for {price}.",
+      "trialConverts": "Your free trial ends on {date}. After that it's {price}, unless you cancel before.",
+      "ends": "Cancelled. You keep {plan} until {date}, then move to Free. You won't be charged again.",
+      "compEnds": "A gift from Cooky until {date}. Then you move to Free. You won't be charged.",
+      "compForever": "A gift from Cooky, with no end date. You won't be charged.",
+      "active": "Your plan is active.",
+      "free": "Free, with no time limit. Upgrade any time for more AI help, more dishes and shared lists.",
+      "trialAvailable": "Your {days}-day free trial is still available.",
+      "comparePlans": "Compare plans",
+      "keepPlan": "Keep my plan",
+      "manage": "Manage billing",
+      "manageHint": "Change plan, update your card, download invoices or cancel, on Stripe's secure page."
+    },
+    "grace": {
+      "title": "Your last payment didn't go through",
+      "body": "Update your card by {date} to keep {plan}. After that you move to Free. Your dishes and lists stay safe.",
+      "cta": "Update card"
+    },
+    "checkout": {
+      "successTitle": "You're on {plan}",
+      "successTrial": "Your free trial runs until {date}. We'll email you before it ends.",
+      "successPaid": "Thank you! Everything in {plan} is ready to use.",
+      "dismiss": "Dismiss",
+      "pendingTitle": "Finishing up…",
+      "pendingBody": "Stripe confirmed your checkout. We're switching on your plan; this usually takes a few seconds.",
+      "slowTitle": "This is taking longer than usual",
+      "slowBody": "If you completed checkout, your plan will appear here within a few minutes and you'll get an email. You don't need to pay again.",
+      "checkAgain": "Check again"
+    },
+    "usage": {
+      "heading": "Tries",
+      "description": "AI and import features use tries. If something fails on our side, the try is given back.",
+      "getMore": "Get more",
+      "getMoreLabel": "Get more: {feature}"
+    }
+  },
+  "upgrade": {
+    "usedUp": "You've used all {amount} {period, select, day {for today} other {for this month}}",
+    "atCap": "You've reached {amount}",
+    "atCapBody": "That's the most {plan} holds. Everything you have stays viewable and cookable.",
+    "gated": "{feature} is part of {plan}",
+    "more": "Need more than {amount} {period, select, day {a day} other {a month}}?",
+    "resets": "Your tries come back on {date}.",
+    "safe": "Reading and cooking are never blocked, and nothing you've made is lost.",
+    "topPlan": "You're on {plan}, our biggest plan.",
+    "optionsLabel": "Plans with more",
+    "trialNote": "Free for {days} days, then {price}. Cancel anytime.",
+    "compare": "Compare all plans",
+    "notNow": "Not now",
+    "gotIt": "Got it",
+    "close": "Close",
+    "loading": "Checking your plan…",
+    "errorTitle": "We couldn't load your options",
+    "errorBody": "Check your connection and try again, or compare plans instead."
   }
 }
