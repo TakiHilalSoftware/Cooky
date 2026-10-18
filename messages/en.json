@@ -10,7 +10,8 @@
     "loading": "Loading…",
     "tryAgain": "Try again",
     "backToHome": "Back to home",
-    "undo": "Undo"
+    "undo": "Undo",
+    "opensInNewTab": "opens in a new tab"
   },
   "language": {
     "label": "Language",
@@ -47,7 +48,9 @@
         "body": "Share recipes with the people you choose, chat, and see what they loved."
       }
     },
-    "status": "Cooky is being built. Sign-up opens soon."
+    "ctaSignUp": "Create your free account",
+    "ctaLogIn": "Log in",
+    "ctaSignedIn": "Go to your account"
   },
   "notFound": {
     "title": "This page isn't on the menu",
@@ -67,5 +70,143 @@
     "plan_required": "This needs a paid plan.",
     "conflict": "This changed somewhere else. Reload to see the latest version.",
     "unavailable": "This isn't available right now. Try again in a moment."
+  },
+  "emails": {
+    "greeting": "Hi {name},",
+    "footer": "You're receiving this because this address was used on Cooky.",
+    "linkFallback": "If the button doesn't work, copy this link into your browser:",
+    "verifyEmail": {
+      "subject": "Confirm your email for Cooky",
+      "preview": "Confirm your email to start cooking with Cooky.",
+      "heading": "Confirm your email",
+      "body": "Tap the button to confirm this is your email address. Then you can log in.",
+      "button": "Confirm email",
+      "expiry": "This link works for 24 hours.",
+      "ignore": "Didn't sign up for Cooky? You can ignore this email."
+    },
+    "resetPassword": {
+      "subject": "Reset your Cooky password",
+      "preview": "Choose a new password for Cooky.",
+      "heading": "Reset your password",
+      "body": "We got a request to reset your password. Tap the button to choose a new one.",
+      "button": "Choose a new password",
+      "expiry": "This link works for 1 hour and only once.",
+      "ignore": "Didn't ask for this? Ignore this email and your password stays the same."
+    }
+  },
+  "auth": {
+    "nameLabel": "Your name",
+    "nameHint": "Friends see this when you share recipes.",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "newPasswordLabel": "New password",
+    "passwordHint": "At least 8 characters. Don't reuse a password from another site.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "compromised": "This password appeared in a data breach, so it isn't safe. Choose a different one.",
+    "consent": "I agree to the <terms>Terms of Service</terms> and the <privacy>Privacy Policy</privacy>.",
+    "backToLogin": "Back to log in",
+    "signUp": {
+      "title": "Create your Cooky account",
+      "subtitle": "Your recipes, your kitchen, your week. Free to start.",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "haveAccount": "Already have an account?",
+      "logInLink": "Log in",
+      "checkEmailTitle": "Check your email",
+      "checkEmailBody": "We sent a link to {email}. Open it to confirm your address and you'll be signed in.",
+      "checkEmailHint": "Nothing after a few minutes? Look in spam, or send the link again.",
+      "resend": "Send the link again",
+      "resent": "A new link is on its way.",
+      "useDifferentEmail": "Use a different email"
+    },
+    "logIn": {
+      "title": "Log in to Cooky",
+      "subtitle": "Welcome back. Your kitchen is waiting.",
+      "submit": "Log in",
+      "submitting": "Logging in…",
+      "forgot": "Forgot your password?",
+      "noAccount": "New to Cooky?",
+      "signUpLink": "Create an account",
+      "invalidCredentials": "That email and password don't match. Check both and try again.",
+      "verifyEmail": "Confirm your email first. We just sent a new link to {email}."
+    },
+    "forgot": {
+      "title": "Reset your password",
+      "subtitle": "Enter your account's email. We'll send a link to choose a new password.",
+      "submit": "Send reset link",
+      "submitting": "Sending…",
+      "sentTitle": "Check your email",
+      "sentBody": "If an account uses {email}, a reset link is on its way. It works for 1 hour."
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "subtitle": "Pick something you don't use anywhere else.",
+      "submit": "Save new password",
+      "submitting": "Saving…",
+      "doneTitle": "Password changed",
+      "doneBody": "Log in with your new password. For your safety, every device was signed out.",
+      "logIn": "Log in",
+      "invalidTitle": "This link no longer works",
+      "invalidBody": "Reset links work for 1 hour and only once. Ask for a new one.",
+      "requestNew": "Send a new link"
+    },
+    "verified": {
+      "title": "Email confirmed",
+      "body": "Your account is ready and you're signed in.",
+      "continue": "Continue",
+      "errorTitle": "This link no longer works",
+      "errorBody": "Confirmation links work for 24 hours. Enter your email to get a new one.",
+      "sendNew": "Send a new link",
+      "sentTitle": "Check your email",
+      "sentBody": "If {email} still needs confirming, a new link is on its way. It works for 24 hours."
+    }
+  },
+  "account": {
+    "menu": "Account menu for {name}",
+    "settings": "Settings",
+    "logOut": "Log out",
+    "loggingOut": "Logging out…",
+    "logIn": "Log in",
+    "signUp": "Sign up"
+  },
+  "settings": {
+    "title": "Settings",
+    "accountHeading": "Account",
+    "signedInAs": "Signed in as {email}"
+  },
+  "legal": {
+    "draftNotice": "Draft summary. The full legal text is published before Cooky launches; this version is the one recorded when you sign up.",
+    "version": "Version {version}",
+    "terms": {
+      "title": "Terms of Service",
+      "points": {
+        "account": "You're responsible for your account and for keeping your password private.",
+        "content": "Recipes and notes you add stay yours. You let Cooky store and show them to the people you choose.",
+        "fairUse": "Don't misuse Cooky: no spam, abuse, or attempts to break or overload the service.",
+        "plans": "Paid plans renew until you cancel. Cancelling keeps your plan until the period ends.",
+        "changes": "If these terms change materially, we'll tell you before the new version applies."
+      }
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "points": {
+        "collect": "We keep only what Cooky needs: your account, your recipes and plans, and settings you choose.",
+        "never": "We never sell your data and never show other people your email address.",
+        "processors": "Trusted providers run parts of Cooky for us, such as hosting, email and payments. They act only on our instructions.",
+        "rights": "You can export everything or delete your account at any time from Settings.",
+        "cookies": "We use only the cookies Cooky needs to keep you signed in. No advertising trackers."
+      }
+    }
+  },
+  "validation": {
+    "emailInvalid": "Enter an email address like name@example.com.",
+    "emailTooLong": "That email address is too long.",
+    "nameRequired": "Enter your name.",
+    "nameTooLong": "Keep your name under 60 characters.",
+    "passwordRequired": "Enter your password.",
+    "passwordTooShort": "Use at least 8 characters.",
+    "passwordTooLong": "Use 128 characters or fewer.",
+    "acceptTermsRequired": "Agree to the Terms and Privacy Policy to continue."
   }
 }
