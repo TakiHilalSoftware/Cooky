@@ -2,6 +2,7 @@
 
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useAction } from "next-safe-action/hooks";
 import { useTheme } from "next-themes";
 
 import { IconButton } from "@/components/feedback/icon-button";
@@ -13,8 +14,12 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { THEMES, type ThemePreference } from "@/lib/appearance";
+import { updateAppearance } from "@/server/actions/settings";
 
-const THEMES = [
+import { useSavesPreferences } from "./preferences-sync";
+
+const THEME_OPTIONS = [
   { value: "light", icon: SunIcon },
   { value: "dark", icon: MoonIcon },
   { value: "system", icon: MonitorIcon },
@@ -23,6 +28,16 @@ const THEMES = [
 export function ThemeToggle() {
   const t = useTranslations("theme");
   const { theme, setTheme } = useTheme();
+  const saves = useSavesPreferences();
+  const save = useAction(updateAppearance);
+
+  function choose(value: string) {
+    const next = THEMES.find((option): option is ThemePreference => option === value);
+    if (!next) return;
+    setTheme(next);
+    // Signed in: remember it on the profile, so other devices follow.
+    if (saves) save.execute({ theme: next });
+  }
 
   return (
     <DropdownMenu>
@@ -35,8 +50,8 @@ export function ThemeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuLabel>{t("label")}</DropdownMenuLabel>
-        <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
-          {THEMES.map(({ value, icon: Icon }) => (
+        <DropdownMenuRadioGroup value={theme} onValueChange={choose}>
+          {THEME_OPTIONS.map(({ value, icon: Icon }) => (
             <DropdownMenuRadioItem key={value} value={value} className="min-h-10">
               <Icon aria-hidden="true" />
               {t(value)}

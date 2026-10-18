@@ -7,6 +7,9 @@ import { DirectionProvider } from "@/components/ui/direction";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
+import type { ThemePreference } from "@/lib/appearance";
+
+import { PreferencesSync } from "./preferences-sync";
 import { TimeZoneSync } from "./time-zone-sync";
 
 type ProvidersProps = {
@@ -14,19 +17,23 @@ type ProvidersProps = {
   dir: "ltr" | "rtl";
   /** CSP nonce for next-themes' pre-paint script. */
   nonce: string | undefined;
+  /** The signed-in person's saved theme, or null when signed out. */
+  savedTheme: ThemePreference | null;
 };
 
 /** UI-only providers: theme, text direction for Radix, tooltips and toasts. */
-export function Providers({ children, dir, nonce }: ProvidersProps) {
+export function Providers({ children, dir, nonce, savedTheme }: ProvidersProps) {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange nonce={nonce}>
-      <DirectionProvider dir={dir}>
-        <TooltipProvider delayDuration={300}>
-          {children}
-          <TimeZoneSync />
-          <Toaster dir={dir} position="bottom-center" />
-        </TooltipProvider>
-      </DirectionProvider>
+      <PreferencesSync savedTheme={savedTheme}>
+        <DirectionProvider dir={dir}>
+          <TooltipProvider delayDuration={300}>
+            {children}
+            <TimeZoneSync />
+            <Toaster dir={dir} position="bottom-center" />
+          </TooltipProvider>
+        </DirectionProvider>
+      </PreferencesSync>
     </ThemeProvider>
   );
 }

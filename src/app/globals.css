@@ -95,70 +95,92 @@
   --tile: #2f7a60;
 }
 
-html[data-accent="peach"] {
+html[data-accent="peach"],
+[data-swatch="peach"] {
   --primary: #b4472a;
   --primary-foreground: #ffffff;
   --primary-strong: #b4472a;
 }
-html.dark[data-accent="peach"] {
+html.dark[data-accent="peach"],
+.dark [data-swatch="peach"] {
   --primary: #f29a7c;
   --primary-foreground: #121614;
   --primary-strong: #f29a7c;
 }
 
-html[data-accent="mint"] {
+html[data-accent="mint"],
+[data-swatch="mint"] {
   --primary: #1e7656;
   --primary-foreground: #ffffff;
   --primary-strong: #1e7656;
 }
-html.dark[data-accent="mint"] {
+html.dark[data-accent="mint"],
+.dark [data-swatch="mint"] {
   --primary: #6fd3a8;
   --primary-foreground: #121614;
   --primary-strong: #6fd3a8;
 }
 
-html[data-accent="sky"] {
+html[data-accent="sky"],
+[data-swatch="sky"] {
   --primary: #1f68a3;
   --primary-foreground: #ffffff;
   --primary-strong: #1f68a3;
 }
-html.dark[data-accent="sky"] {
+html.dark[data-accent="sky"],
+.dark [data-swatch="sky"] {
   --primary: #7dbdf0;
   --primary-foreground: #121614;
   --primary-strong: #7dbdf0;
 }
 
-html[data-accent="lavender"] {
+html[data-accent="lavender"],
+[data-swatch="lavender"] {
   --primary: #6a4fb3;
   --primary-foreground: #ffffff;
   --primary-strong: #6a4fb3;
 }
-html.dark[data-accent="lavender"] {
+html.dark[data-accent="lavender"],
+.dark [data-swatch="lavender"] {
   --primary: #b9a6f2;
   --primary-foreground: #121614;
   --primary-strong: #b9a6f2;
 }
 
-html[data-accent="sand"] {
+html[data-accent="sand"],
+[data-swatch="sand"] {
   --primary: #85622a;
   --primary-foreground: #ffffff;
   --primary-strong: #85622a;
 }
-html.dark[data-accent="sand"] {
+html.dark[data-accent="sand"],
+.dark [data-swatch="sand"] {
   --primary: #e0c08a;
   --primary-foreground: #121614;
   --primary-strong: #e0c08a;
 }
 
-html[data-accent="rose"] {
+html[data-accent="rose"],
+[data-swatch="rose"] {
   --primary: #b3305c;
   --primary-foreground: #ffffff;
   --primary-strong: #b3305c;
 }
-html.dark[data-accent="rose"] {
+html.dark[data-accent="rose"],
+.dark [data-swatch="rose"] {
   --primary: #f28bae;
   --primary-foreground: #121614;
   --primary-strong: #f28bae;
+}
+
+/* The default accent for swatches inside a non-default page (Settings → Appearance). */
+[data-swatch="default"] {
+  --primary: #e8a317;
+  --primary-foreground: #1d2321;
+}
+.dark [data-swatch="default"] {
+  --primary: #f2b437;
+  --primary-foreground: #121614;
 }
 
 /* Text size setting (S–XL). Everything is in rem, so the whole UI scales. */

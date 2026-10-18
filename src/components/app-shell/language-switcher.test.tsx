@@ -4,6 +4,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { renderWithIntl } from "../../../tests/setup/render";
 
+vi.mock("@/server/actions/settings", () => ({ updateAppearance: vi.fn(), updateLocale: vi.fn() }));
+
 const replace = vi.fn();
 vi.mock("@/i18n/navigation", () => ({
   usePathname: () => "/dishes/42",

@@ -1,9 +1,11 @@
 import { screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ThemeProvider } from "next-themes";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { renderWithIntl } from "../../../tests/setup/render";
+
+vi.mock("@/server/actions/settings", () => ({ updateAppearance: vi.fn(), updateLocale: vi.fn() }));
 
 import { ThemeToggle } from "./theme-toggle";
 

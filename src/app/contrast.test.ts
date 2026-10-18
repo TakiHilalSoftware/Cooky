@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 import { wcagContrast } from "culori";
 import { describe, expect, it } from "vitest";
 
+import { ACCENTS } from "@/lib/appearance";
+
 /**
  * PRD §3.10 / AGENT_RULES §5: AA contrast in every palette and theme.
  * Reads the real tokens from globals.css, so a color tweak that breaks
@@ -10,20 +12,21 @@ import { describe, expect, it } from "vitest";
  */
 const css = readFileSync(new URL("./globals.css", import.meta.url), "utf8");
 
-const ACCENTS = ["default", "peach", "mint", "sky", "lavender", "sand", "rose"] as const;
 const THEMES = ["light", "dark"] as const;
 
 type Tokens = Record<string, string>;
 
+/** Tokens of the rule whose selector list includes `selector` exactly. */
 function block(selector: string): Tokens {
-  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const match = css.match(new RegExp(`(?:^|\\n)${escaped}\\s*\\{([^}]*)\\}`));
-  if (!match?.[1]) return {};
-  const tokens: Tokens = {};
-  for (const [, name, value] of match[1].matchAll(/--([\w-]+):\s*([^;]+);/g)) {
-    if (name && value) tokens[name] = value.trim();
+  for (const [, selectors = "", body = ""] of css.matchAll(/(?:^|\n)([^{}@/]+?)\s*\{([^}]*)\}/g)) {
+    if (!selectors.split(",").some((s) => s.trim() === selector)) continue;
+    const tokens: Tokens = {};
+    for (const [, name, value] of body.matchAll(/--([\w-]+):\s*([^;]+);/g)) {
+      if (name && value) tokens[name] = value.trim();
+    }
+    return tokens;
   }
-  return tokens;
+  return {};
 }
 
 function tokensFor(theme: (typeof THEMES)[number], accent: (typeof ACCENTS)[number]): Tokens {

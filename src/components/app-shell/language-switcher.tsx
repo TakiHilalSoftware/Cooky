@@ -2,6 +2,7 @@
 
 import { LanguagesIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useAction } from "next-safe-action/hooks";
 import { useTransition } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,9 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { directionOf, routing } from "@/i18n/routing";
+import { updateLocale } from "@/server/actions/settings";
+
+import { useSavesPreferences } from "./preferences-sync";
 
 /**
  * Lists each language in its own script ("Français", "العربية") so people can
@@ -27,10 +31,14 @@ export function LanguageSwitcher() {
   const pathname = usePathname();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const saves = useSavesPreferences();
+  const save = useAction(updateLocale);
 
   function change(next: string) {
     const target = routing.locales.find((l) => l === next);
     if (!target || target === locale) return;
+    // Signed in: emails and notifications follow the language in use.
+    if (saves) save.execute({ locale: target });
     startTransition(() => router.replace(pathname, { locale: target }));
   }
 

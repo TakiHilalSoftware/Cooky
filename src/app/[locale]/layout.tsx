@@ -7,6 +7,8 @@ import { notFound } from "next/navigation";
 import { Providers } from "@/components/app-shell/providers";
 import { directionOf, routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
+import { getAccountSummary } from "@/server/features/account/queries";
+import { getAppearance } from "@/server/features/profile/queries";
 
 import { bodyFont, displayFont } from "../fonts";
 
@@ -36,12 +38,21 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
 
   const dir = directionOf(locale);
   const nonce = (await headers()).get("x-nonce") ?? undefined;
+  const [appearance, account] = await Promise.all([getAppearance(), getAccountSummary()]);
 
   return (
-    <html lang={locale} dir={dir} suppressHydrationWarning className={cn(bodyFont.variable, displayFont.variable)}>
+    // Accent and text size are rendered on <html> so pages arrive styled (no flash).
+    <html
+      lang={locale}
+      dir={dir}
+      data-accent={appearance.accent}
+      data-text-size={appearance.textSize}
+      suppressHydrationWarning
+      className={cn(bodyFont.variable, displayFont.variable)}
+    >
       <body className="flex min-h-dvh flex-col">
         <NextIntlClientProvider>
-          <Providers dir={dir} nonce={nonce}>
+          <Providers dir={dir} nonce={nonce} savedTheme={account ? appearance.theme : null}>
             {children}
           </Providers>
         </NextIntlClientProvider>
