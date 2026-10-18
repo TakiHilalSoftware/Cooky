@@ -48,11 +48,11 @@ All variables are declared and validated in `src/server/env.ts` (`@t3-oss/env-ne
 
 ## 4. Stripe
 1. Work in **Test mode** first.
-2. `pnpm stripe:sync` creates or validates *Cooky Plus* / *Cooky Pro* with monthly and yearly prices from `config/plans.ts`, using lookup keys (so no price ids in env).
+2. `pnpm stripe:sync` creates or validates *Cooky Plus* / *Cooky Pro* with monthly and yearly EUR prices from `config/plans.ts`, using lookup keys (so no price ids in env). It's safe to rerun: a changed amount creates a new price that takes over the lookup key and archives the old one. A live key needs `--live`.
 3. **Customer portal:** allow plan switch, cancel at period end, payment-method update, invoice history.
-4. Turn on **Stripe Tax** and set the business address.
+4. Turn on **Stripe Tax** and set the business address, then set `STRIPE_AUTOMATIC_TAX=on` (Checkout then collects the address and adds tax). Until then leave it `off`.
 5. **Webhook** `https://<app>/api/webhooks/stripe` with these events: `checkout.session.completed`, `customer.subscription.created|updated|deleted|trial_will_end`, `invoice.paid`, `invoice.payment_failed`. Copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
-6. Local: `stripe listen --forward-to localhost:3000/api/webhooks/stripe`.
+6. Local: install the [Stripe CLI](https://docs.stripe.com/stripe-cli), then run `pnpm stripe:listen` next to `pnpm dev`. It uses the key in `.env.local` (so the CLI's own login doesn't matter) and forwards events to `localhost:3000/api/webhooks/stripe`. Put the `whsec_…` secret it prints into `STRIPE_WEBHOOK_SECRET` once; it stays the same for that key.
 
 ✅ **Check:**
 - Upgrade with card `4242 4242 4242 4242`. Within seconds Settings → Plan shows **Plus** and the Assistant shows 150 tries.

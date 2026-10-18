@@ -206,12 +206,15 @@ Drizzle schema in `src/server/db/schema/`. Ownership and sharing rules live in `
    - `reserve(user, feature)` is an atomic `UPDATE usage_counters SET reserved = reserved + 1 WHERE used + reserved < limit RETURNING …`, with an upsert for a new period and a ledger row.
    - After the work: **commit** (`used+1, reserved−1`) on success, **refund** (`reserved−1`) on provider failure.
    - Reservations older than 5 min are released by a scheduled job.
-   - The limit is `plan_limits[entitlement.plan][feature]`. The period is the UTC calendar month for Free and the billing period for paid plans.
+   - The limit is `plan_limits[entitlement.plan][feature]`. The period is the UTC calendar month for Free and the billing period for paid plans. Yearly subscribers get **monthly** allowances anchored to their billing day (the PRD lists paid limits "/ month"); spins count per UTC day (`src/server/quota/periods.ts`).
+   - Features come in three kinds (`src/lib/plan-features.ts`): metered (a counter per period), counted (a cap on how many exist, e.g. dishes) and gated (limit 0 = not on this plan, null = unlimited). `meteredAction(feature)` reserves, then commits on success or refunds on failure; counted and gated checks are `canAddAnother()` / `hasFeature()`.
+   - A paid entitlement more than a day past its period end counts as Free until a webhook or the reconcile job rewrites it.
 3. **Subscription Pipeline:**
    - `startCheckout(plan, interval)` gets or creates the Stripe Customer, creates a Checkout Session (with a trial only if there's no `trial_redemptions` row) and returns the redirect URL.
-   - Stripe → `/api/webhooks/stripe`: verify the signature → dedupe on `stripe_events` → upsert `subscriptions` → recompute `entitlements` → queue email/push in the outbox.
+   - Stripe → `/api/webhooks/stripe`: verify the signature on the raw body → fetch the subscription fresh from Stripe (events can arrive out of order) → in one transaction: dedupe on `stripe_events`, upsert `subscriptions`, recompute `entitlements`, audit plan changes, queue lifecycle emails (trial ending, payment failed, cancellation, receipt) in the outbox. A failure returns 500 and keeps nothing, so Stripe's retry starts clean.
+   - **Grace:** the first `invoice.payment_failed` stamps `payment_failed_at` (retries don't move it); `past_due` keeps the plan for 7 days from then; `invoice.paid` clears it. A running admin comp is never downgraded by billing.
    - The success page reads entitlements from the DB, never from the query string. `openBillingPortal()` works the same way.
-   - A nightly reconcile re-syncs active subscriptions.
+   - A nightly reconcile (`/api/cron/billing-reconcile`) re-syncs every non-canceled subscription and recomputes every entitlement, which also ends expired grace periods and covers lost webhooks. `/api/cron/release-reservations` frees tries whose request never reported back.
    - **Downgrade** marks over-limit content read-only by checks (`dishes count > limit` → block create); nothing is deleted.
 4. **Auth Pipeline (Better Auth):**
    - Email/password and Google/Apple. Email verification is required. 2FA and passkeys come from plugins.
