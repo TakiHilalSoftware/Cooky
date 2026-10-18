@@ -8,3 +8,6 @@ allowBuilds:
   # Optional native helpers of next-intl's message extractor (unused here).
   "@parcel/watcher": false
   "@swc/core": false
+  # Optional peers of better-auth's Prisma/SQLite adapters (Cooky uses Drizzle + Postgres).
+  "@prisma/client": false
+  better-sqlite3: false

@@ -1,0 +1,14 @@
+{
+  // Used only by `tsx --tsconfig scripts/tsconfig.json` for CLI scripts.
+  // Scripts run outside React's server graph, so the server-only guard is
+  // mapped to a no-op here (the app build still enforces it).
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["../src/*"],
+      "@config/*": ["../config/*"],
+      "server-only": ["../tests/setup/server-only.ts"]
+    }
+  },
+  "include": ["./**/*.ts", "./**/*.mts"]
+}
