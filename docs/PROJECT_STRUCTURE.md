@@ -11,8 +11,10 @@ cooky/
 │                                   # AGENT_RULES, SETUP_KEYS, ROADMAP, LEGACY_IMPORT
 ├── drizzle/                        # Generated SQL migrations (drizzle-kit), committed, never edited after merge
 ├── e2e/                            # Playwright specs against the production build + fresh cooky_test DB:
-│                                   # foundation, auth journey (sign-up → 2FA → devices); later onboarding, cook, plan→shop, offline list,
-│                                   # chat (2 users), billing (Stripe test mode)
+│                                   # foundation, auth journey (sign-up → 2FA → devices), billing (Stripe test mode on test
+│                                   # clocks: trial → paid → upgrade → cancel, failed payment → grace → Free, upgrade sheet →
+│                                   # Checkout); later onboarding, cook, plan→shop, offline list, chat (2 users)
+│   └── support/                    # Shared helpers: account (sign-up + confirm), checks (axe, 320 px), stripe (clocks, signed events)
 ├── messages/                       # en.json · fr.json · ar.json (UI, emails, push)
 ├── public/                         # Icons, offline.html, OG fallback image (no private data)
 ├── scripts/                        # Run with `pnpm tsx scripts/<name>.ts`
@@ -85,14 +87,17 @@ cooky/
 │   │   ├── brand/                  # Logo + zellige star geometry (decorative, aria-hidden)
 │   │   ├── feedback/               # Shared states: EmptyState, ErrorState, PageSkeleton, IconButton
 │   │   │                           # (label required → tooltip + accessible name), toastUndo (6 s)
-│   │   ├── marketing/              # Landing sections (hero, tile panel; feature cards, pricing in Phase 3)
+│   │   ├── marketing/              # Landing sections (hero, tile panel; feature cards in Phase 3)
+│   │   ├── billing/                # Pricing plans + FAQ, Plan & billing cards (plan, tries, checkout return),
+│   │   │                           # useBillingRedirect (Checkout/Portal), usePlanCopy (one wording for prices and limits)
 │   │   ├── forms/                  # TextField, PasswordInput, CodeInput, SubmitButton, FormAlert, focus/messages helpers
 │   │   ├── auth/                   # Sign-up, log-in, 2FA step, passkey log-in, reset/verify forms
 │   │   ├── security/               # Settings → Security cards (password, 2FA, passkeys, devices)
 │   │   ├── settings/               # Settings nav + section frame, Profile and Appearance cards
 │   │   ├── app-shell/              # Sidebar, bottom nav, top bar, search palette, intro modal,
 │   │   │                           # weather chip (condition → icon/animation only), unread dot
-│   │   ├── paywall/                # Upgrade sheet, tries-left meter (values from props)
+│   │   ├── paywall/                # Upgrade sheet + provider (useUpgradeSheet, useActionErrorHandler), tries-left meter
+│   │   │                           # (values from props)
 │   │   ├── offline/                # THE IndexedDB exception: list + recipe snapshot, replay queue, wipe on logout
 │   │   ├── onboarding/             # Starter-pack grid, first-week checklist
 │   │   └── <feature>/              # cook/, dishes/, planner/, shopping/, messages/, timer/, …
