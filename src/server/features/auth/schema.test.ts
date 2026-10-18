@@ -3,8 +3,9 @@ import { describe, expect, it } from "vitest";
 import en from "../../../../messages/en.json";
 
 import { checkFields } from "@/lib/forms";
+import { VALIDATION_KEYS } from "@/lib/validation-keys";
 
-import { safeNextPath, signInSchema, signUpSchema, VALIDATION_KEYS } from "./schema";
+import { safeNextPath, signInSchema, signUpSchema } from "./schema";
 
 const valid = {
   name: "Amina",

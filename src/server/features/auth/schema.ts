@@ -5,23 +5,6 @@ import { z } from "zod";
 
 import { routing } from "@/i18n/routing";
 
-/** Every message key these schemas can produce; each must exist under `validation.*`. */
-export const VALIDATION_KEYS = [
-  "emailInvalid",
-  "emailTooLong",
-  "nameRequired",
-  "nameTooLong",
-  "passwordRequired",
-  "passwordTooShort",
-  "passwordTooLong",
-  "acceptTermsRequired",
-] as const;
-export type ValidationKey = (typeof VALIDATION_KEYS)[number];
-
-export function isValidationKey(value: unknown): value is ValidationKey {
-  return typeof value === "string" && (VALIDATION_KEYS as readonly string[]).includes(value);
-}
-
 export const PASSWORD_MIN = 8;
 export const PASSWORD_MAX = 128;
 

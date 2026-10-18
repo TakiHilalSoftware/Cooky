@@ -1,9 +1,12 @@
 import "server-only";
 
+import { passkey } from "@better-auth/passkey";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { APIError, createAuthMiddleware, isAPIError } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { haveIBeenPwned } from "better-auth/plugins/haveibeenpwned";
+import { twoFactor } from "better-auth/plugins/two-factor";
 import { v7 as uuidv7 } from "uuid";
 
 import { audit } from "@/server/audit/audit";
@@ -13,9 +16,17 @@ import { env } from "@/server/env";
 import { drainSoon, enqueue } from "@/server/outbox/enqueue";
 
 import { createAccountRecords } from "./account-records";
+import { clearFailedLogins, lockedUntil, recordFailedLogin } from "./lockout";
 import { clientIp } from "./request-info";
 
 const DAY = 60 * 60 * 24;
+const SIGN_IN_EMAIL = "/sign-in/email";
+
+/** The email a sign-in request is about, normalised like Better Auth does. */
+function signInEmail(body: unknown): string | null {
+  const email = (body as { email?: unknown } | undefined)?.email;
+  return typeof email === "string" && email.length > 0 ? email.trim().toLowerCase() : null;
+}
 
 export const auth = betterAuth({
   appName: "Cooky",
@@ -48,6 +59,7 @@ export const auth = betterAuth({
       drainSoon();
     },
     onPasswordReset: async ({ user }, request) => {
+      await clearFailedLogins(user.email);
       await audit(getDb(), { actorId: user.id, action: "auth.password_reset", ip: clientIp(request) });
     },
   },
@@ -94,6 +106,27 @@ export const auth = betterAuth({
     database: { generateId: () => uuidv7() },
   },
 
+  // Progressive lockout on the password sign-in route itself, so it guards both
+  // our signIn action and direct calls to /api/auth/sign-in/email.
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path !== SIGN_IN_EMAIL) return;
+      const email = signInEmail(ctx.body);
+      if (email && (await lockedUntil(email))) {
+        throw new APIError("TOO_MANY_REQUESTS", { code: "ACCOUNT_LOCKED", message: "Too many failed attempts." });
+      }
+    }),
+    after: createAuthMiddleware(async (ctx) => {
+      if (ctx.path !== SIGN_IN_EMAIL) return;
+      const email = signInEmail(ctx.body);
+      if (!email) return;
+      const returned = ctx.context.returned;
+      if (!isAPIError(returned)) return clearFailedLogins(email);
+      const code = (returned.body as { code?: unknown } | undefined)?.code;
+      if (code === "INVALID_EMAIL_OR_PASSWORD") await recordFailedLogin(email);
+    }),
+  },
+
   databaseHooks: {
     user: {
       create: {
@@ -107,7 +140,8 @@ export const auth = betterAuth({
         after: async (session) => {
           await audit(getDb(), {
             actorId: session.userId,
-            action: "auth.login",
+            // With 2FA on, this session is replaced once the code is verified.
+            action: "auth.session_created",
             targetType: "session",
             targetId: session.id,
             ip: session.ipAddress,
@@ -129,6 +163,17 @@ export const auth = betterAuth({
 
   plugins: [
     haveIBeenPwned(),
+    twoFactor({
+      issuer: "Cooky",
+      // Code guessing is locked out by the plugin itself.
+      accountLockout: { enabled: true, maxFailedAttempts: 5, durationSeconds: 15 * 60 },
+      backupCodeOptions: { amount: 10, length: 10 },
+    }),
+    passkey({
+      rpID: new URL(env.BETTER_AUTH_URL).hostname,
+      rpName: "Cooky",
+      origin: env.BETTER_AUTH_URL,
+    }),
     // Must stay last: lets Server Actions set auth cookies.
     nextCookies(),
   ],

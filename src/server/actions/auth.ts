@@ -1,14 +1,17 @@
 "use server";
 
 import { returnServerError } from "next-safe-action";
-import { headers } from "next/headers";
+import { authRequestHeaders } from "@/server/auth/request-headers";
 
 import { redirect } from "@/i18n/navigation";
 import type { ActionErrorCode } from "@/lib/errors";
 import { auth } from "@/server/auth/auth";
 import { authErrorCode } from "@/server/auth/errors";
+import { lockedUntil } from "@/server/auth/lockout";
 import type { EmailSentResult, ResetPasswordResult, SignInResult, SignUpResult } from "@/server/features/auth/dto";
 import { emailOnlySchema, resetPasswordSchema, signInSchema, signUpSchema } from "@/server/features/auth/schema";
+import type { PasskeyLoginResult, TwoFactorCodeResult } from "@/server/features/security/dto";
+import { backupCodeSignInSchema, passkeyLoginSchema, twoFactorSignInSchema } from "@/server/features/security/schema";
 
 import { enforceBurst, publicAction, userAction } from "./_clients";
 
@@ -28,7 +31,7 @@ export const signUp = publicAction
           password: input.password,
           callbackURL: verifiedPath(input.locale),
         },
-        headers: await headers(),
+        headers: await authRequestHeaders(),
       });
     } catch (error) {
       const code = authErrorCode(error);
@@ -46,29 +49,39 @@ export const signIn = publicAction
   .action(async ({ parsedInput: input, ctx }): Promise<SignInResult> => {
     await enforceBurst("signInIp", ctx.ip);
     await enforceBurst("signInAccount", input.email);
+    let result: unknown;
     try {
-      await auth.api.signInEmail({
+      result = await auth.api.signInEmail({
         body: {
           email: input.email,
           password: input.password,
           rememberMe: true,
           callbackURL: verifiedPath(input.locale),
         },
-        headers: await headers(),
+        headers: await authRequestHeaders(),
       });
     } catch (error) {
       const code = authErrorCode(error);
       if (code === "INVALID_EMAIL_OR_PASSWORD") return { status: "invalid_credentials" };
       if (code === "EMAIL_NOT_VERIFIED") return { status: "verify_email" };
+      if (code === "ACCOUNT_LOCKED") {
+        const until = await lockedUntil(input.email);
+        return { status: "locked", retryAt: until?.toISOString() ?? null };
+      }
       if (code === "RATE_LIMITED") returnServerError<ActionErrorCode>("rate_limited");
       throw error;
+    }
+    // Password was right but the account has 2FA: continue on the code step.
+    if ((result as { twoFactorRedirect?: unknown } | null)?.twoFactorRedirect === true) {
+      const query = input.next ? `?next=${encodeURIComponent(input.next)}` : "";
+      return redirect({ href: `/two-factor${query}`, locale: input.locale });
     }
     // `next` is validated as an internal path by the schema.
     return redirect({ href: input.next ?? "/settings", locale: input.locale });
   });
 
 export const signOut = userAction.metadata({ actionName: "signOut" }).action(async () => {
-  await auth.api.signOut({ headers: await headers() });
+  await auth.api.signOut({ headers: await authRequestHeaders() });
 });
 
 export const resendVerification = publicAction
@@ -110,4 +123,76 @@ export const resetPassword = publicAction
       throw error;
     }
     return { status: "reset" };
+  });
+
+/** Maps the 2FA plugin's failures during sign-in to what the code page explains. */
+function twoFactorFailure(error: unknown): TwoFactorCodeResult {
+  const code = authErrorCode(error);
+  if (code === "INVALID_CODE" || code === "INVALID_BACKUP_CODE") return { status: "invalid_code" };
+  if (code === "INVALID_TWO_FACTOR_COOKIE") return { status: "expired" };
+  if (
+    code === "ACCOUNT_TEMPORARILY_LOCKED" ||
+    code === "TOO_MANY_ATTEMPTS_REQUEST_NEW_CODE" ||
+    code === "RATE_LIMITED"
+  ) {
+    return { status: "locked" };
+  }
+  throw error;
+}
+
+/** Second step of signing in: the 6-digit code from the authenticator app. */
+export const verifyTwoFactorCode = publicAction
+  .metadata({ actionName: "verifyTwoFactorCode" })
+  .inputSchema(twoFactorSignInSchema)
+  .action(async ({ parsedInput: input, ctx }): Promise<TwoFactorCodeResult> => {
+    await enforceBurst("signInIp", ctx.ip);
+    try {
+      await auth.api.verifyTOTP({
+        body: { code: input.code, trustDevice: input.trustDevice },
+        headers: await authRequestHeaders(),
+      });
+    } catch (error) {
+      return twoFactorFailure(error);
+    }
+    return redirect({ href: input.next ?? "/settings", locale: input.locale });
+  });
+
+/** Second step of signing in when the phone isn't at hand: a one-time backup code. */
+export const verifyBackupCode = publicAction
+  .metadata({ actionName: "verifyBackupCode" })
+  .inputSchema(backupCodeSignInSchema)
+  .action(async ({ parsedInput: input, ctx }): Promise<TwoFactorCodeResult> => {
+    await enforceBurst("signInIp", ctx.ip);
+    try {
+      await auth.api.verifyBackupCode({ body: { code: input.code }, headers: await authRequestHeaders() });
+    } catch (error) {
+      return twoFactorFailure(error);
+    }
+    return redirect({ href: input.next ?? "/settings", locale: input.locale });
+  });
+
+/** Step 1 of passkey sign-in: options for the browser's passkey prompt. */
+export const passkeyLoginOptions = publicAction
+  .metadata({ actionName: "passkeyLoginOptions" })
+  .action(async ({ ctx }) => {
+    await enforceBurst("signInIp", ctx.ip);
+    return auth.api.generatePasskeyAuthenticationOptions({ headers: await authRequestHeaders() });
+  });
+
+/** Step 2: verifies the passkey and signs in (a passkey already counts as two factors). */
+export const passkeyLogin = publicAction
+  .metadata({ actionName: "passkeyLogin" })
+  .inputSchema(passkeyLoginSchema)
+  .action(async ({ parsedInput: input, ctx }): Promise<PasskeyLoginResult> => {
+    await enforceBurst("signInIp", ctx.ip);
+    try {
+      await auth.api.verifyPasskeyAuthentication({
+        body: { response: input.response },
+        headers: await authRequestHeaders(),
+      });
+    } catch (error) {
+      if (authErrorCode(error) !== null) return { status: "not_recognised" };
+      throw error;
+    }
+    return redirect({ href: input.next ?? "/settings", locale: input.locale });
   });

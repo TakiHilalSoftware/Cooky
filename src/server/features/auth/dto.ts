@@ -6,7 +6,9 @@ export type SignUpResult = { status: "check_email" } | { status: "password_compr
 export type SignInResult =
   | { status: "invalid_credentials" }
   /** The account exists but isn't verified yet; a fresh link was just sent. */
-  | { status: "verify_email" };
+  | { status: "verify_email" }
+  /** Too many wrong passwords for this email; try again after `retryAt` (ISO time). */
+  | { status: "locked"; retryAt: string | null };
 
 /** Always the same answer, whether or not an account exists. */
 export type EmailSentResult = { status: "sent" };
