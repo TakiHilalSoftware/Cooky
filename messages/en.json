@@ -267,7 +267,8 @@
     "nav": {
       "account": "Profile & appearance",
       "security": "Security",
-      "billing": "Plan & billing"
+      "billing": "Plan & billing",
+      "data": "Your data"
     },
     "security": {
       "title": "Security",
@@ -453,7 +454,9 @@
     "timerInvalid": "Use whole minutes, up to 1,440 (24 hours).",
     "nutritionInvalid": "Use a number of 0 or more.",
     "noteTooLong": "Keep your note under 2,000 characters.",
-    "duplicate": "Each choice can only be picked once."
+    "duplicate": "Each choice can only be picked once.",
+    "collectionNameRequired": "Give the collection a name.",
+    "collectionNameTooLong": "Keep the name under 60 characters."
   },
   "plans": {
     "free": {
@@ -875,5 +878,76 @@
       "readOnlyBody": "You have {count} dishes and your plan holds {limit}. Remove some or upgrade to add new ones.",
       "back": "Back to my dishes"
     }
+  },
+  "collections": {
+    "label": "Collections",
+    "all": "All dishes",
+    "count": "{count, plural, =0 {No dishes} one {# dish} other {# dishes}}",
+    "new": "New collection",
+    "newTitle": "New collection",
+    "newBody": "Group dishes you cook together, like “Quick weeknights” or “Ramadan”.",
+    "nameLabel": "Name",
+    "namePlaceholder": "Quick weeknights",
+    "create": "Create",
+    "creating": "Creating…",
+    "created": "“{name}” created",
+    "nameTaken": "You already have a collection with that name.",
+    "options": "Options for {name}",
+    "rename": "Rename",
+    "renameTitle": "Rename “{name}”",
+    "save": "Save",
+    "saving": "Saving…",
+    "renamed": "Renamed to “{name}”",
+    "delete": "Delete collection",
+    "deleted": "“{name}” deleted. Its dishes stay in your box.",
+    "restored": "“{name}” is back",
+    "emptyTitle": "Nothing in “{name}” yet",
+    "emptyBody": "Open a dish and use “Collections” to put it here.",
+    "allowance": "{count} of {limit} collections",
+    "atCap": "Your plan holds {limit} collections. Upgrade for as many as you like.",
+    "dishLabel": "In collections",
+    "manage": "Collections",
+    "manageLabel": "Choose collections for {name}",
+    "dialogTitle": "Collections for “{name}”",
+    "dialogBody": "Pick where this dish belongs. It stays in your box either way.",
+    "none": "No collections yet. Create your first one below.",
+    "newInline": "New collection name",
+    "add": "Add",
+    "saved": "Collections updated"
+  },
+  "backup": {
+    "title": "Your data",
+    "subtitle": "Back up your recipes, or bring them back from a backup.",
+    "exportHeading": "Back up your recipes",
+    "exportBody": "Download every dish in your box, with ingredients, steps, notes, favorites and collections, as one file you can keep or import later.",
+    "exportButton": "Download backup ({count, plural, one {# dish} other {# dishes}})",
+    "exporting": "Preparing…",
+    "exported": "Backup downloaded",
+    "exportEmpty": "Your box is empty, so there's nothing to back up yet.",
+    "importHeading": "Import a backup",
+    "importBody": "Bring dishes back from a Cooky backup file (up to 500 dishes, 5 MB). Dishes you already have are skipped.",
+    "importButton": "Choose a backup file",
+    "importing": "Uploading…",
+    "importPaid": "Importing a backup is part of Plus and Pro.",
+    "importHint": "Only .json files downloaded from Cooky work here.",
+    "problem": {
+      "not_json": "That file isn't a Cooky backup. Choose the .json file you downloaded from Cooky.",
+      "wrong_format": "This isn't a Cooky backup, or it comes from a newer version of Cooky.",
+      "too_many": "A backup can hold up to 500 dishes, and this one has more.",
+      "too_large": "That file is over 5 MB. Choose a smaller backup.",
+      "empty": "This backup has no dishes in it."
+    },
+    "busy": "An import is already running. Wait for it to finish, then try again.",
+    "queued": "Importing {count, plural, one {# dish} other {# dishes}}…",
+    "runningTitle": "Importing your recipes…",
+    "runningBody": "This can take a minute. You can leave this page; the import keeps going.",
+    "doneTitle": "Last import: {count, plural, =0 {nothing new} one {# dish added} other {# dishes added}}",
+    "doneOf": "{count, plural, one {from a backup of # dish} other {from a backup of # dishes}}, {date}",
+    "skippedDuplicate": "{count, plural, one {# was already in your box} other {# were already in your box}}",
+    "skippedFull": "{count, plural, one {# didn't fit your plan's dish limit} other {# didn't fit your plan's dish limit}}",
+    "skippedInvalid": "{count, plural, one {# couldn't be read} other {# couldn't be read}}",
+    "failedTitle": "The last import didn't finish",
+    "failedBody": "Try again with the same file. Dishes that were already added won't be duplicated.",
+    "viewDishes": "See my dishes"
   }
 }

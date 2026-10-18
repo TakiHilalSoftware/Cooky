@@ -267,7 +267,8 @@
     "nav": {
       "account": "Profil et apparence",
       "security": "Sécurité",
-      "billing": "Formule et facturation"
+      "billing": "Formule et facturation",
+      "data": "Vos données"
     },
     "security": {
       "title": "Sécurité",
@@ -453,7 +454,9 @@
     "timerInvalid": "Indiquez des minutes entières, jusqu’à 1 440 (24 heures).",
     "nutritionInvalid": "Indiquez un nombre supérieur ou égal à 0.",
     "noteTooLong": "Votre note doit faire moins de 2 000 caractères.",
-    "duplicate": "Chaque choix ne peut être sélectionné qu’une fois."
+    "duplicate": "Chaque choix ne peut être sélectionné qu’une fois.",
+    "collectionNameRequired": "Donnez un nom à la collection.",
+    "collectionNameTooLong": "Le nom doit faire moins de 60 caractères."
   },
   "plans": {
     "free": {
@@ -875,5 +878,76 @@
       "readOnlyBody": "Vous avez {count} plats et votre formule en permet {limit}. Supprimez-en ou changez de formule pour en ajouter.",
       "back": "Retour à mes plats"
     }
+  },
+  "collections": {
+    "label": "Collections",
+    "all": "Tous les plats",
+    "count": "{count, plural, =0 {Aucun plat} one {# plat} other {# plats}}",
+    "new": "Nouvelle collection",
+    "newTitle": "Nouvelle collection",
+    "newBody": "Regroupez les plats que vous cuisinez ensemble, par exemple « Soirs pressés » ou « Ramadan ».",
+    "nameLabel": "Nom",
+    "namePlaceholder": "Soirs pressés",
+    "create": "Créer",
+    "creating": "Création…",
+    "created": "« {name} » créée",
+    "nameTaken": "Vous avez déjà une collection avec ce nom.",
+    "options": "Options pour {name}",
+    "rename": "Renommer",
+    "renameTitle": "Renommer « {name} »",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "renamed": "Renommée en « {name} »",
+    "delete": "Supprimer la collection",
+    "deleted": "« {name} » supprimée. Ses plats restent dans votre boîte.",
+    "restored": "« {name} » est de retour",
+    "emptyTitle": "Rien dans « {name} » pour l’instant",
+    "emptyBody": "Ouvrez un plat et utilisez « Collections » pour l’ajouter ici.",
+    "allowance": "{count} collections sur {limit}",
+    "atCap": "Votre formule permet {limit} collections. Passez à une formule supérieure pour en avoir autant que vous voulez.",
+    "dishLabel": "Dans les collections",
+    "manage": "Collections",
+    "manageLabel": "Choisir les collections de {name}",
+    "dialogTitle": "Collections de « {name} »",
+    "dialogBody": "Choisissez où ranger ce plat. Il reste dans votre boîte dans tous les cas.",
+    "none": "Pas encore de collection. Créez la première ci-dessous.",
+    "newInline": "Nom de la nouvelle collection",
+    "add": "Ajouter",
+    "saved": "Collections mises à jour"
+  },
+  "backup": {
+    "title": "Vos données",
+    "subtitle": "Sauvegardez vos recettes, ou récupérez-les depuis une sauvegarde.",
+    "exportHeading": "Sauvegarder vos recettes",
+    "exportBody": "Téléchargez tous les plats de votre boîte, avec ingrédients, étapes, notes, favoris et collections, dans un seul fichier à garder ou à importer plus tard.",
+    "exportButton": "Télécharger la sauvegarde ({count, plural, one {# plat} other {# plats}})",
+    "exporting": "Préparation…",
+    "exported": "Sauvegarde téléchargée",
+    "exportEmpty": "Votre boîte est vide : il n’y a rien à sauvegarder pour l’instant.",
+    "importHeading": "Importer une sauvegarde",
+    "importBody": "Récupérez des plats depuis un fichier de sauvegarde Cooky (jusqu’à 500 plats, 5 Mo). Les plats que vous avez déjà sont ignorés.",
+    "importButton": "Choisir un fichier de sauvegarde",
+    "importing": "Envoi…",
+    "importPaid": "L’import de sauvegarde fait partie de Plus et Pro.",
+    "importHint": "Seuls les fichiers .json téléchargés depuis Cooky fonctionnent ici.",
+    "problem": {
+      "not_json": "Ce fichier n’est pas une sauvegarde Cooky. Choisissez le fichier .json téléchargé depuis Cooky.",
+      "wrong_format": "Ce n’est pas une sauvegarde Cooky, ou elle vient d’une version plus récente de Cooky.",
+      "too_many": "Une sauvegarde peut contenir jusqu’à 500 plats, et celle-ci en a plus.",
+      "too_large": "Ce fichier dépasse 5 Mo. Choisissez une sauvegarde plus petite.",
+      "empty": "Cette sauvegarde ne contient aucun plat."
+    },
+    "busy": "Un import est déjà en cours. Attendez qu’il se termine, puis réessayez.",
+    "queued": "Import de {count, plural, one {# plat} other {# plats}}…",
+    "runningTitle": "Import de vos recettes…",
+    "runningBody": "Cela peut prendre une minute. Vous pouvez quitter cette page : l’import continue.",
+    "doneTitle": "Dernier import : {count, plural, =0 {rien de nouveau} one {# plat ajouté} other {# plats ajoutés}}",
+    "doneOf": "{count, plural, one {depuis une sauvegarde de # plat} other {depuis une sauvegarde de # plats}}, {date}",
+    "skippedDuplicate": "{count, plural, one {# était déjà dans votre boîte} other {# étaient déjà dans votre boîte}}",
+    "skippedFull": "{count, plural, one {# dépassait la limite de plats de votre formule} other {# dépassaient la limite de plats de votre formule}}",
+    "skippedInvalid": "{count, plural, one {# n’a pas pu être lu} other {# n’ont pas pu être lus}}",
+    "failedTitle": "Le dernier import ne s’est pas terminé",
+    "failedBody": "Réessayez avec le même fichier. Les plats déjà ajoutés ne seront pas dupliqués.",
+    "viewDishes": "Voir mes plats"
   }
 }

@@ -31,6 +31,8 @@ export const VALIDATION_KEYS = [
   "nutritionInvalid",
   "noteTooLong",
   "duplicate",
+  "collectionNameRequired",
+  "collectionNameTooLong",
 ] as const;
 
 export type ValidationKey = (typeof VALIDATION_KEYS)[number];
