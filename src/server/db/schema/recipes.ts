@@ -12,7 +12,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-import { COURSES, DIETARY_TAGS, DIFFICULTIES, SEASONS, UNITS } from "@/lib/dishes";
+import { AISLES, COURSES, DIETARY_TAGS, DIFFICULTIES, SEASONS, UNITS } from "@/lib/dishes";
 
 import { id, timestamps } from "./_columns";
 import { user } from "./auth";
@@ -22,6 +22,36 @@ export const courseEnum = pgEnum("course", COURSES);
 export const seasonEnum = pgEnum("season", SEASONS);
 export const dietaryTagEnum = pgEnum("dietary_tag", DIETARY_TAGS);
 export const unitEnum = pgEnum("unit", UNITS);
+export const aisleEnum = pgEnum("aisle", AISLES);
+
+/**
+ * The ingredient dictionary (ARCHITECTURE §4.3): everyday staples in EN/FR/AR
+ * with regional variants, seeded by scripts/seed-ingredients.ts. `search` holds
+ * every name and variant, normalized by the matching service, for autocomplete.
+ */
+export const ingredients = pgTable(
+  "ingredients",
+  {
+    id: id(),
+    /** Stable seed key, e.g. "tomato". */
+    slug: text("slug").notNull().unique(),
+    nameEn: text("name_en").notNull(),
+    nameFr: text("name_fr").notNull(),
+    nameAr: text("name_ar").notNull(),
+    /** Other names people use: plurals, regional words (Maghreb, Mashreq), spellings. */
+    variants: text("variants")
+      .array()
+      .notNull()
+      .default(sql`'{}'`),
+    aisle: aisleEnum("aisle").notNull(),
+    defaultUnit: unitEnum("default_unit"),
+    /** "Most kitchens have this" (salt, oil): suggested first, and skipped by the shopping list later. */
+    isCommonStaple: boolean("is_common_staple").notNull().default(false),
+    search: text("search").notNull(),
+    ...timestamps,
+  },
+  (t) => [index("ingredients_search_trgm_idx").using("gin", sql`${t.search} gin_trgm_ops`)],
+);
 
 /**
  * A dish in someone's recipe box (ARCHITECTURE §4.3). Columns for photos,
@@ -75,9 +105,14 @@ export const dishIngredients = pgTable(
     amount: numeric("amount", { precision: 10, scale: 3, mode: "number" }),
     unit: unitEnum("unit"),
     note: text("note"),
+    /** The dictionary entry this line is, when the name matches one (set on save). */
+    ingredientId: uuid("ingredient_id").references(() => ingredients.id, { onDelete: "set null" }),
     ...timestamps,
   },
-  (t) => [index("dish_ingredients_dish_id_idx").on(t.dishId, t.position)],
+  (t) => [
+    index("dish_ingredients_dish_id_idx").on(t.dishId, t.position),
+    index("dish_ingredients_ingredient_id_idx").on(t.ingredientId),
+  ],
 );
 
 export const dishSteps = pgTable(

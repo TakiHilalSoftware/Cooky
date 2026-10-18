@@ -57,3 +57,20 @@ export const DISH_BOUNDS = {
   caloriesMax: 10_000,
   macroMax: 1000,
 } as const;
+
+/** Supermarket aisles: the shopping list groups by these (Phase 5). */
+export const AISLES = [
+  "produce",
+  "meat_fish",
+  "dairy_eggs",
+  "bakery",
+  "grains_pasta",
+  "canned_jars",
+  "spices",
+  "oils_condiments",
+  "baking",
+  "frozen",
+  "drinks",
+  "other",
+] as const;
+export type Aisle = (typeof AISLES)[number];
