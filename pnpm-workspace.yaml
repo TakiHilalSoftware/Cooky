@@ -1,0 +1,10 @@
+saveExact: true
+
+# Only packages that genuinely need install scripts may run them.
+allowBuilds:
+  sharp: false
+  unrs-resolver: false
+  esbuild: true
+  # Optional native helpers of next-intl's message extractor (unused here).
+  "@parcel/watcher": false
+  "@swc/core": false
