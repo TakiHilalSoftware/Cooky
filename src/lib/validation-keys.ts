@@ -15,6 +15,22 @@ export const VALIDATION_KEYS = [
   "backupCodeFormat",
   "passkeyNameRequired",
   "passkeyNameTooLong",
+  "dishNameRequired",
+  "dishNameTooLong",
+  "servingsRange",
+  "ingredientsRequired",
+  "tooManyIngredients",
+  "ingredientNameRequired",
+  "ingredientNameTooLong",
+  "ingredientNoteTooLong",
+  "amountInvalid",
+  "tooManySteps",
+  "stepTextRequired",
+  "stepTextTooLong",
+  "timerInvalid",
+  "nutritionInvalid",
+  "noteTooLong",
+  "duplicate",
 ] as const;
 
 export type ValidationKey = (typeof VALIDATION_KEYS)[number];
