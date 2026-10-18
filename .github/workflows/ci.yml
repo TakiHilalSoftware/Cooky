@@ -12,7 +12,21 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      # Integration tests and the E2E build use a throwaway test database.
+      TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/cooky_test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/cooky_test
+      DATABASE_URL_UNPOOLED: postgres://postgres:postgres@localhost:5432/cooky_test
+      BETTER_AUTH_SECRET: ci-only-secret-ci-only-secret-ci-only-secret-0000
     steps:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
@@ -24,11 +38,12 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - run: pnpm test:integration
       - run: pnpm format:check
       - run: pnpm build
       - name: Fail if a secret prefix reached client bundles
         run: |
-          if grep -rEl "sk_live_|sk_test_|whsec_|re_[A-Za-z0-9]{20}|DATABASE_URL" .next/static; then
+          if grep -rEl "sk_live_|sk_test_|whsec_|re_[A-Za-z0-9]{20}|DATABASE_URL|BETTER_AUTH_SECRET" .next/static; then
             echo "::error::Secret-looking value found in client bundles"; exit 1
           fi
       - run: pnpm exec playwright install --with-deps chromium

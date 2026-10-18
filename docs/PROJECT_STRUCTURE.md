@@ -10,7 +10,8 @@ cooky/
 ├── docs/                           # README (index), PRD, ARCHITECTURE, PROJECT_STRUCTURE,
 │                                   # AGENT_RULES, SETUP_KEYS, ROADMAP, LEGACY_IMPORT
 ├── drizzle/                        # Generated SQL migrations (drizzle-kit), committed, never edited after merge
-├── e2e/                            # Playwright specs: auth, onboarding, cook, plan→shop, offline list,
+├── e2e/                            # Playwright specs against the production build + fresh cooky_test DB:
+│                                   # foundation, auth journey (sign-up → 2FA → devices); later onboarding, cook, plan→shop, offline list,
 │                                   # chat (2 users), billing (Stripe test mode)
 ├── messages/                       # en.json · fr.json · ar.json (UI, emails, push)
 ├── public/                         # Icons, offline.html, OG fallback image (no private data)
