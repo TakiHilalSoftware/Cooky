@@ -5,7 +5,8 @@ import { cache } from "react";
 
 import { getSession } from "@/server/auth/session";
 import { getDb, type Executor } from "@/server/db/client";
-import { dishes, dishIngredients, dishNotes, dishSteps, favorites } from "@/server/db/schema";
+import { collectionDishes, dishes, dishIngredients, dishNotes, dishSteps, favorites } from "@/server/db/schema";
+import { loadCollectionAllowance, loadCollections, loadDishCollectionIds } from "@/server/features/collections/queries";
 import { getEntitlement, limitFor } from "@/server/quota/entitlement";
 import { matches } from "@/server/features/ingredients/service";
 
@@ -47,6 +48,13 @@ async function dishesMatching(userId: string, wanted: string): Promise<string[]>
   return [...new Set([...named, ...lines].filter((row) => matches(row.name, wanted)).map((row) => row.dishId))];
 }
 
+/**
+ * The outer dish's id, always table-qualified: inside a correlated subquery an
+ * unqualified "id" would mean the subquery's own table (Drizzle drops the
+ * table name when a query has a single table in FROM).
+ */
+const outerDishId = sql`${dishes}.${sql.identifier("id")}`;
+
 /** My Dishes: the caller's box, filtered, most recently changed first. */
 export const listMyDishes = cache(async (filters: DishListFilters): Promise<DishListDto | null> => {
   const session = await getSession();
@@ -55,7 +63,13 @@ export const listMyDishes = cache(async (filters: DishListFilters): Promise<Dish
   const db = getDb();
 
   const own = and(eq(dishes.userId, userId), isNull(dishes.deletedAt));
-  const matching = filters.q ? await dishesMatching(userId, filters.q) : [];
+  const [matching, userCollections, collectionAllowance] = await Promise.all([
+    filters.q ? dishesMatching(userId, filters.q) : Promise.resolve([]),
+    loadCollections(userId),
+    loadCollectionAllowance(userId),
+  ]);
+  // Someone else's (or a deleted) collection id simply isn't a filter.
+  const activeCollection = userCollections.find((c) => c.id === filters.collection) ?? null;
   const search = filters.q
     ? or(
         // The name or an ingredient matches ("lentils" finds the soup)…
@@ -74,11 +88,11 @@ export const listMyDishes = cache(async (filters: DishListFilters): Promise<Dish
       servings: dishes.servings,
       dietaryTags: dishes.dietaryTags,
       favorite: sql<boolean>`${favorites.dishId} is not null`,
-      ingredientCount: sql<number>`(select count(*)::int from ${dishIngredients} where ${dishIngredients.dishId} = ${dishes.id})`,
-      stepCount: sql<number>`(select count(*)::int from ${dishSteps} where ${dishSteps.dishId} = ${dishes.id})`,
+      ingredientCount: sql<number>`(select count(*)::int from ${dishIngredients} where ${dishIngredients.dishId} = ${outerDishId})`,
+      stepCount: sql<number>`(select count(*)::int from ${dishSteps} where ${dishSteps.dishId} = ${outerDishId})`,
       timerSeconds: sql<
         number | null
-      >`(select sum(${dishSteps.timerSeconds})::int from ${dishSteps} where ${dishSteps.dishId} = ${dishes.id})`,
+      >`(select sum(${dishSteps.timerSeconds})::int from ${dishSteps} where ${dishSteps.dishId} = ${outerDishId})`,
     })
     .from(dishes)
     .leftJoin(favorites, and(eq(favorites.dishId, dishes.id), eq(favorites.userId, userId)))
@@ -87,6 +101,15 @@ export const listMyDishes = cache(async (filters: DishListFilters): Promise<Dish
         own,
         filters.course ? eq(dishes.course, filters.course) : undefined,
         filters.favorites ? sql`${favorites.dishId} is not null` : undefined,
+        activeCollection
+          ? inArray(
+              dishes.id,
+              db
+                .select({ id: collectionDishes.dishId })
+                .from(collectionDishes)
+                .where(eq(collectionDishes.collectionId, activeCollection.id)),
+            )
+          : undefined,
         search,
       ),
     )
@@ -100,6 +123,9 @@ export const listMyDishes = cache(async (filters: DishListFilters): Promise<Dish
     })),
     total: allowance.count,
     allowance,
+    collections: userCollections,
+    collectionAllowance,
+    activeCollection,
   };
 });
 
@@ -157,20 +183,24 @@ export const getDish = cache(async (dishId: string, servings?: number): Promise<
   if (!dish) return null;
 
   const db = getDb();
-  const [contents, [note], [favorite], allowance] = await Promise.all([
-    loadContents(dish.id),
-    db
-      .select({ text: dishNotes.text })
-      .from(dishNotes)
-      .where(and(eq(dishNotes.dishId, dish.id), eq(dishNotes.userId, userId)))
-      .limit(1),
-    db
-      .select({ dishId: favorites.dishId })
-      .from(favorites)
-      .where(and(eq(favorites.dishId, dish.id), eq(favorites.userId, userId)))
-      .limit(1),
-    loadDishAllowance(userId),
-  ]);
+  const [contents, [note], [favorite], allowance, collectionIds, userCollections, collectionAllowance] =
+    await Promise.all([
+      loadContents(dish.id),
+      db
+        .select({ text: dishNotes.text })
+        .from(dishNotes)
+        .where(and(eq(dishNotes.dishId, dish.id), eq(dishNotes.userId, userId)))
+        .limit(1),
+      db
+        .select({ dishId: favorites.dishId })
+        .from(favorites)
+        .where(and(eq(favorites.dishId, dish.id), eq(favorites.userId, userId)))
+        .limit(1),
+      loadDishAllowance(userId),
+      loadDishCollectionIds(userId, dish.id),
+      loadCollections(userId),
+      loadCollectionAllowance(userId),
+    ]);
 
   const shownServings = servings ?? dish.servings;
   const nutrition = { caloriesKcal: dish.caloriesKcal, proteinG: dish.proteinG, carbsG: dish.carbsG, fatG: dish.fatG };
@@ -192,6 +222,9 @@ export const getDish = cache(async (dishId: string, servings?: number): Promise<
     favorite: Boolean(favorite),
     note: note?.text ?? null,
     readOnly: allowance.readOnly,
+    collectionIds,
+    collections: userCollections,
+    collectionAllowance,
   };
 });
 

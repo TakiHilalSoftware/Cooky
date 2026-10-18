@@ -73,6 +73,7 @@ export const dishListFiltersSchema = z.object({
     .optional()
     .catch(undefined)
     .transform((v) => v === "1"),
+  collection: z.uuid().optional().catch(undefined),
   /** Just deleted from its page: the box offers Undo for it. */
   deleted: z.uuid().optional().catch(undefined),
 });

@@ -1,5 +1,6 @@
 // What the UI may know about dishes. Types only: safe for the UI.
 import type { Course, DietaryTag, Difficulty, Season, Unit } from "@/lib/dishes";
+import type { CollectionAllowanceDto, CollectionDto } from "@/server/features/collections/dto";
 
 /** How many dishes the plan holds, and what that allows right now. */
 export type DishAllowanceDto = {
@@ -30,6 +31,10 @@ export type DishListDto = {
   /** All dishes in the box, regardless of filters (to tell "empty box" from "no match"). */
   total: number;
   allowance: DishAllowanceDto;
+  collections: CollectionDto[];
+  collectionAllowance: CollectionAllowanceDto;
+  /** The collection being shown, when ?collection= is one of the person's. */
+  activeCollection: CollectionDto | null;
 };
 
 export type IngredientDto = { name: string; amount: number | null; unit: Unit | null; note: string | null };
@@ -62,6 +67,11 @@ export type DishDto = {
   note: string | null;
   /** Editing is paused while the box is over the plan's limit. */
   readOnly: boolean;
+  /** The collections this dish is in. */
+  collectionIds: string[];
+  /** All the person's collections, for "Add to collection". */
+  collections: CollectionDto[];
+  collectionAllowance: CollectionAllowanceDto;
 };
 
 /** The dish as the edit form needs it (unscaled). */
