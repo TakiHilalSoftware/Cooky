@@ -19,7 +19,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "check": "pnpm lint && pnpm typecheck && pnpm test",
-    "auth:generate": "node scripts/generate-auth-schema.mjs"
+    "auth:generate": "node scripts/generate-auth-schema.mjs",
+    "admin:set": "tsx --tsconfig scripts/tsconfig.json scripts/set-admin.ts"
   },
   "dependencies": {
     "@better-auth/passkey": "1.7.10",
