@@ -4,6 +4,8 @@ import { z } from "zod";
 
 import type { ActionErrorCode } from "@/lib/errors";
 
+import { nextHeaders } from "../../../tests/setup/next-headers";
+
 const { logError, captureException, getSession, withinBurstLimit } = vi.hoisted(() => ({
   logError: vi.fn(),
   captureException: vi.fn(),
@@ -15,7 +17,7 @@ vi.mock("@/server/observability/logger", () => ({ logger: { error: logError } })
 vi.mock("@sentry/nextjs", () => ({ captureException }));
 vi.mock("@/server/auth/session", () => ({ getSession }));
 vi.mock("@/server/quota/burst", () => ({ withinBurstLimit }));
-vi.mock("next/headers", () => ({ headers: async () => new Headers({ "x-forwarded-for": "203.0.113.7, 10.0.0.1" }) }));
+vi.mock("next/headers", () => ({ headers: async () => nextHeaders({ "x-forwarded-for": "203.0.113.7, 10.0.0.1" }) }));
 
 const { publicAction, userAction } = await import("./_clients");
 

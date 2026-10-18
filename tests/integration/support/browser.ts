@@ -1,5 +1,7 @@
 import { vi } from "vitest";
 
+import { nextHeaders } from "../../setup/next-headers";
+
 /**
  * A fake browser for Server Actions: one cookie jar plus request headers.
  * `next/headers` is mocked to read from it, so actions run exactly as in a
@@ -17,11 +19,17 @@ export const browser = {
   cookieHeader() {
     return [...this.cookies].map(([k, v]) => `${k}=${v}`).join("; ");
   },
+  /** Plain Web Headers, for Requests sent to route handlers. */
   requestHeaders() {
     const h = new Headers([...this.headers]);
     const cookie = this.cookieHeader();
     if (cookie) h.set("cookie", cookie);
     return h;
+  },
+  /** Exactly what Next 16 hands to Server Actions from `await headers()`. */
+  nextRequestHeaders() {
+    const cookie = this.cookieHeader();
+    return nextHeaders({ ...Object.fromEntries(this.headers), ...(cookie ? { cookie } : {}) });
   },
   /** Stores Set-Cookie headers from a route-handler response, like a browser would. */
   absorb(response: Response) {
@@ -36,16 +44,23 @@ export const browser = {
   },
 };
 
-vi.mock("next/headers", () => ({
-  headers: async () => browser.requestHeaders(),
-  cookies: async () => ({
-    get: (name: string) => (browser.cookies.has(name) ? { name, value: browser.cookies.get(name) } : undefined),
-    getAll: () => [...browser.cookies].map(([name, value]) => ({ name, value })),
-    has: (name: string) => browser.cookies.has(name),
-    set: (name: string, value: string, options?: { maxAge?: number }) => {
-      if (value === "" || options?.maxAge === 0) browser.cookies.delete(name);
-      else browser.cookies.set(name, value);
-    },
-    delete: (name: string) => browser.cookies.delete(name),
-  }),
-}));
+function nextHeadersModule() {
+  return {
+    headers: async () => browser.nextRequestHeaders(),
+    cookies: async () => ({
+      get: (name: string) => (browser.cookies.has(name) ? { name, value: browser.cookies.get(name) } : undefined),
+      getAll: () => [...browser.cookies].map(([name, value]) => ({ name, value })),
+      has: (name: string) => browser.cookies.has(name),
+      set: (name: string, value: string, options?: { maxAge?: number }) => {
+        if (value === "" || options?.maxAge === 0) browser.cookies.delete(name);
+        else browser.cookies.set(name, value);
+      },
+      delete: (name: string) => browser.cookies.delete(name),
+    }),
+  };
+}
+
+// Better Auth's nextCookies plugin imports "next/headers.js" (with the
+// extension), a different module id from the app's "next/headers".
+vi.mock("next/headers", nextHeadersModule);
+vi.mock("next/headers.js", nextHeadersModule);

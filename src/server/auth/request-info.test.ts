@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { nextHeaders } from "../../../tests/setup/next-headers";
+
 import { clientIp, requestLocale } from "./request-info";
 
 describe("clientIp", () => {
@@ -11,6 +13,13 @@ describe("clientIp", () => {
     expect(clientIp(new Headers({ "x-real-ip": "198.51.100.2" }))).toBe("198.51.100.2");
     expect(clientIp(new Headers())).toBeNull();
     expect(clientIp(null)).toBeNull();
+  });
+
+  // Regression: Next 16 headers() returns a HeadersAdapter with its own
+  // `.headers` property; duck-typing on it crashed every public action.
+  it("reads the real object Next 16 returns from headers()", () => {
+    expect(clientIp(nextHeaders({ "x-forwarded-for": "203.0.113.7, 10.0.0.1" }))).toBe("203.0.113.7");
+    expect(requestLocale(nextHeaders({ cookie: "NEXT_LOCALE=ar" }))).toBe("ar");
   });
 
   it("reads from a Request too", () => {

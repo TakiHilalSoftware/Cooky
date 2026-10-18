@@ -8,7 +8,9 @@ type HeaderSource = Pick<Headers, "get"> | null | undefined;
 
 /** First hop of x-forwarded-for (set by Vercel), else x-real-ip. */
 export function clientIp(source: Request | HeaderSource): string | null {
-  const headers = source && "headers" in source ? source.headers : source;
+  // instanceof, not `"headers" in source`: Next 16's headers() returns a
+  // HeadersAdapter that has its own non-Headers `.headers` property.
+  const headers = source instanceof Request ? source.headers : source;
   const forwarded = headers?.get("x-forwarded-for")?.split(",")[0]?.trim();
   return forwarded || headers?.get("x-real-ip") || null;
 }
