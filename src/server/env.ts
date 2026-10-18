@@ -42,6 +42,27 @@ export const serverSchema = {
   DATABASE_URL: required(z.url()),
   DATABASE_URL_UNPOOLED: required(z.url()),
   SENTRY_AUTH_TOKEN: z.string().min(1).optional(),
+
+  // Auth (docs/SETUP_KEYS.md §2). The secret signs cookies and tokens: never rotate casually.
+  BETTER_AUTH_SECRET: required(z.string().min(32, "BETTER_AUTH_SECRET must be at least 32 characters")),
+  BETTER_AUTH_URL: strict ? z.url() : z.url().default("http://localhost:3000"),
+  CRON_SECRET: required(z.string().min(32)),
+  GOOGLE_CLIENT_ID: required(z.string().min(1)),
+  GOOGLE_CLIENT_SECRET: required(z.string().min(1)),
+  // Apple stays optional everywhere: it needs the paid developer programme.
+  APPLE_CLIENT_ID: z.string().min(1).optional(),
+  APPLE_CLIENT_SECRET: z.string().min(1).optional(),
+
+  // Email (§7). Without a key, development logs the email instead of sending it.
+  RESEND_API_KEY: required(z.string().startsWith("re_")),
+  EMAIL_FROM: required(z.string().min(3)),
+
+  // Upstash (§5, §6): burst limits and the outbox drain schedule.
+  UPSTASH_REDIS_REST_URL: required(z.url()),
+  UPSTASH_REDIS_REST_TOKEN: required(z.string().min(1)),
+  QSTASH_TOKEN: required(z.string().min(1)),
+  QSTASH_CURRENT_SIGNING_KEY: required(z.string().min(1)),
+  QSTASH_NEXT_SIGNING_KEY: required(z.string().min(1)),
 } as const;
 
 export const env = createEnv({
