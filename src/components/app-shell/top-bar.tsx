@@ -28,6 +28,11 @@ export function TopBar({ account }: TopBarProps) {
           <Logo />
         </Link>
         <div className="flex items-center gap-1">
+          {account ? (
+            <Button asChild variant="ghost" className="hidden sm:inline-flex">
+              <Link href="/dishes">{t("account.dishes")}</Link>
+            </Button>
+          ) : null}
           <Button asChild variant="ghost" className="hidden md:inline-flex">
             <Link href="/pricing">{t("common.pricing")}</Link>
           </Button>

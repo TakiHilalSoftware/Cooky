@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditCardIcon, LogOutIcon, SettingsIcon } from "lucide-react";
+import { BookOpenIcon, CreditCardIcon, LogOutIcon, SettingsIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useAction } from "next-safe-action/hooks";
 
@@ -36,8 +36,11 @@ export function AccountMenu({ account }: { account: AccountSummaryDto }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label={label} className="rounded-full">
-              <Avatar className="size-8">
+            <Button variant="ghost" size="icon" className="rounded-full">
+              {/* Named by text, not aria-label: the visible initials are decoration, and an
+                  aria-label that doesn't contain them fails WCAG 2.5.3 (label in name). */}
+              <span className="sr-only">{label}</span>
+              <Avatar aria-hidden="true" className="size-8">
                 <AvatarFallback className="bg-primary font-medium text-primary-foreground">
                   {account.initials}
                 </AvatarFallback>
@@ -55,6 +58,12 @@ export function AccountMenu({ account }: { account: AccountSummaryDto }) {
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild className="min-h-10">
+          <Link href="/dishes">
+            <BookOpenIcon aria-hidden="true" />
+            {t("dishes")}
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild className="min-h-10">
           <Link href="/settings">
             <SettingsIcon aria-hidden="true" />

@@ -21,7 +21,7 @@ export function HomeHero({ signedIn }: { signedIn: boolean }) {
           <div className="flex flex-col gap-3 pt-2 sm:flex-row">
             {signedIn ? (
               <Button asChild size="lg">
-                <Link href="/settings">{t("ctaSignedIn")}</Link>
+                <Link href="/dishes">{t("ctaSignedIn")}</Link>
               </Button>
             ) : (
               <>
