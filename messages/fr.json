@@ -864,7 +864,10 @@
       "discardTitle": "Abandonner vos modifications ?",
       "discardBody": "Ce que vous avez modifié sur cette page ne sera pas enregistré.",
       "discard": "Abandonner",
-      "keepEditing": "Continuer"
+      "keepEditing": "Continuer",
+      "suggestionsLabel": "Suggestions",
+      "yourIngredient": "Déjà utilisé",
+      "suggestionsCount": "{count, plural, one {# suggestion} other {# suggestions}}. Utilisez les flèches haut et bas, puis Entrée ou Tab pour choisir."
     },
     "newBlocked": {
       "title": "Votre boîte à recettes est pleine",

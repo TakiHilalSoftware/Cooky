@@ -864,7 +864,10 @@
       "discardTitle": "Discard your changes?",
       "discardBody": "What you changed on this page won't be saved.",
       "discard": "Discard changes",
-      "keepEditing": "Keep editing"
+      "keepEditing": "Keep editing",
+      "suggestionsLabel": "Suggestions",
+      "yourIngredient": "Used before",
+      "suggestionsCount": "{count, plural, one {# suggestion} other {# suggestions}}. Use the up and down arrows, then Enter or Tab to pick."
     },
     "newBlocked": {
       "title": "Your recipe box is full",

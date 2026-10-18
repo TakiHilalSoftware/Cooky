@@ -864,7 +864,10 @@
       "discardTitle": "تجاهل تغييراتكِ؟",
       "discardBody": "لن يُحفظ ما غيّرتِه في هذه الصفحة.",
       "discard": "تجاهل التغييرات",
-      "keepEditing": "متابعة التعديل"
+      "keepEditing": "متابعة التعديل",
+      "suggestionsLabel": "اقتراحات",
+      "yourIngredient": "استخدمتِه من قبل",
+      "suggestionsCount": "{count, plural, one {اقتراح واحد} two {اقتراحان} few {# اقتراحات} many {# اقتراحًا} other {# اقتراح}}. استخدمي السهمين للأعلى والأسفل، ثم Enter أو Tab للاختيار."
     },
     "newBlocked": {
       "title": "صندوق وصفاتكِ ممتلئ",
