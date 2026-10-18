@@ -44,23 +44,34 @@ export const publicAction = baseClient.use(async ({ next }) => {
   return next({ ctx: { ip } });
 });
 
+/** A signed-in, active account, counted against `rule`. */
+function signedIn(rule: BurstRule) {
+  return publicAction.use(async ({ next, ctx }) => {
+    const session = await getSession();
+    if (!session) returnServerError<ActionErrorCode>("unauthorized");
+    await enforceBurst(rule, session.user.id);
+    return next({
+      ctx: {
+        ip: ctx.ip,
+        user: { id: session.user.id, email: session.user.email, name: session.user.name },
+        sessionId: session.session.id,
+      },
+    });
+  });
+}
+
 /**
  * Actions for a signed-in, active account (ARCHITECTURE §5.1). The session is
  * resolved from the database; banned or pending-deletion accounts never reach
  * the handler. Every call counts against the default write burst.
  */
-export const userAction = publicAction.use(async ({ next, ctx }) => {
-  const session = await getSession();
-  if (!session) returnServerError<ActionErrorCode>("unauthorized");
-  await enforceBurst("userWrite", session.user.id);
-  return next({
-    ctx: {
-      ip: ctx.ip,
-      user: { id: session.user.id, email: session.user.email, name: session.user.name },
-      sessionId: session.session.id,
-    },
-  });
-});
+export const userAction = signedIn("userWrite");
+
+/**
+ * Read-only actions that run while someone types (autocomplete). Same session
+ * checks as userAction, with a roomier burst so typing never hits the write limit.
+ */
+export const userReadAction = signedIn("userRead");
 
 /**
  * Actions for admins only (ARCHITECTURE §5.1). The role comes from the
