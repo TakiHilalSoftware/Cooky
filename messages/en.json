@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "title": "Cooky: what do I cook today?",
+    "description": "Your recipe box, your kitchen and the weather, together. Cooky helps you decide what to cook, plan the week, shop once and cook with friends."
+  },
+  "common": {
+    "appName": "Cooky",
+    "homeLink": "Cooky home",
+    "skipToContent": "Skip to main content",
+    "loading": "Loading…",
+    "tryAgain": "Try again",
+    "backToHome": "Back to home",
+    "undo": "Undo"
+  },
+  "language": {
+    "label": "Language",
+    "tooltip": "Change language",
+    "current": "Current language",
+    "names": {
+      "en": "English",
+      "fr": "Français",
+      "ar": "العربية"
+    }
+  },
+  "theme": {
+    "label": "Theme",
+    "tooltip": "Change theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "Match my device"
+  },
+  "home": {
+    "headline": "What do I cook today?",
+    "tagline": "Plan, cook, and shop without the guesswork.",
+    "pillarsLabel": "What Cooky does",
+    "pillars": {
+      "decide": {
+        "title": "Decide in seconds",
+        "body": "Cooky ranks your own dishes by what's already in your kitchen, the season and today's weather."
+      },
+      "plan": {
+        "title": "Plan, shop, cook",
+        "body": "Plan the week, host guests, get one merged shopping list and cook step by step with timers."
+      },
+      "share": {
+        "title": "Cook with friends",
+        "body": "Share recipes with the people you choose, chat, and see what they loved."
+      }
+    },
+    "status": "Cooky is being built. Sign-up opens soon."
+  },
+  "notFound": {
+    "title": "This page isn't on the menu",
+    "description": "The link may be old or mistyped. Go back home to keep cooking."
+  },
+  "errorPage": {
+    "title": "Something went wrong on our side",
+    "description": "Nothing you did caused this, and your data is safe. Try again, or go back home."
+  },
+  "errors": {
+    "unauthorized": "Log in to continue.",
+    "forbidden": "You don't have access to this.",
+    "not_found": "We couldn't find that. It may have been removed.",
+    "invalid": "Some details need fixing. Check the highlighted fields.",
+    "rate_limited": "That was a lot at once. Wait a moment, then try again.",
+    "quota_exceeded": "You've used all your tries for this period.",
+    "plan_required": "This needs a paid plan.",
+    "conflict": "This changed somewhere else. Reload to see the latest version.",
+    "unavailable": "This isn't available right now. Try again in a moment."
+  }
+}

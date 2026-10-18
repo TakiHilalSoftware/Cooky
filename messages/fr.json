@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "title": "Cooky : qu'est-ce que je cuisine aujourd'hui ?",
+    "description": "Vos recettes, votre cuisine et la météo, réunies. Cooky vous aide à choisir quoi cuisiner, planifier la semaine, faire les courses en une fois et cuisiner entre amis."
+  },
+  "common": {
+    "appName": "Cooky",
+    "homeLink": "Accueil Cooky",
+    "skipToContent": "Aller au contenu principal",
+    "loading": "Chargement…",
+    "tryAgain": "Réessayer",
+    "backToHome": "Retour à l'accueil",
+    "undo": "Annuler"
+  },
+  "language": {
+    "label": "Langue",
+    "tooltip": "Changer de langue",
+    "current": "Langue actuelle",
+    "names": {
+      "en": "English",
+      "fr": "Français",
+      "ar": "العربية"
+    }
+  },
+  "theme": {
+    "label": "Thème",
+    "tooltip": "Changer de thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Comme mon appareil"
+  },
+  "home": {
+    "headline": "Qu'est-ce que je cuisine aujourd'hui ?",
+    "tagline": "Planifiez, cuisinez et faites vos courses sans hésiter.",
+    "pillarsLabel": "Ce que fait Cooky",
+    "pillars": {
+      "decide": {
+        "title": "Décider en quelques secondes",
+        "body": "Cooky classe vos propres plats selon ce que vous avez déjà en cuisine, la saison et la météo du jour."
+      },
+      "plan": {
+        "title": "Planifier, acheter, cuisiner",
+        "body": "Planifiez la semaine, recevez vos invités, obtenez une seule liste de courses et cuisinez étape par étape avec des minuteurs."
+      },
+      "share": {
+        "title": "Cuisiner entre amis",
+        "body": "Partagez vos recettes avec les personnes de votre choix, discutez et découvrez ce qu'elles ont aimé."
+      }
+    },
+    "status": "Cooky est en cours de création. Les inscriptions ouvrent bientôt."
+  },
+  "notFound": {
+    "title": "Cette page n'est pas au menu",
+    "description": "Le lien est peut-être ancien ou mal saisi. Revenez à l'accueil pour continuer à cuisiner."
+  },
+  "errorPage": {
+    "title": "Un problème est survenu de notre côté",
+    "description": "Vous n'y êtes pour rien et vos données sont en sécurité. Réessayez ou revenez à l'accueil."
+  },
+  "errors": {
+    "unauthorized": "Connectez-vous pour continuer.",
+    "forbidden": "Vous n'avez pas accès à cet élément.",
+    "not_found": "Introuvable. Cet élément a peut-être été supprimé.",
+    "invalid": "Certains champs sont à corriger. Vérifiez les champs signalés.",
+    "rate_limited": "Beaucoup d'actions d'un coup. Patientez un instant, puis réessayez.",
+    "quota_exceeded": "Vous avez utilisé tous vos essais pour cette période.",
+    "plan_required": "Cette fonction nécessite une offre payante.",
+    "conflict": "Cet élément a changé ailleurs. Rechargez pour voir la dernière version.",
+    "unavailable": "Indisponible pour le moment. Réessayez dans un instant."
+  }
+}
