@@ -11,6 +11,8 @@ const actions = vi.hoisted(() => ({
   resendVerification: vi.fn(),
   requestPasswordReset: vi.fn(),
   resetPassword: vi.fn(),
+  passkeyLoginOptions: vi.fn(),
+  passkeyLogin: vi.fn(),
 }));
 vi.mock("@/server/actions/auth", () => actions);
 vi.mock("@/i18n/navigation", () => ({
@@ -144,6 +146,16 @@ describe("LogInForm", () => {
     await user.type(screen.getByLabelText("Mot de passe"), "pw");
     await user.click(screen.getByRole("button", { name: "Se connecter" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Beaucoup d'actions d'un coup.");
+  });
+
+  it("tells a locked-out person when they can try again", async () => {
+    const user = userEvent.setup();
+    actions.signIn.mockResolvedValue({ data: { status: "locked", retryAt: "2026-10-18T14:05:00.000Z" } });
+    renderWithIntl(<LogInForm />);
+    await logIn(user);
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      /Too many wrong passwords. For your safety, try again after .*d/,
+    );
   });
 
   it("passes the destination along for the server to validate", async () => {
