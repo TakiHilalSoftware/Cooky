@@ -75,7 +75,9 @@ export const auth = betterAuth({
   },
 
   rateLimit: {
-    enabled: true,
+    // Production only, as Better Auth itself defaults: testing auth flows locally
+    // shouldn't lock you out. The Upstash burst limits in our actions still apply.
+    enabled: env.NODE_ENV === "production",
     storage: "database",
     window: 60,
     max: 100,

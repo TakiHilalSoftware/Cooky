@@ -28,13 +28,14 @@ let redis: Redis | undefined;
 let warned = false;
 
 /**
- * True when the caller is under the rule's limit. Without Upstash (local
- * development only; deployed builds require it) every call is allowed and a
- * warning is logged once.
+ * True when the caller is under the rule's limit. Limits apply in production
+ * only (matching Better Auth's own rate limiter), so testing flows locally
+ * never locks you out; outside production every call is allowed and a note is
+ * logged once. Deployed builds also require Upstash to be configured.
  */
 export async function withinBurstLimit(rule: BurstRule, key: string): Promise<boolean> {
-  if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
-    if (!warned) logger.warn("burst limits are off: UPSTASH_REDIS_REST_URL is not configured");
+  if (env.NODE_ENV !== "production" || !env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
+    if (!warned) logger.info({ nodeEnv: env.NODE_ENV }, "burst limits are off outside production");
     warned = true;
     return true;
   }
