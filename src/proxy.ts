@@ -1,0 +1,41 @@
+import createIntlMiddleware from "next-intl/middleware";
+import { NextRequest, type NextResponse } from "next/server";
+
+import { routing } from "@/i18n/routing";
+import { env } from "@/server/env";
+import { buildCsp } from "@/server/security/headers";
+
+const intl = createIntlMiddleware(routing);
+
+export default function proxy(request: NextRequest): NextResponse {
+  const nonce = btoa(crypto.randomUUID());
+  const csp = buildCsp({
+    nonce,
+    isDev: env.NODE_ENV === "development",
+    pusherCluster: env.NEXT_PUBLIC_PUSHER_CLUSTER,
+  });
+
+  // Next reads the nonce from the request's CSP header while rendering and
+  // stamps it on its own scripts; next-intl forwards these request headers.
+  const headers = new Headers(request.headers);
+  headers.set("x-nonce", nonce);
+  headers.set("Content-Security-Policy", csp);
+
+  const response = intl(new NextRequest(request, { headers }));
+  response.headers.set("Content-Security-Policy", csp);
+  return response;
+}
+
+export const config = {
+  matcher: [
+    {
+      // Pages only: API routes, build assets and files with an extension
+      // (icons, manifest, robots) don't need locale handling or a nonce.
+      source: "/((?!api|_next|_vercel|.*\\..*).*)",
+      missing: [
+        { type: "header", key: "next-router-prefetch" },
+        { type: "header", key: "purpose", value: "prefetch" },
+      ],
+    },
+  ],
+};
