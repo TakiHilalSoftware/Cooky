@@ -12,7 +12,7 @@ vi.mock("@/server/notify/email/send", () => ({ sendEmail }));
 const schema = await import("@/server/db/schema");
 const dishes = await import("@/server/actions/dishes");
 const { getDeletedDish, getDish, getDishForEdit, listMyDishes } = await import("@/server/features/dishes/queries");
-const { purgeDeletedDishes } = await import("@/server/features/dishes/cleanup");
+const { purgeDeleted } = await import("@/server/features/dishes/cleanup");
 
 beforeAll(() => hibp.listen({ onUnhandledFrame: "error" }));
 afterAll(() => hibp.close());
@@ -260,7 +260,7 @@ describe("deleteDish and restoreDish (Undo)", () => {
       .set({ deletedAt: new Date(Date.now() - 25 * 60 * 60 * 1000) })
       .where(eq(schema.dishes.id, old));
 
-    expect(await purgeDeletedDishes()).toBe(1);
+    expect(await purgeDeleted()).toEqual({ dishes: 1, collections: 0, imports: 0 });
     expect(await db().select({ id: schema.dishes.id }).from(schema.dishes)).toEqual([{ id: recent }]);
     expect(await db().select().from(schema.dishIngredients).where(eq(schema.dishIngredients.dishId, old))).toEqual([]);
     expect(await db().select().from(schema.favorites)).toEqual([]);
