@@ -12,14 +12,20 @@ import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 import { Link } from "@/i18n/navigation";
 import { COURSES, type Course } from "@/lib/dishes";
 
-type DishFiltersProps = { q?: string; course?: Course; favorites: boolean };
+type DishFiltersProps = {
+  q?: string;
+  course?: Course;
+  favorites: boolean;
+  /** The collection being shown: searching stays inside it. */
+  collection?: string;
+};
 
 /**
  * Search and filters live in the URL (shareable, Back works). A GET form
  * works before JavaScript loads; with it, changes apply at once and the
  * page updates without a reload.
  */
-export function DishFilters({ q, course, favorites }: DishFiltersProps) {
+export function DishFilters({ q, course, favorites, collection }: DishFiltersProps) {
   const t = useTranslations("dishes");
   const searchId = useId();
   const courseId = useId();
@@ -36,6 +42,7 @@ export function DishFilters({ q, course, favorites }: DishFiltersProps) {
       role="search"
       className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end"
     >
+      {collection ? <input type="hidden" name="collection" value={collection} /> : null}
       <div className="flex min-w-0 flex-1 flex-col gap-1.5 sm:basis-64">
         <label htmlFor={searchId} className="text-sm font-medium">
           {t("list.searchLabel")}
@@ -91,7 +98,7 @@ export function DishFilters({ q, course, favorites }: DishFiltersProps) {
         </div>
         {active ? (
           <Button asChild variant="ghost">
-            <Link href="/dishes" replace scroll={false}>
+            <Link href={collection ? `/dishes?collection=${collection}` : "/dishes"} replace scroll={false}>
               <XIcon aria-hidden="true" data-icon="inline-start" />
               {t("list.clearFilters")}
             </Link>

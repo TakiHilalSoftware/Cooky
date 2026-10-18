@@ -1,6 +1,7 @@
 import { CalendarClockIcon, ChevronLeftIcon, CircleAlertIcon, TimerIcon } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 
+import { DishCollections } from "@/components/collections/dish-collections";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/navigation";
@@ -39,6 +40,13 @@ export function DishView({ dish }: { dish: DishDto }) {
               <FavoriteButton dishId={dish.id} name={dish.name} favorite={dish.favorite} className="mt-1 shrink-0" />
             </div>
             <Tags dish={dish} />
+            <DishCollections
+              dishId={dish.id}
+              dishName={dish.name}
+              collectionIds={dish.collectionIds}
+              collections={dish.collections}
+              allowance={dish.collectionAllowance}
+            />
           </div>
           <DishActions dishId={dish.id} readOnly={dish.readOnly} />
         </header>

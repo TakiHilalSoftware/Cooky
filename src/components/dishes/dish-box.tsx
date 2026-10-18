@@ -7,6 +7,8 @@ import { Link } from "@/i18n/navigation";
 import type { DishListDto } from "@/server/features/dishes/dto";
 import type { Course } from "@/lib/dishes";
 
+import { CollectionBar } from "@/components/collections/collection-bar";
+
 import { DishCard } from "./dish-card";
 import { AddDishButton, DishAllowanceNotice } from "./dish-allowance";
 import { DeletedDishUndo } from "./deleted-dish-undo";
@@ -14,7 +16,7 @@ import { DishFilters } from "./dish-filters";
 
 type DishBoxProps = {
   list: DishListDto;
-  filters: { q?: string; course?: Course; favorites: boolean };
+  filters: { q?: string; course?: Course; favorites: boolean; collection?: string };
   /** Just deleted from its page: offer Undo. */
   deleted: { id: string; name: string } | null;
 };
@@ -22,6 +24,9 @@ type DishBoxProps = {
 /** My Dishes: header, how full the box is, filters, and the dishes (or the right empty state). */
 export function DishBox({ list, filters, deleted }: DishBoxProps) {
   const t = useTranslations("dishes.list");
+  const tc = useTranslations("collections");
+  const active = list.activeCollection;
+  const filtered = Boolean(filters.q || filters.course || filters.favorites);
 
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-8 sm:px-6 sm:py-10">
@@ -45,11 +50,23 @@ export function DishBox({ list, filters, deleted }: DishBoxProps) {
         />
       ) : (
         <>
-          <DishFilters q={filters.q} course={filters.course} favorites={filters.favorites} />
+          <CollectionBar collections={list.collections} allowance={list.collectionAllowance} active={active} />
+          <DishFilters q={filters.q} course={filters.course} favorites={filters.favorites} collection={active?.id} />
           <p aria-live="polite" className="text-sm text-muted-foreground">
             {t("results", { count: list.dishes.length })}
           </p>
-          {list.dishes.length === 0 ? (
+          {list.dishes.length === 0 && active && !filtered ? (
+            <EmptyState
+              headingLevel={2}
+              title={tc("emptyTitle", { name: active.name })}
+              description={tc("emptyBody")}
+              action={
+                <Button asChild variant="outline" size="lg">
+                  <Link href="/dishes">{tc("all")}</Link>
+                </Button>
+              }
+            />
+          ) : list.dishes.length === 0 ? (
             <EmptyState
               headingLevel={2}
               illustration={<CompassIcon aria-hidden="true" className="size-14 text-primary-strong" />}
