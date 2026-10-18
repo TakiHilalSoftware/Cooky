@@ -24,6 +24,8 @@ const boundaryRules = {
     ],
     "boundaries/files": [
       { category: "dto", pattern: "src/server/**/dto.ts" },
+      // Zod input schemas double as form hints (PROJECT_STRUCTURE: "shared with forms").
+      { category: "schema", pattern: "src/server/features/*/schema.ts" },
       // _clients.ts and friends build actions; only the action entry files are public.
       { category: "action-internals", pattern: "src/server/actions/_*.ts" },
     ],
@@ -38,7 +40,7 @@ const boundaryRules = {
             from: { element: { types: ["component", "lib", "i18n"] } },
             disallow: { to: { element: { types: ["server", "server-actions"] } } },
             message:
-              "UI code may only import Server Actions (src/server/actions/*) and DTO types (src/server/**/dto.ts).",
+              "UI code may only import Server Actions (src/server/actions/*), DTO types (src/server/**/dto.ts) and input schemas (src/server/features/*/schema.ts).",
           },
           {
             from: { element: { type: "component" } },
@@ -47,6 +49,10 @@ const boundaryRules = {
           {
             from: { element: { type: "component" } },
             allow: { to: { file: { categories: "dto" } }, dependency: { kind: "type" } },
+          },
+          {
+            from: { element: { type: "component" } },
+            allow: { to: { file: { categories: "schema" } } },
           },
           {
             from: { element: { types: ["component", "lib", "i18n"] } },

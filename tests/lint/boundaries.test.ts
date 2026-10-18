@@ -79,6 +79,10 @@ describe("server/client boundary", () => {
       "DTO types",
       'import type { ProbeDto } from "@/server/features/__boundary_probe__/dto";\nexport type X = ProbeDto;\n',
     ],
+    [
+      "input schemas (form hints)",
+      'import { signUpSchema } from "@/server/features/auth/schema";\nexport const x = signUpSchema;\n',
+    ],
     ["lib helpers", 'import { cn } from "@/lib/utils";\nexport const x = cn;\n'],
     ["UI primitives", 'import { Button } from "@/components/ui/button";\nexport const x = Button;\n'],
   ])("passes when a component imports %s", async (_what, code) => {
