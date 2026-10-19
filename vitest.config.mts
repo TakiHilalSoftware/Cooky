@@ -36,6 +36,8 @@ export default defineConfig({
           environment: "jsdom",
           include: ["src/**/*.test.tsx"],
           setupFiles: ["./tests/setup/component.ts"],
+          // Typed userEvent journeys (~60 keystrokes) run past 5 s when every jsdom worker is busy.
+          testTimeout: 15_000,
         },
       },
       {
