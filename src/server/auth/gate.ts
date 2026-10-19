@@ -4,8 +4,23 @@ import { hasLocale } from "next-intl";
 
 import { routing } from "@/i18n/routing";
 
-/** Areas that need a signed-in account. Grows as signed-in pages ship. */
-export const SIGNED_IN_AREAS = ["/settings"] as const;
+/** Areas that need a signed-in account: every page under the (app) route group. */
+export const SIGNED_IN_AREAS = [
+  "/settings",
+  "/dishes",
+  "/onboarding",
+  "/kitchen",
+  "/cook",
+  "/spin",
+  "/assistant",
+  "/planner",
+  "/calendar",
+  "/shopping",
+  "/timer",
+  "/friends",
+  "/messages",
+  "/admin",
+] as const;
 
 /**
  * The proxy's fast check (ARCHITECTURE §5.4): only whether a session cookie is

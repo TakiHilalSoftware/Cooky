@@ -14,6 +14,8 @@ const baseURL = process.env.E2E_BASE_URL ?? LOCAL_URL;
 
 export default defineConfig({
   testDir: "./e2e",
+  // Maps server-only to a no-op for the database setup (see e2e/tsconfig.json).
+  tsconfig: "./e2e/tsconfig.json",
   // A fresh cooky_test database, built from the migrations (same as integration tests).
   globalSetup: process.env.E2E_BASE_URL ? undefined : "./e2e/global-setup.ts",
   fullyParallel: true,

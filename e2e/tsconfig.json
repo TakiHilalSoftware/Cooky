@@ -1,0 +1,14 @@
+{
+  // Used by Playwright (playwright.config.ts → tsconfig). The global setup seeds
+  // the test database with server modules, outside React's server graph, so the
+  // server-only guard is a no-op here, as in scripts/ (the app build enforces it).
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["../src/*"],
+      "@config/*": ["../config/*"],
+      "server-only": ["../tests/setup/server-only.ts"]
+    }
+  },
+  "include": ["./**/*.ts", "../tests/**/*.ts", "../scripts/**/*.ts"]
+}
