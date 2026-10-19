@@ -16,7 +16,8 @@
     "copy": "Copy",
     "copied": "Copied",
     "or": "or",
-    "pricing": "Pricing"
+    "pricing": "Pricing",
+    "discover": "Discover"
   },
   "language": {
     "label": "Language",
@@ -38,25 +39,50 @@
   "home": {
     "headline": "What do I cook today?",
     "tagline": "Plan, cook, and shop without the guesswork.",
-    "pillarsLabel": "What Cooky does",
-    "pillars": {
-      "decide": {
-        "title": "Decide in seconds",
-        "body": "Cooky ranks your own dishes by what's already in your kitchen, the season and today's weather."
-      },
-      "plan": {
-        "title": "Plan, shop, cook",
-        "body": "Plan the week, host guests, get one merged shopping list and cook step by step with timers."
-      },
-      "share": {
-        "title": "Cook with friends",
-        "body": "Share recipes with the people you choose, chat, and see what they loved."
-      }
-    },
     "ctaSignUp": "Create your free account",
     "ctaLogIn": "Log in",
     "ctaSignedIn": "Open my dishes",
-    "seePricing": "See plans and pricing"
+    "seePricing": "See plans and pricing",
+    "featuresHeading": "Everything for the kitchen, in one place",
+    "comingSoon": "Coming soon",
+    "features": {
+      "dishes": {
+        "title": "My dishes",
+        "body": "Your recipes with ingredients, steps and notes, scaled to any number of guests."
+      },
+      "cook": {
+        "title": "Cook",
+        "body": "What can you make with what's in your kitchen? Your dishes, ranked by missing ingredients."
+      },
+      "spin": {
+        "title": "Spin",
+        "body": "Can't decide? Let Cooky pick tonight's dish for you."
+      },
+      "calendar": {
+        "title": "Calendar",
+        "body": "Everything you cooked and planned, day by day."
+      },
+      "planner": {
+        "title": "Planner",
+        "body": "Plan the week's meals and events in a few taps."
+      },
+      "timer": {
+        "title": "Timers",
+        "body": "Named timers that keep going, with an alarm when they ring."
+      },
+      "shopping": {
+        "title": "Shopping list",
+        "body": "One merged list for the week, sorted by aisle, that works offline."
+      },
+      "assistant": {
+        "title": "Assistant",
+        "body": "Ask what to cook, swap an ingredient or plan a menu, in plain words."
+      }
+    },
+    "discoverHeading": "Dishes to try",
+    "discoverAll": "Browse Discover",
+    "pricingHeading": "Start free, upgrade when you want more",
+    "pricingBody": "Cooking, planning and shopping are free for everyone. Paid plans add more AI help, room and ways to cook together."
   },
   "notFound": {
     "title": "This page isn't on the menu",
@@ -143,6 +169,24 @@
       "button": "View receipt",
       "expiry": "You can find all your receipts in Settings, under Plan & billing.",
       "ignore": "Didn't expect this payment? Check Plan & billing in Settings to see which plan you're on."
+    },
+    "dataExportReady": {
+      "subject": "Your Cooky data is ready",
+      "preview": "Your copy is ready to download for the next 24 hours.",
+      "heading": "Your data is ready",
+      "body": "The copy of your Cooky data you asked for is ready. Open Settings → Your data to download it.",
+      "button": "Open Your data",
+      "expiry": "The download works for 24 hours. After that, you can prepare a new copy.",
+      "ignore": "Didn't ask for this? Change your password and check your logged-in devices in Settings → Security."
+    },
+    "accountDeletionScheduled": {
+      "subject": "Your Cooky account will be deleted in 7 days",
+      "preview": "Changed your mind? Log in within 7 days to keep your account.",
+      "heading": "Your account is scheduled for deletion",
+      "body": "We've cancelled your subscription and signed you out everywhere. In 7 days your account and everything in it will be deleted for good.",
+      "button": "Log in to keep my account",
+      "expiry": "Logging in any time in the next 7 days cancels the deletion.",
+      "ignore": "Didn't ask for this? Log in now to stop it, then change your password."
     }
   },
   "auth": {
@@ -257,7 +301,8 @@
     "logIn": "Log in",
     "signUp": "Sign up",
     "billing": "Plan & billing",
-    "dishes": "My dishes"
+    "dishes": "My dishes",
+    "kitchen": "My kitchen"
   },
   "settings": {
     "title": "Settings",
@@ -268,7 +313,10 @@
       "account": "Profile & appearance",
       "security": "Security",
       "billing": "Plan & billing",
-      "data": "Your data"
+      "data": "Your data",
+      "notifications": "Notifications",
+      "privacy": "Privacy & safety",
+      "help": "Help & feedback"
     },
     "security": {
       "title": "Security",
@@ -374,7 +422,8 @@
       "saving": "Saving…",
       "saved": "Display name saved.",
       "emailLabel": "Email",
-      "emailHint": "You log in with this address."
+      "emailHint": "You log in with this address.",
+      "photoAlt": "Your profile photo"
     },
     "appearance": {
       "heading": "Appearance",
@@ -400,29 +449,274 @@
       "preview": "Plan, cook and shop without the guesswork.",
       "saved": "Saved",
       "saveFailed": "That change couldn't be saved, so it was undone. Try again."
+    },
+    "kitchen": {
+      "heading": "Kitchen",
+      "description": "Where you cook and what you eat. Cooky uses this for the weather, the season and suggestions.",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Kitchen saved",
+      "setup": "Run the starter pack again",
+      "cityNotFound": "Saved. We couldn't find “{city}” on the map, so there's no weather yet. Check the spelling or use your location."
+    },
+    "offline": {
+      "heading": "On this device",
+      "description": "For shopping without signal.",
+      "label": "Keep my shopping list and today's recipe on this device",
+      "hint": "They open even with no connection, and ticks sync when you're back. Removed when you log out.",
+      "turnedOn": "Your list will be kept on this device",
+      "turnedOff": "Removed from this device"
+    },
+    "calendarFeed": {
+      "heading": "Calendar feed",
+      "description": "See your meal plan and events in Google, Apple or Outlook Calendar.",
+      "proOnly": "The calendar feed comes with Pro.",
+      "seePlans": "See plans",
+      "yourLink": "Your private calendar link",
+      "copy": "Copy",
+      "copied": "Link copied. Add it in your calendar app as a subscription (“From URL”).",
+      "onlyOnce": "This link is shown only now. Keep it private: anyone with it can see your meal plan.",
+      "activeSince": "Your feed is on (link created {date}). Lost the link? Make a new one.",
+      "none": "No calendar link yet.",
+      "create": "Create calendar link",
+      "newLink": "Make a new link",
+      "turnOff": "Turn off",
+      "revoked": "Calendar link turned off. Calendars using it stop updating.",
+      "privacy": "Making a new link turns the old one off."
+    },
+    "notifications": {
+      "pushHeading": "Notifications on this device",
+      "pushDescription": "Get a notification when Cooky is closed, for example when a friend messages you. Each device is set up separately.",
+      "turnOn": "Turn on",
+      "turnOff": "Turn off",
+      "checking": "Checking this device…",
+      "turnedOn": "Notifications are on for this device.",
+      "turnedOff": "Notifications are off for this device.",
+      "couldNotTurnOn": "This device couldn't turn on notifications. Try again.",
+      "onHere": "On for this device. Signing out or removing this device turns them off.",
+      "offHere": "Off for this device.",
+      "blocker": {
+        "server": "Notifications aren't available on Cooky yet. In-app alerts still work while Cooky is open.",
+        "unsupported": "This browser can't show notifications. Try another browser, or install Cooky.",
+        "ios": "On iPhone and iPad, first add Cooky to your Home Screen (Share → Add to Home Screen), then open it from there and turn notifications on.",
+        "denied": "Notifications are blocked for Cooky in this browser. Allow them in the browser's site settings, then come back here."
+      },
+      "kindsHeading": "What to notify me about",
+      "kindsDescription": "Applies to all your devices. Saved as soon as you change it.",
+      "kind": {
+        "messages": {
+          "label": "Messages",
+          "hint": "When a friend sends you a message."
+        },
+        "friend_requests": {
+          "label": "Friend requests",
+          "hint": "When someone wants to be your friend."
+        },
+        "friend_accepted": {
+          "label": "Accepted requests",
+          "hint": "When someone accepts your friend request."
+        },
+        "timers": {
+          "label": "Timers",
+          "hint": "When a kitchen timer ends while Cooky is in the background."
+        },
+        "billing": {
+          "label": "Plan & billing",
+          "hint": "Trial ending, payment problems and receipts."
+        }
+      }
+    },
+    "privacy": {
+      "blockedHeading": "Blocked people",
+      "blockedDescription": "They can't find you, add you or message you, and they aren't told. Unblocking lets them find and add you again; it doesn't bring the friendship back.",
+      "noneBlocked": "You haven't blocked anyone.",
+      "unblock": "Unblock",
+      "unblockLabel": "Unblock {name}",
+      "unblocked": "{name} is unblocked."
     }
   },
   "legal": {
-    "draftNotice": "Draft summary. The full legal text is published before Cooky launches; this version is the one recorded when you sign up.",
     "version": "Version {version}",
+    "contents": "On this page",
+    "related": "See also: <terms>Terms of Service</terms> · <privacy>Privacy Policy</privacy> · <refunds>Refund policy</refunds> · <imprint>Imprint</imprint>",
+    "contactEmail": "You can reach us at {email}.",
+    "contactInApp": "You can reach us any time from Settings → Help & feedback.",
     "terms": {
       "title": "Terms of Service",
-      "points": {
-        "account": "You're responsible for your account and for keeping your password private.",
-        "content": "Recipes and notes you add stay yours. You let Cooky store and show them to the people you choose.",
-        "fairUse": "Don't misuse Cooky: no spam, abuse, or attempts to break or overload the service.",
-        "plans": "Paid plans renew until you cancel. Cancelling keeps your plan until the period ends.",
-        "changes": "If these terms change materially, we'll tell you before the new version applies."
+      "intro": "These terms are the agreement between you and Cooky when you use the app. We've kept them short and in plain words.",
+      "sections": {
+        "service": {
+          "title": "What Cooky is",
+          "body": "Cooky is a home-cooking companion: a recipe box, tools to decide what to cook, plan meals, shop and time your cooking, and a way to share recipes and chat with friends. Some features are free; others are part of the paid Plus and Pro plans described on the Pricing page."
+        },
+        "account": {
+          "title": "Your account",
+          "body": "You need to be at least 16 to create an account. Keep your password private and tell us if you think someone else is using your account. You're responsible for what happens under your account.\n\nYou can delete your account at any time from Settings → Your data."
+        },
+        "content": {
+          "title": "Your recipes and content",
+          "body": "Recipes, photos, notes, reviews and messages you add stay yours. You give Cooky permission to store them and to show them to you and to the people you choose to share them with, only to run the service.\n\nOnly add content you have the right to share. Recipes imported from a website keep a link to their source."
+        },
+        "sharing": {
+          "title": "Sharing and friends",
+          "body": "Dishes are private until you choose to share them with all your friends or with groups you pick. Friends can read a shared dish and copy it to their own recipe box. You can stop sharing, unfriend or block someone at any time."
+        },
+        "conduct": {
+          "title": "Using Cooky fairly",
+          "body": "Don't use Cooky to spam, harass or deceive anyone, to share illegal or hateful content, or to break, overload or get around the service and its limits. We may remove content or suspend accounts that break these rules. You can report a person, dish, review or message from the app."
+        },
+        "plans": {
+          "title": "Paid plans and tries",
+          "body": "Paid plans renew automatically each month or year until you cancel. Prices are shown before you pay and include tax where it applies. Some features use tries (for example the Assistant); the number of tries per period depends on your plan and is shown in the app.\n\nA free trial is offered once per account. Payments are handled by Stripe. Our Refund policy explains cancellations and refunds."
+        },
+        "availability": {
+          "title": "Availability and changes",
+          "body": "We work to keep Cooky available and your data safe, but we can't promise the service will never be interrupted. We may change or remove features; if a change takes away something you pay for, we'll tell you in advance."
+        },
+        "liability": {
+          "title": "Responsibility",
+          "body": "Cooky's suggestions (including AI suggestions, nutrition values and weather) are there to help, not to replace your own judgement. Check ingredients for allergies and food safety yourself.\n\nWe're not liable for indirect losses. Nothing in these terms limits rights you have under the law of the country you live in."
+        },
+        "ending": {
+          "title": "Ending the agreement",
+          "body": "You can stop using Cooky and delete your account whenever you want. We may suspend or close an account that seriously or repeatedly breaks these terms, and we'll tell you why unless the law prevents it."
+        },
+        "law": {
+          "title": "Applicable law",
+          "body": "These terms are governed by the law of the country where Cooky's operator is established, as shown in the Imprint, without taking away the protection of the law of the country where you live."
+        },
+        "changes": {
+          "title": "Changes to these terms",
+          "body": "If we change these terms in a way that matters, we'll tell you in the app or by email before the new version applies. The version you accepted is recorded with your account."
+        }
       }
     },
     "privacy": {
       "title": "Privacy Policy",
-      "points": {
-        "collect": "We keep only what Cooky needs: your account, your recipes and plans, and settings you choose.",
-        "never": "We never sell your data and never show other people your email address.",
-        "processors": "Trusted providers run parts of Cooky for us, such as hosting, email and payments. They act only on our instructions.",
-        "rights": "You can export everything or delete your account at any time from Settings.",
-        "cookies": "We use only the cookies Cooky needs to keep you signed in. No advertising trackers."
+      "intro": "This explains what Cooky collects, why, who helps us run it, and the choices you have. We collect as little as we can and we never sell your data.",
+      "sections": {
+        "who": {
+          "title": "Who is responsible",
+          "body": "The operator named in the Imprint is responsible for your personal data in Cooky."
+        },
+        "collect": {
+          "title": "What we collect",
+          "body": "Account: your name, email address, password (stored only as a secure hash) or your Google/Apple sign-in, and the version of these documents you accepted.\n\nWhat you add: recipes, photos, notes, ratings and reviews, your kitchen, plans, events, shopping lists, Assistant conversations, friends, groups, messages and reports.\n\nSettings: language, appearance, units, the city you set (or rough device coordinates, rounded to about 1 km, if you choose \"use my location\"), dietary preferences and notification choices.\n\nTechnical: signed-in devices (browser and system), and an IP address stored only as a keyed hash for security. Error reports leave out personal content."
+        },
+        "use": {
+          "title": "How we use it",
+          "body": "To run Cooky for you: show and sync your recipes, rank dishes, plan and shop, deliver messages and notifications, and process payments. To keep accounts safe (sign-in protection, abuse prevention) and to fix problems. We don't use your data for advertising and we don't build advertising profiles."
+        },
+        "legalBasis": {
+          "title": "Legal bases",
+          "body": "Providing the service you signed up for (contract). Keeping Cooky secure and preventing abuse (legitimate interests). Notifications and device location, only if you turn them on (consent, which you can withdraw in Settings). Keeping billing records (legal obligation)."
+        },
+        "processors": {
+          "title": "Who helps us run Cooky",
+          "body": "These providers process data for us, only on our instructions and under data processing agreements:"
+        },
+        "transfers": {
+          "title": "Transfers outside your country",
+          "body": "Some providers are based in or use servers in the United States. Where data leaves the European Economic Area, we rely on the safeguards the law requires, such as the EU Standard Contractual Clauses or the EU-US Data Privacy Framework."
+        },
+        "retention": {
+          "title": "How long we keep data",
+          "body": "Your account data is kept while you have an account. Deleted dishes and collections can be restored for a day, then are removed. Deleted message text is wiped after a day. Assistant conversations you haven't used for 90 days are removed. Data exports can be downloaded for 24 hours, then the file is deleted.\n\nWhen you delete your account, everything is removed 7 days later (you can cancel by logging in during that time), including your photos and your billing customer. Payment providers keep the invoices the law requires."
+        },
+        "rights": {
+          "title": "Your rights",
+          "body": "You can see, correct, download and delete your data. Settings → Your data lets you download a full copy and delete your account; Settings also lets you change your profile, notification choices and who can see your dishes. You can also object to processing or ask us to restrict it, and complain to your data protection authority."
+        },
+        "security": {
+          "title": "Security",
+          "body": "Data is encrypted in transit, photos are stored privately and shown only through short-lived links, passwords are hashed and checked against known breaches, and you can add two-step verification or passkeys. Other people never see your email address."
+        },
+        "cookies": {
+          "title": "Cookies",
+          "body": "Cooky uses only the cookies it needs: to keep you signed in, remember your language and keep sign-in safe. There are no advertising or tracking cookies, so there's no cookie banner. Your device may also store your theme, text size, running timers and, if you allow it, your shopping list for offline use; signing out clears the offline copy."
+        },
+        "children": {
+          "title": "Children",
+          "body": "Cooky isn't meant for children under 16, and we don't knowingly collect their data."
+        },
+        "changes": {
+          "title": "Changes to this policy",
+          "body": "If we change this policy in a way that matters, we'll tell you before it applies. The version you accepted is recorded with your account."
+        }
+      },
+      "processorTable": {
+        "caption": "Service providers that process personal data for Cooky",
+        "name": "Provider",
+        "purpose": "What for",
+        "location": "Where",
+        "purposes": {
+          "hosting": "Hosting the app",
+          "database": "Database",
+          "jobs": "Rate limits and background jobs",
+          "storage": "Photos and data exports",
+          "email": "Sending emails",
+          "payments": "Payments and invoices",
+          "realtime": "Live chat updates",
+          "ai": "AI features (Assistant, voice, import)",
+          "weather": "Weather for your city",
+          "errors": "Error reports (no personal content)",
+          "signin": "Sign in with Google or Apple"
+        }
+      }
+    },
+    "refunds": {
+      "title": "Refund policy",
+      "intro": "How cancelling, trials and refunds work for Cooky's paid plans.",
+      "sections": {
+        "summary": {
+          "title": "In short",
+          "body": "You can cancel any time. Your plan stays until the end of the period you paid for, and nothing you added is deleted when you go back to Free."
+        },
+        "cancel": {
+          "title": "Cancelling",
+          "body": "Cancel from Settings → Plan & billing. You keep your plan until the end of the current month or year, and it won't renew. Free trials can be cancelled before they end without being charged."
+        },
+        "withdrawal": {
+          "title": "Your 14-day right of withdrawal",
+          "body": "If you live in the EU or the UK, you can withdraw from a new subscription within 14 days of the first payment. Because the paid features start right away when you subscribe, we may keep an amount for the days you already used, as the law allows."
+        },
+        "request": {
+          "title": "Asking for a refund",
+          "body": "Tell us within 14 days of a payment and we'll refund it if the law requires it, or if something went wrong on our side (for example, you were charged twice). Refunds go back to the payment method you used."
+        },
+        "failed": {
+          "title": "Failed payments",
+          "body": "If a renewal payment fails, you keep your plan for 7 days while you update your card. After that, your account moves to Free."
+        },
+        "downgrade": {
+          "title": "Moving to a smaller plan",
+          "body": "Nothing is deleted. If you have more than the new plan allows (for example, more dishes), the extra stays viewable and cookable, but you can't add more until you're back under the limit or upgrade."
+        }
+      }
+    },
+    "imprint": {
+      "title": "Imprint",
+      "intro": "Who runs Cooky and how to contact us.",
+      "operatorPending": "The operator's details are published here before Cooky opens to the public.",
+      "fields": {
+        "name": "Operator",
+        "address": "Address",
+        "director": "Responsible person",
+        "registration": "Company registration",
+        "vatId": "VAT number",
+        "email": "Email"
+      },
+      "sections": {
+        "operator": {
+          "title": "Operator"
+        },
+        "contact": {
+          "title": "Contact"
+        },
+        "disputes": {
+          "title": "Consumer disputes",
+          "body": "The European Commission provides an online dispute resolution platform at https://ec.europa.eu/consumers/odr. We prefer to solve problems directly: please contact us first."
+        }
       }
     }
   },
@@ -456,7 +750,18 @@
     "noteTooLong": "Keep your note under 2,000 characters.",
     "duplicate": "Each choice can only be picked once.",
     "collectionNameRequired": "Give the collection a name.",
-    "collectionNameTooLong": "Keep the name under 60 characters."
+    "collectionNameTooLong": "Keep the name under 60 characters.",
+    "cityTooLong": "Keep the city under 80 characters.",
+    "messageRequired": "Write a message first.",
+    "messageTooLong": "Keep it under 500 characters.",
+    "invalidDate": "Pick a real date.",
+    "eventNameRequired": "Give the event a name.",
+    "eventNameTooLong": "Keep the name under 100 characters.",
+    "guestsRange": "Guests must be a whole number from 1 to 500.",
+    "searchTooShort": "Type at least 2 letters.",
+    "groupNameRequired": "Give the group a name.",
+    "groupNameTooLong": "Keep the name under 40 characters.",
+    "reportDetailsTooLong": "Keep the details under 1,000 characters."
   },
   "plans": {
     "free": {
@@ -764,7 +1069,10 @@
       "allowanceHint": "Your plan holds up to {limit} dishes.",
       "atCap": "Your recipe box is full: {limit} of {limit} dishes. Upgrade for more room, or remove a dish you don't cook.",
       "readOnly": "You have {count} dishes and your plan holds {limit}. Everything stays viewable and cookable. To add or edit dishes, remove {over, plural, one {# dish} other {# dishes}} or upgrade.",
-      "getMore": "Get more room"
+      "getMore": "Get more room",
+      "setupTitle": "Finish setting up your kitchen",
+      "setupBody": "Two minutes: your city, what you eat, and a few dishes to start with.",
+      "setupCta": "Set up my kitchen"
     },
     "favorite": {
       "add": "Add {name} to favorites",
@@ -799,7 +1107,9 @@
       "notFoundTitle": "We couldn't find that dish",
       "notFoundBody": "It may have been deleted, or the link is wrong.",
       "seasonsLabel": "Seasons",
-      "dietLabel": "Diet"
+      "dietLabel": "Diet",
+      "source": "From {site}",
+      "noReviews": "No reviews yet."
     },
     "note": {
       "heading": "My notes",
@@ -877,6 +1187,40 @@
       "body": "Your plan holds {limit} dishes. Upgrade for more room, or remove a dish you don't cook anymore.",
       "readOnlyBody": "You have {count} dishes and your plan holds {limit}. Remove some or upgrade to add new ones.",
       "back": "Back to my dishes"
+    },
+    "import": {
+      "heading": "Import from a link",
+      "body": "Paste the address of a recipe page. Cooky fills in the form for you to check before saving.",
+      "label": "Recipe page address",
+      "placeholder": "https://…",
+      "button": "Import",
+      "importing": "Reading the page…",
+      "imported": "Imported from {site}. Check everything before saving.",
+      "viewSource": "Open the original",
+      "startOver": "Start over",
+      "errors": {
+        "invalid": "That link can't be imported. Paste the full address of a recipe page, starting with https://.",
+        "not_found": "We couldn't find a recipe on that page. Some sites don't share their recipes in a way we can read; you can still type it in below. Your try wasn't used.",
+        "unavailable": "We couldn't reach that page. Check the link, or try again in a moment. Your try wasn't used."
+      }
+    },
+    "voice": {
+      "button": "Dictate ingredients",
+      "stop": "Stop and add",
+      "listening": "Listening… say your ingredients, like “2 potatoes, 500 grams of chicken and salt”.",
+      "working": "Turning your words into ingredients…",
+      "added": "{count, plural, one {Added # ingredient} other {Added # ingredients}}. Check them below.",
+      "hint": "Uses a voice try. If it doesn't work, typing always does.",
+      "errors": {
+        "blocked": "Your browser blocked the microphone. Allow it in the site settings (the lock or camera icon next to the address), then try again.",
+        "insecure": "Voice dictation needs a secure connection (https).",
+        "noMicrophone": "We couldn't find a microphone on this device.",
+        "offline": "You're offline. Voice dictation needs a connection; typing works anytime.",
+        "tooLong": "That was over a minute. Try a shorter list, or dictate it in parts.",
+        "nothingHeard": "We didn't hear anything. Try again a little closer to the microphone.",
+        "unavailable": "Voice dictation isn't available right now. Your try wasn't used, and typing always works.",
+        "unsupported": "This browser can't record audio. Typing works everywhere."
+      }
     }
   },
   "collections": {
@@ -949,5 +1293,1263 @@
     "failedTitle": "The last import didn't finish",
     "failedBody": "Try again with the same file. Dishes that were already added won't be duplicated.",
     "viewDishes": "See my dishes"
+  },
+  "discover": {
+    "title": "Discover",
+    "subtitle": "Dishes from {count} countries, ready to cook or save to your box.",
+    "featured": "Featured",
+    "featuredLabel": "Featured dishes",
+    "countryLabel": "Country",
+    "allCountries": "All countries",
+    "courseLabel": "Course",
+    "allCourses": "All courses",
+    "dietLabel": "Diet",
+    "allDiets": "Any diet",
+    "haveLabel": "Ingredients you have",
+    "havePlaceholder": "chickpeas, tomato, lemon",
+    "haveHint": "Separate them with commas. Dishes that use all of them come first.",
+    "apply": "Show dishes",
+    "clear": "Clear filters",
+    "collectionsLabel": "Collections",
+    "allCollections": "All dishes",
+    "collection": {
+      "ramadan_iftar": "Ramadan iftar",
+      "eid_sweets": "Eid sweets",
+      "summer_salads": "Summer salads",
+      "winter_comfort": "Winter comfort",
+      "quick": "Quick"
+    },
+    "results": "{count, plural, =0 {No dishes} one {# dish} other {# dishes}}",
+    "matchAny": "No dish uses all of these, so here are dishes with some of them.",
+    "matchNone": "No dish uses these ingredients. Try fewer or different ones.",
+    "noResultsTitle": "No dish matches",
+    "noResultsBody": "Try other filters, or clear them to see everything.",
+    "save": "Save to my dishes",
+    "saving": "Saving…",
+    "savedToast": "“{name}” is in your dishes",
+    "inYourDishes": "In your dishes",
+    "openCopy": "Open my copy",
+    "logInToSave": "Log in to save",
+    "saveLabel": "Save {name} to my dishes",
+    "back": "Discover",
+    "fromCountry": "From {country}",
+    "signUpPitch": "Sign up to save dishes, plan your week and build your shopping list.",
+    "signUp": "Sign up free",
+    "followsNote": "Saved dishes show in your language until you edit them."
+  },
+  "footer": {
+    "tagline": "Plan, cook, and shop without the guesswork.",
+    "explore": "Explore",
+    "discover": "Discover",
+    "pricing": "Pricing",
+    "account": "Account",
+    "legal": "Legal",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "rights": "© {year} Cooky. All rights reserved.",
+    "refunds": "Refund policy",
+    "imprint": "Imprint"
+  },
+  "onboarding": {
+    "title": "Set up your kitchen",
+    "progress": "Step {step} of {total}",
+    "skipAll": "Skip setup",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "finishing": "Setting up…",
+    "skipStep": "Skip this step",
+    "welcome": "Welcome! {count, plural, =0 {Your box is ready.} one {# dish is in your box.} other {# dishes are in your box.}}",
+    "language": {
+      "heading": "Which language do you cook in?",
+      "body": "Cooky, its emails and its dishes follow this. You can change it any time."
+    },
+    "city": {
+      "heading": "Where do you cook?",
+      "body": "Cooky uses it for the weather and the season, so it can suggest a warming soup on a cold day.",
+      "label": "City",
+      "placeholder": "Casablanca",
+      "useLocation": "Use my location",
+      "locating": "Finding you…",
+      "located": "Location saved (rounded to about 1 km).",
+      "clearLocation": "Forget my location",
+      "denied": "Your browser didn't share your location. Type your city instead, or allow location in your browser's site settings.",
+      "unavailable": "We couldn't get your location. Type your city instead.",
+      "privacy": "We keep only a rough position, never your address."
+    },
+    "diet": {
+      "heading": "Anything you don't eat?",
+      "body": "Pick what applies. Cooky puts matching dishes first, and it helps when you cook for guests."
+    },
+    "favorites": {
+      "heading": "Pick a few dishes you like",
+      "body": "They go straight into your box as favorites, ready for Cook, Spin and the Planner.",
+      "picked": "{count, plural, =0 {Pick at least 3} one {# picked, pick 2 more} other {# picked}}",
+      "enough": "{count} picked"
+    },
+    "done": "You're all set",
+    "staples": {
+      "heading": "What do you always have?",
+      "body": "Tick your staples. Cook won't count them as missing, so suggestions stay realistic.",
+      "label": "Staples",
+      "picked": "{count, plural, =0 {Nothing ticked yet} one {# staple ticked} other {# staples ticked}}",
+      "all": "Tick them all",
+      "none": "Untick all"
+    }
+  },
+  "photos": {
+    "add": "Add a photo",
+    "replace": "Change photo",
+    "remove": "Remove photo",
+    "uploading": "Uploading…",
+    "saved": "Photo saved",
+    "removed": "Photo removed",
+    "hint": "JPEG, PNG, WebP or AVIF, up to 5 MB. Location and camera details are removed.",
+    "disabled": "Photo uploads aren't available yet. Everything else works as usual.",
+    "dishHeading": "Photo",
+    "dishDescription": "Changes to the photo save right away.",
+    "addToDish": "Add a photo",
+    "errors": {
+      "tooLarge": "That photo is over 5 MB. Pick a smaller one, or take a screenshot of it.",
+      "wrongType": "That file isn't a photo we can use. Pick a JPEG, PNG, WebP or AVIF image.",
+      "unreadable": "We couldn't read that photo. Try another one, or save it as JPEG first.",
+      "unavailable": "Photos can't be saved right now. Try again in a few minutes.",
+      "offline": "You're offline. Photos need a connection."
+    }
+  },
+  "weather": {
+    "condition": {
+      "sunny": "Sunny",
+      "clear_night": "Clear night",
+      "cloudy": "Cloudy",
+      "rainy": "Rainy",
+      "stormy": "Stormy",
+      "snowy": "Snowy",
+      "foggy": "Foggy",
+      "windy": "Windy"
+    },
+    "feel": {
+      "hot": "something fresh",
+      "freezing": "soup weather",
+      "stormy": "perfect for a slow stew",
+      "snowy": "warm and hearty",
+      "cozy": "cozy dishes first",
+      "light": "light dishes first"
+    },
+    "label": "{condition}, {temp}°C",
+    "labelWithFeel": "{condition}, {temp}°C · {feel}",
+    "feelsLike": "Feels like",
+    "wind": "Wind",
+    "windValue": "{speed} km/h",
+    "rain": "Rain",
+    "rainValue": "{mm} mm",
+    "noRain": "None right now",
+    "mood": {
+      "cozy": "Cook puts warming dishes first today.",
+      "light": "Cook puts light, fresh dishes first today.",
+      "neutral": "Cook follows the season today: {season}."
+    },
+    "setCity": "Set your city",
+    "setCityHint": "Add your city to see the weather and get dishes that suit it.",
+    "notFound": "We couldn't find “{city}”",
+    "notFoundHint": "Check the spelling in Settings, or use your location instead.",
+    "openSettings": "Open Settings"
+  },
+  "kitchen": {
+    "title": "My kitchen",
+    "description": "What you have at home. Cook puts the dishes you can make right now first.",
+    "addLabel": "Add an ingredient",
+    "addPlaceholder": "e.g. chicken, tomatoes, rice",
+    "add": "Add",
+    "addAsStaple": "I always have this (a staple)",
+    "added": "“{name}” added",
+    "haveHeading": "In my kitchen now",
+    "haveHint": "Fresh things come and go. Remove them when they run out.",
+    "emptyHave": "Nothing here yet. Add what's in your fridge and cupboards.",
+    "staplesHeading": "Always have",
+    "staplesHint": "Salt, oil, spices… Cook never counts these as missing.",
+    "emptyStaples": "No staples yet. Tap the ones you always have below.",
+    "suggestedHeading": "Common staples",
+    "suggestedHint": "Tap to add one as “always have”.",
+    "remove": "Remove {name}",
+    "removed": "“{name}” removed",
+    "makeStaple": "Mark {name} as always have",
+    "unmakeStaple": "{name}: stop marking as always have",
+    "full": "My kitchen holds up to {limit} items. Remove a few to add more.",
+    "offline": "You're offline. Changes to My kitchen need a connection."
+  },
+  "cook": {
+    "title": "Cook",
+    "description": "Your dishes, the ones you can make right now first.",
+    "seasonNote": "Then dishes for the season: {season}.",
+    "spinInstead": "Can't decide? Spin",
+    "haveHeading": "What you have",
+    "editKitchen": "Edit My kitchen",
+    "haveHint": "Tap an item to try without it, or add something you'll pick up. My kitchen itself doesn't change.",
+    "emptyKitchen": "Nothing in your kitchen yet. <link>Add what you have</link> to see what's ready to cook.",
+    "leaveOut": "Try without {name}",
+    "putBack": "Put {name} back",
+    "removeExtra": "Remove {name}",
+    "addExtraLabel": "Add an ingredient to try",
+    "addExtraPlaceholder": "Something you could get, e.g. lemons",
+    "addExtra": "Try with it",
+    "emptyTitle": "No dishes to rank yet",
+    "emptyBody": "Add your own recipes or save a few from Discover, and Cook tells you what you can make.",
+    "addDish": "Add a dish",
+    "browseDiscover": "Browse Discover",
+    "resultsLabel": "Dishes, best match first",
+    "ready": "Ready to cook",
+    "missingCount": "{count, plural, one {# missing:} other {# missing:}}",
+    "listSeparator": ", ",
+    "weatherFit": "Suits today",
+    "weatherFitHint": "Made for this weather or season.",
+    "dietMismatch": "Not for your diet",
+    "dietMismatchHint": "It doesn't match every dietary preference in your kitchen settings.",
+    "neverCooked": "Not cooked yet",
+    "cookedAgo": "{days, plural, =0 {Cooked today} one {Cooked yesterday} other {Cooked # days ago}}",
+    "startCooking": "Start cooking",
+    "logToday": "Log it for today",
+    "offline": "You're offline. Logging a cook needs a connection.",
+    "logged": "“{name}” logged for today",
+    "dishHeading": "Cook it",
+    "history": "{count, plural, one {Cooked once} other {Cooked # times}}, {days, plural, =0 {most recently today} one {most recently yesterday} other {most recently # days ago}}.",
+    "neverCookedLong": "You haven't cooked this yet.",
+    "addToShopping": "Add to shopping list",
+    "addedToShopping": "{count, plural, =0 {It's all on your list already} one {# item added to your list} other {# items added to your list}}",
+    "openList": "Open list"
+  },
+  "cooking": {
+    "title": "Cooking {name}",
+    "fallbackTitle": "Cooking mode",
+    "ingredientsHeading": "Get everything ready",
+    "doneHeading": "All done",
+    "stepOf": "Step {step} of {total}",
+    "awake": "The screen stays on while you cook.",
+    "servings": "{count, plural, one {For # serving} other {For # servings}}",
+    "exit": "Leave cooking mode",
+    "timeUp": "Time's up!",
+    "timeUpBanner": "Time's up for step {steps}.",
+    "dismiss": "Got it",
+    "start": "Start {minutes} min",
+    "pause": "Pause",
+    "resume": "Resume",
+    "reset": "Reset the timer",
+    "enjoy": "Enjoy your meal!",
+    "usedUp": "Did anything run out?",
+    "usedUpHint": "Ticked items leave My kitchen. Staples always stay.",
+    "logToday": "Log it for today",
+    "loggedNote": "Logged for today.",
+    "rateHeading": "How was it?",
+    "backToDish": "Back to the dish",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish"
+  },
+  "rating": {
+    "heading": "Your rating",
+    "afterCooking": "You can rate this dish once you've cooked it. Log a cook to start.",
+    "starsLabel": "Stars",
+    "stars": "{count, plural, one {# star} other {# stars}}",
+    "pickStars": "Pick how many stars first.",
+    "reviewLabel": "Review (optional)",
+    "reviewPlaceholder": "What worked, what you'd change next time…",
+    "save": "Save rating",
+    "update": "Update rating",
+    "saved": "Rating saved",
+    "change": "Change my rating"
+  },
+  "spin": {
+    "title": "Spin",
+    "description": "Can't decide? Let Cooky pick one of your dishes, nudged towards today's weather. No repeats today.",
+    "optionsHeading": "Spin options",
+    "modeLabel": "Pick from",
+    "random": "All my dishes",
+    "withIngredients": "With my ingredients",
+    "ingredientsHint": "Dishes that use all of these come first; if none do, ones that use some. Up to {max}.",
+    "removeIngredient": "Remove {name}",
+    "addIngredientLabel": "Add an ingredient",
+    "addIngredientPlaceholder": "e.g. chicken",
+    "add": "Add",
+    "collectionLabel": "From a collection",
+    "allDishes": "All dishes",
+    "spin": "Spin",
+    "spinAgain": "Spin again",
+    "spinning": "Spinning…",
+    "needIngredients": "Add at least one ingredient, or switch to all my dishes.",
+    "pickedToday": "Already picked today",
+    "listSeparator": ", ",
+    "noRepeats": "These won't come up again until tomorrow.",
+    "anyNote": "No dish uses all of those, so here's one that uses some of them.",
+    "notNow": "Not now",
+    "nothingTitle": "Nothing left to spin",
+    "nothingBody": "You've seen every dish that fits these choices today. Change the ingredients or collection, or ask the Assistant for ideas.",
+    "askAssistant": "Ask the Assistant",
+    "offline": "You're offline. Spinning needs a connection.",
+    "idle": "Choose what to pick from, then spin. Seasonal dishes come up a little more often.",
+    "emptyTitle": "Nothing to spin yet",
+    "emptyBody": "Add a few dishes or save some from Discover, then come back and spin.",
+    "addDish": "Add a dish",
+    "browseDiscover": "Browse Discover"
+  },
+  "nav": {
+    "label": "Main",
+    "cook": "Cook",
+    "dishes": "My dishes",
+    "kitchen": "My kitchen",
+    "spin": "Spin",
+    "assistant": "Assistant",
+    "discover": "Discover",
+    "settings": "Settings",
+    "billing": "Plan & billing",
+    "more": "More",
+    "planner": "Planner",
+    "calendar": "Calendar",
+    "shopping": "Shopping",
+    "timer": "Timer",
+    "friends": "Friends",
+    "messages": "Messages",
+    "admin": "Admin",
+    "newRequests": "{count, plural, one {# new friend request} other {# new friend requests}}",
+    "unread": "unread messages",
+    "somethingNew": "something new inside"
+  },
+  "assistant": {
+    "title": "Assistant",
+    "intro": "Ask what to cook, how to use what you have, or for a light idea tonight. I suggest dishes from your recipe box and Discover, and I know your kitchen and today's weather.",
+    "quick": {
+      "withChicken": "What can I make with chicken and potatoes?",
+      "quickTonight": "Something quick for tonight",
+      "lightDinner": "A light dinner idea",
+      "nextEvent": "Ideas for my next event"
+    },
+    "inputLabel": "Your message",
+    "placeholder": "Ask anything about what to cook…",
+    "send": "Send",
+    "speak": "Ask by voice",
+    "thinking": "Thinking…",
+    "newChat": "New chat",
+    "history": "Your chats",
+    "noHistory": "Your conversations will appear here.",
+    "disclaimer": "AI can make mistakes. Check allergens, quantities and cooking times.",
+    "unavailable": "The Assistant couldn't answer right now. Your try wasn't used; please try again in a moment.",
+    "notSetUp": "The Assistant isn't available yet. Cook and Spin work as usual.",
+    "offline": "You're offline. The Assistant needs a connection.",
+    "fromYourDishes": "From your dishes",
+    "fromDiscover": "From Discover",
+    "cookToday": "Cook it today",
+    "saveRecipe": "Save to my dishes",
+    "inYourDishes": "In your dishes",
+    "savedToDishes": "“{name}” is in your dishes now",
+    "delete": "Delete “{title}”",
+    "deleteTitle": "Delete this chat?",
+    "deleteBody": "“{title}” and its messages will be gone for good.",
+    "deleteConfirm": "Delete chat",
+    "cancel": "Cancel",
+    "deleted": "Chat deleted"
+  },
+  "planner": {
+    "title": "Planner",
+    "description": "Plan the week: drag a dish onto a day, or tap a dish and then a day's “+”.",
+    "previousWeek": "Previous week",
+    "nextWeek": "Next week",
+    "thisWeek": "This week",
+    "copyLastWeek": "Copy last week",
+    "copied": "{count, plural, one {Copied # meal from last week} other {Copied # meals from last week}}",
+    "nothingToCopy": "This week already has everything from last week.",
+    "placing": "Tap “+” on a day to add {name}.",
+    "cancelPlacing": "Cancel",
+    "emptyTitle": "Nothing to plan with yet",
+    "emptyBody": "Add a few dishes to your recipe box, then plan your week here.",
+    "addDish": "Add a dish",
+    "pickFor": "Add a dish to {day}",
+    "libraryLabel": "Your dishes",
+    "libraryHeading": "Your dishes",
+    "libraryHint": "Drag one onto a day, or tap it and then a day's “+”.",
+    "searchLabel": "Search your dishes",
+    "searchPlaceholder": "Search",
+    "collectionLabel": "Collection",
+    "allDishes": "All dishes",
+    "noMatch": "No dish matches.",
+    "dragDish": "Drag {name} onto a day",
+    "dragMeal": "Drag {name} to another day",
+    "mealMenu": "Options for {name}",
+    "today": "Today",
+    "nothingPlanned": "Nothing planned.",
+    "add": "Add a dish",
+    "addHere": "Add {name} here",
+    "added": "{name} planned for {day}",
+    "removed": "{name} removed from the plan",
+    "startCooking": "Start cooking",
+    "slot": "Meal",
+    "moveTo": "Move to",
+    "repeat": "Repeat…",
+    "remove": "Remove",
+    "slots": {
+      "none": "Any time",
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    },
+    "repeatTitle": "Repeat {name}",
+    "repeatBody": "Pick the days to plan it again, at the same meal.",
+    "thisWeekLabel": "This week",
+    "nextWeekLabel": "Next week",
+    "cancel": "Cancel",
+    "repeatConfirm": "{count, plural, =0 {Repeat the meal} one {Repeat on # day} other {Repeat on # days}}",
+    "repeated": "{name}: {count, plural, =0 {already planned on those days} one {planned on # more day} other {planned on # more days}}",
+    "offline": "You're offline. Planning needs a connection.",
+    "dayFull": "That day is full (20 meals). Move or remove one first.",
+    "weekRange": "{start} – {end}",
+    "events": "Events",
+    "guests": "{count, plural, one {# guest} other {# guests}}",
+    "shopWeek": "Shop for this week",
+    "shopped": "{count, plural, =0 {Everything for this week is already on your list} one {# item added to your shopping list} other {# items added to your shopping list}}"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "description": "What you cooked and what's planned. Tap a day to see or change it.",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "thisMonth": "This month",
+    "plannedCount": "{count, plural, one {# planned} other {# planned}}",
+    "cookedCount": "{count, plural, one {# cooked} other {# cooked}}",
+    "legendCooked": "Cooked",
+    "legendPlanned": "Planned",
+    "emptyDay": "Nothing on this day.",
+    "planThisDay": "Plan this week",
+    "cooked": "Cooked",
+    "planned": "Planned",
+    "moveTo": "Move to",
+    "cook": "Cook",
+    "remove": "Remove {name}",
+    "openWeek": "Open this week in the planner",
+    "moved": "{name} moved to {date}",
+    "removed": "{name} removed",
+    "eventCount": "{count, plural, one {# event} other {# events}}",
+    "event": "Event",
+    "guests": "{count, plural, one {# guest} other {# guests}}"
+  },
+  "events": {
+    "title": "Events",
+    "description": "Meals for guests: a date, how many, and one dish per course.",
+    "backToPlanner": "Planner",
+    "allowance": "{count} of {limit} upcoming events on your plan",
+    "new": "New event",
+    "newBody": "You can choose the dishes next.",
+    "create": "Create event",
+    "emptyTitle": "No events yet",
+    "emptyBody": "Planning a dinner for family or friends? Set the date and guests, and Cooky scales every recipe and builds one shopping list.",
+    "upcoming": "Upcoming",
+    "noUpcoming": "Nothing coming up.",
+    "past": "Past",
+    "guests": "{count, plural, one {# guest} other {# guests}}",
+    "courseCount": "{count, plural, =0 {no dishes yet} one {# course} other {# courses}}",
+    "nameLabel": "Name",
+    "namePlaceholder": "Friday dinner",
+    "dateLabel": "Date",
+    "guestsLabel": "Guests",
+    "guestsHint": "Recipes scale to this many servings.",
+    "backToEvents": "Events",
+    "edit": "Edit",
+    "cancelEdit": "Cancel editing",
+    "save": "Save",
+    "saved": "Event saved",
+    "shopForMenu": "Shop for this menu",
+    "shopped": "{count, plural, =0 {The whole menu is already on your list} one {# item added to your shopping list} other {# items added to your shopping list}}",
+    "openList": "Open list",
+    "delete": "Delete event",
+    "deleteTitle": "Delete “{name}”?",
+    "deleteBody": "The event and its menu will be gone. Your dishes stay in your recipe box.",
+    "cancel": "Cancel",
+    "deleteConfirm": "Delete event",
+    "deleted": "“{name}” deleted",
+    "suggest": "Suggest",
+    "suggestAi": "Suggest with AI",
+    "recipeFor": "{count, plural, one {Recipe for # serving} other {Recipe for # servings}}",
+    "clearCourse": "Clear {course}",
+    "noDish": "No dish yet.",
+    "chooseFor": "Choose a dish for {course}",
+    "choose": "Choose a dish…",
+    "change": "Change dish…",
+    "otherDishes": "Other dishes",
+    "useIt": "Use this dish",
+    "saveFirst": "Save it to your dishes first, then choose it here.",
+    "dismiss": "Not this one",
+    "noSuggestion": "No {course} to suggest yet. Add one to your dishes, or look in Discover.",
+    "aiUnavailable": "AI suggestions aren't available right now. Your try wasn't used; the plain Suggest still works."
+  },
+  "shopping": {
+    "title": "Shopping list",
+    "description": "Everything you need, merged and grouped by aisle. Staples you always have are left out.",
+    "share": "Share",
+    "shareTitle": "Shopping list",
+    "copied": "List copied. Paste it into a message.",
+    "doneShopping": "Done shopping",
+    "moreActions": "More list actions",
+    "clearChecked": "Clear ticked items",
+    "clearAll": "Clear the whole list",
+    "progress": "{checked} of {total} in the basket",
+    "addLabel": "Add an item",
+    "addPlaceholder": "Add something, e.g. paper towels",
+    "add": "Add",
+    "emptyTitle": "Your list is empty",
+    "emptyBody": "Plan your week or pick a dish, then shop for it in one tap. You can also type items yourself.",
+    "planWeek": "Plan the week",
+    "pickDish": "Pick a dish",
+    "forDishes": "{count, plural, other {for # dishes}}",
+    "remove": "Remove {name}",
+    "removed": "“{name}” removed",
+    "doneTitle": "Done shopping?",
+    "doneBody": "{count, plural, one {The # ticked item leaves the list.} other {The # ticked items leave the list.}}",
+    "stockKitchen": "Add what I bought to My kitchen",
+    "cancel": "Cancel",
+    "doneConfirm": "Done",
+    "done": "{count, plural, one {# item cleared} other {# items cleared}}",
+    "doneWithKitchen": "{count, plural, one {# item cleared} other {# items cleared}}, {kitchen} added to My kitchen",
+    "clearTitle": "Clear the whole list?",
+    "clearBody": "{count, plural, one {# item will be removed.} other {All # items will be removed.}}",
+    "clearConfirm": "Clear list",
+    "cleared": "{count, plural, one {# item removed} other {# items removed}}",
+    "offline": "You're offline. This change needs a connection.",
+    "aisles": {
+      "produce": "Fruit & vegetables",
+      "meat_fish": "Meat & fish",
+      "dairy_eggs": "Dairy & eggs",
+      "bakery": "Bakery",
+      "grains_pasta": "Rice, pasta & grains",
+      "canned_jars": "Cans & jars",
+      "spices": "Spices",
+      "oils_condiments": "Oils & condiments",
+      "baking": "Baking",
+      "frozen": "Frozen",
+      "drinks": "Drinks",
+      "other": "Other"
+    },
+    "household": {
+      "heading": "Share with your household",
+      "description": "Everyone you invite shops from this one list. Ticks show for all of you.",
+      "proOnly": "Sharing a list with your household comes with Pro.",
+      "seePlans": "See plans",
+      "emailLabel": "Their email",
+      "emailPlaceholder": "Email of their Cooky account",
+      "invite": "Invite",
+      "invited": "If {email} has a Cooky account, they'll find your invite on their shopping list.",
+      "full": "A household list has up to 6 people.",
+      "memberCount": "{count, plural, one {# person} other {# people}}",
+      "active": "sharing",
+      "pending": "invited",
+      "remove": "Remove {name}",
+      "removed": "{name} removed",
+      "inviteFrom": "{name} invited you to share their shopping list.",
+      "accept": "Join",
+      "decline": "No thanks",
+      "joined": "You're now shopping from the shared list",
+      "declined": "Invite declined",
+      "sharedBy": "You're shopping from {name}'s list.",
+      "leave": "Leave",
+      "left": "Back to your own list"
+    }
+  },
+  "offline": {
+    "title": "Offline",
+    "banner": "You're offline. Ticks are saved on this device and sync when you're back online.",
+    "noList": "Your shopping list isn't on this device yet. Open it once while you're online.",
+    "progress": "{checked} of {total} in the basket",
+    "recipe": "Today's recipe",
+    "ingredients": "Ingredients",
+    "steps": "Steps",
+    "retry": "Try again"
+  },
+  "timer": {
+    "title": "Kitchen timer",
+    "description": "Several named timers at once, and a stopwatch. They keep running if you reload, and the screen stays on.",
+    "newTimer": "New timer",
+    "labelLabel": "Name (optional)",
+    "labelPlaceholder": "Rice, oven, tea…",
+    "presets": "Quick start",
+    "minutes": "{count, plural, one {# min} other {# min}}",
+    "hours": "Hours",
+    "minutesField": "Minutes",
+    "seconds": "Seconds",
+    "start": "Start",
+    "running": "Your timers",
+    "pause": "Pause",
+    "resume": "Resume",
+    "restart": "Restart {name}",
+    "delete": "Delete {name}",
+    "timeUp": "Time's up: {names}",
+    "dismiss": "Stop",
+    "notifyTitle": "Time's up!",
+    "defaultLabel": "{minutes, plural, one {# minute timer} other {# minute timer}}",
+    "stopwatch": "Stopwatch",
+    "startStopwatch": "Start",
+    "lap": "Lap",
+    "reset": "Reset",
+    "lapNumber": "Lap {number}"
+  },
+  "search": {
+    "open": "Search",
+    "title": "Search Cooky",
+    "placeholder": "Dishes, friends, Discover, events, pages…",
+    "hint": "Type at least 2 letters. ↑ ↓ to move, Enter to open, Esc to close.",
+    "noResults": "Nothing found for “{query}”. Try another spelling.",
+    "groups": {
+      "pages": "Pages",
+      "dishes": "My dishes",
+      "discover": "Discover",
+      "events": "Events",
+      "shared": "Shared with you",
+      "friends": "Friends"
+    },
+    "pages": {
+      "cook": "Cook",
+      "dishes": "My dishes",
+      "newDish": "Add a dish",
+      "kitchen": "My kitchen",
+      "planner": "Planner",
+      "events": "Events",
+      "calendar": "Calendar",
+      "shopping": "Shopping list",
+      "timer": "Kitchen timer",
+      "spin": "Spin",
+      "assistant": "Assistant",
+      "discover": "Discover",
+      "settings": "Settings",
+      "billing": "Plan & billing",
+      "friends": "Friends",
+      "messages": "Messages"
+    }
+  },
+  "friends": {
+    "title": "Friends",
+    "description": "Find people you cook with, share dishes with them and chat.",
+    "offline": "You're offline. Friends need a connection.",
+    "tooManyRequests": "That's a lot of requests in an hour. Try again a little later.",
+    "nowFriends": "You and {name} are now friends.",
+    "requestSent": "Friend request sent to {name}.",
+    "requestCancelled": "Request cancelled.",
+    "answerRequest": "Answer request",
+    "message": "Message",
+    "messageHint": "Open your chat with {name}",
+    "requested": "Requested",
+    "cancelHint": "Waiting for an answer. Tap to cancel the request.",
+    "addFriend": "Add friend",
+    "addHint": "Send {name} a friend request",
+    "moreFor": "More for {name}",
+    "unfriend": "Unfriend",
+    "block": "Block",
+    "report": "Report",
+    "unfriendTitle": "Unfriend {name}?",
+    "unfriendBody": "Dishes you share with each other stop showing, {name} leaves your groups, and your chat becomes read-only. You can add each other again later.",
+    "unfriended": "You're no longer friends with {name}.",
+    "blockTitle": "Block {name}?",
+    "blockBody": "{name} won't be told. They won't be able to find you, add you or message you, and any friendship or request between you ends. You can unblock them in Settings → Privacy & safety.",
+    "blocked": "{name} is blocked.",
+    "requestsHeading": "Friend requests",
+    "requestsHint": "Accept to share dishes and chat. Declining is silent: they won't be told.",
+    "friendsHeading": "Your friends",
+    "emptyTitle": "No friends yet",
+    "emptyBody": "Search for people above by name or email, then share dishes and chat.",
+    "findPeople": "Find people",
+    "friendsSince": "Friends since {date}",
+    "sentHeading": "Sent requests",
+    "sentHint": "Waiting for an answer. You can cancel a request at any time.",
+    "sentAgo": "Sent {time}",
+    "receivedAgo": "Asked {time}",
+    "blockedNote": "Blocked someone? Manage blocked people in <link>Settings → Privacy & safety</link>.",
+    "accept": "Accept",
+    "declineLabel": "Decline {name}'s request",
+    "blockLabel": "Block {name}",
+    "declined": "Request from {name} declined.",
+    "backToFriends": "Friends",
+    "status": {
+      "none": "Not friends yet",
+      "outgoing": "Friend request sent",
+      "incoming": "Wants to be your friend",
+      "friend": "Friends"
+    },
+    "sharedCount": "{count, plural, =0 {Hasn't shared a dish with you yet} one {Shares # dish with you} other {Shares # dishes with you}}",
+    "oldChat": "Old chat",
+    "sharedHeading": "Dishes {name} shares with you",
+    "notFriendsTitle": "Shared dishes are for friends",
+    "notFriendsBody": "Once you and {name} are friends, the dishes they share will show here.",
+    "noSharedTitle": "Nothing shared yet",
+    "noSharedBody": "{name} hasn't shared any dishes with you. Ask them for a recipe!",
+    "pagesLabel": "More dishes",
+    "newer": "Newer dishes",
+    "older": "Older dishes",
+    "page": "Page {page}",
+    "search": {
+      "heading": "Find people",
+      "description": "Search by display name, or type someone's full email address.",
+      "label": "Name or email",
+      "placeholder": "e.g. Lina or lina@example.com",
+      "hint": "Emails are never shown. An email only finds someone when it matches exactly.",
+      "offline": "You're offline. Search needs a connection.",
+      "searching": "Searching…",
+      "noMatch": "No one found with that name. Try their full email address instead.",
+      "noEmailMatch": "No one found with that exact email. Check the spelling, or ask them for the name they use on Cooky.",
+      "results": "{count, plural, one {# person found} other {# people found}}"
+    },
+    "groups": {
+      "heading": "Groups",
+      "hint": "Private lists of friends, like Family or Work, to share some dishes with only them. People are never told which groups they're in.",
+      "new": "New group",
+      "allowance": "{count} of {limit} groups on your plan",
+      "empty": "No groups yet. Create one to share dishes with just some of your friends.",
+      "members": "{count, plural, =0 {No members} one {# member} other {# members}}",
+      "editLabel": "Edit {name}",
+      "deleteLabel": "Delete {name}",
+      "deleteTitle": "Delete “{name}”?",
+      "deleteBody": "Dishes shared only with this group will be seen by you alone. Your friends stay your friends.",
+      "delete": "Delete group",
+      "deleted": "“{name}” deleted.",
+      "saved": "“{name}” saved.",
+      "created": "“{name}” created.",
+      "nameTaken": "You already have a group with this name.",
+      "editTitle": "Edit “{name}”",
+      "newTitle": "New group",
+      "dialogBody": "Pick friends to share some dishes with. They won't be told about the group.",
+      "nameLabel": "Group name",
+      "namePlaceholder": "e.g. Family",
+      "membersLabel": "Members",
+      "chosen": "{count} chosen",
+      "noFriendsYet": "Add friends first, then put them in groups.",
+      "save": "Save group",
+      "create": "Create group"
+    }
+  },
+  "report": {
+    "title": {
+      "user": "Report {subject}",
+      "dish": "Report “{subject}”",
+      "message": "Report a message from {subject}",
+      "review": "Report {subject}'s review"
+    },
+    "description": "Our team will look at it. The person won't know who reported them.",
+    "reasonLabel": "What's wrong?",
+    "reason": {
+      "spam": "Spam or scam",
+      "harassment": "Harassment or hate",
+      "inappropriate": "Inappropriate content",
+      "impersonation": "Pretending to be someone else",
+      "other": "Something else"
+    },
+    "detailsLabel": "Anything else we should know? (optional)",
+    "detailsPlaceholder": "What happened?",
+    "pickReason": "Choose what's wrong.",
+    "submit": "Send report",
+    "sent": "Thanks. Your report was sent to our team."
+  },
+  "sharing": {
+    "heading": "Who can see this",
+    "description": "Friends who can see it can read it and copy it to their own dishes. They can't change yours.",
+    "offline": "You're offline. Sharing needs a connection.",
+    "option": {
+      "private": "Only me",
+      "friends": "All my friends",
+      "groups": "Chosen groups"
+    },
+    "optionHint": {
+      "private": "Nobody else sees it.",
+      "groups": "Only friends in the groups you pick."
+    },
+    "friendsHint": "{count, plural, =0 {You have no friends on Cooky yet.} one {Your # friend can see it.} other {Your # friends can see it.}}",
+    "noGroups": "You don't have any groups yet. <link>Create one in Friends</link>.",
+    "pickGroups": "Share with",
+    "pickOne": "Choose at least one group.",
+    "memberCount": "{count, plural, =0 {no one yet} one {# person} other {# people}}",
+    "save": "Save sharing",
+    "saved": {
+      "private": "Only you can see this dish now.",
+      "friends": "Your friends can see this dish now.",
+      "groups": "The groups you picked can see this dish now."
+    },
+    "friendDish": {
+      "back": "{name}'s profile",
+      "sharedBy": "Shared by {name}",
+      "copy": "Copy to my dishes",
+      "openCopy": "Open my copy",
+      "copied": "“{name}” copied to your dishes.",
+      "report": "Report “{name}”",
+      "copyHint": "This is {name}'s recipe. Copy it to your dishes to cook it, plan it or rate it. Rating your copy rates theirs too.",
+      "haveCopyHint": "You already have a copy. Cook, plan and rate it from your dishes.",
+      "noReviews": "No reviews yet. Copy it, cook it and be the first to rate it.",
+      "offline": "You're offline. Copying needs a connection.",
+      "noSteps": "{name} hasn't written the steps for this one yet."
+    }
+  },
+  "reviews": {
+    "heading": "Reviews",
+    "average": "{average} · {count, plural, one {# rating} other {# ratings}}",
+    "stars": "{count, plural, one {# star} other {# stars}}",
+    "report": "Report {name}'s review"
+  },
+  "messages": {
+    "title": "Messages",
+    "description": "Chat with your friends and send each other dishes.",
+    "newFrom": "New message from {name}",
+    "open": "Open",
+    "offline": "You're offline. Your message wasn't sent.",
+    "inboxHint": "Newest first.",
+    "archivedHeading": "Archived chats. A new message brings a chat back to your inbox.",
+    "backToInbox": "Back to messages",
+    "showArchived": "{count, plural, one {Archived (#)} other {Archived (#)}}",
+    "emptyTitle": "No messages yet",
+    "emptyBody": "Start a chat from a friend's profile, or find friends first.",
+    "noArchivedTitle": "Nothing archived",
+    "noArchivedBody": "Chats you archive wait here until a new message arrives.",
+    "goToFriends": "Go to Friends",
+    "unread": "Unread",
+    "deletedPreview": "Message deleted",
+    "dishPreview": "Shared a dish",
+    "youPrefix": "You: {text}",
+    "chatOptions": "Chat options",
+    "archive": "Archive chat",
+    "unarchive": "Move back to inbox",
+    "archived": "Chat archived.",
+    "unarchived": "Chat moved back to your inbox.",
+    "deleteChat": "Delete chat",
+    "deleteChatTitle": "Delete this chat?",
+    "deleteChatBody": "Messages so far disappear for you only. {name} keeps their copy, and new messages will still reach you.",
+    "chatDeleted": "Chat deleted for you.",
+    "reportPerson": "Report {name}",
+    "typing": "{name} is typing…",
+    "tapForProfile": "Tap to see their profile",
+    "theirDishes": "Dishes shared with you",
+    "noSharedYet": "{name} hasn't shared any dishes with you yet.",
+    "viewProfile": "View profile",
+    "deleted": "Message deleted",
+    "youDeleted": "You deleted this message",
+    "theyDeleted": "{name} deleted this message",
+    "messageOptions": "Options for the message sent at {time}",
+    "edit": "Edit",
+    "editLabel": "Edit your message",
+    "saveEdit": "Save",
+    "delete": "Delete",
+    "edited": "edited",
+    "reportMessage": "Report message",
+    "dishUnavailable": "This dish isn't shared with you anymore.",
+    "openDish": "Open dish",
+    "status": {
+      "sent": "Sent",
+      "delivered": "Delivered",
+      "seen": "Seen"
+    },
+    "readOnly": "You can't message {name} right now.",
+    "attached": "Dish attached: {name}",
+    "removeAttachment": "Remove {name}",
+    "attachDish": "Attach one of your dishes",
+    "messageLabel": "Message to {name}",
+    "placeholder": "Message {name}…",
+    "send": "Send",
+    "enterHint": "Enter to send · Shift+Enter for a new line",
+    "charsLeft": "{count, plural, one {# character left} other {# characters left}}",
+    "loadEarlier": "Load earlier messages",
+    "startHint": "Say hello to {name}, or send them one of your dishes with the paperclip.",
+    "nothingHere": "No messages here.",
+    "sending": "Sending…",
+    "readOnlyNotice": "You and {name} aren't friends anymore, so this chat is read-only. <link>See their profile</link>.",
+    "attach": {
+      "title": "Attach a dish",
+      "description": "Only dishes {name} can see are listed.",
+      "loading": "Loading your dishes…",
+      "retry": "Try again",
+      "empty": "None of your dishes are shared with {name} yet. Open a dish and choose “All my friends” under “Who can see this”.",
+      "goToDishes": "Go to my dishes"
+    }
+  },
+  "push": {
+    "message": {
+      "title": "Message from {name}",
+      "body": "Open Cooky to read it."
+    },
+    "friendRequest": {
+      "title": "New friend request",
+      "body": "{name} wants to be your friend on Cooky"
+    },
+    "friendAccepted": {
+      "title": "You're now friends",
+      "body": "{name} accepted your friend request"
+    },
+    "adminFeedback": {
+      "title": "New feedback",
+      "body": "Someone sent feedback ({kind}). Open the admin panel to read it."
+    },
+    "trialEnding": {
+      "title": "Your trial ends in 2 days",
+      "body": "Keep your plan, or you'll move to Free. Nothing is deleted."
+    },
+    "paymentFailed": {
+      "title": "Your payment didn't go through",
+      "body": "Update your card within 7 days to keep your plan."
+    },
+    "cancellationConfirmed": {
+      "title": "Subscription cancelled",
+      "body": "Your plan stays until the end of the period you paid for."
+    },
+    "receipt": {
+      "title": "Thanks for your payment",
+      "body": "Your Cooky receipt is ready in Plan & billing."
+    }
+  },
+  "checklist": {
+    "heading": "Your first week with Cooky",
+    "description": "Five small steps to make Cooky yours. Each one takes a minute.",
+    "progress": "{done} of {total} done",
+    "hide": "Hide this checklist",
+    "done": "done",
+    "todo": "to do",
+    "step": {
+      "dishes": "Add 3 dishes",
+      "kitchen": "Tick what's in your kitchen",
+      "cook": "Log a cook",
+      "plan": "Plan a day",
+      "friend": "Add a friend"
+    }
+  },
+  "helpFeedback": {
+    "heading": "Help & feedback",
+    "description": "Found a bug or have an idea? Tell us. A real person reads every message.",
+    "kindLabel": "What is it about?",
+    "kind": {
+      "bug": "Something's broken",
+      "feature": "An idea",
+      "other": "Something else"
+    },
+    "messageLabel": "Your message",
+    "placeholder": {
+      "bug": "What happened, and what did you expect? Which page were you on?",
+      "feature": "What would make Cooky better for you?",
+      "other": "Tell us anything."
+    },
+    "attached": "Your language and browser are attached to help us. Nothing else.",
+    "send": "Send",
+    "sent": "Thanks! Your message reached the team.",
+    "tooMany": "You've sent several messages in the last hour. Try again a little later."
+  },
+  "yourData": {
+    "export": {
+      "heading": "Download your data",
+      "description": "A copy of everything Cooky holds about you: your account, recipes, kitchen, plans, chats and more.",
+      "whatsIncluded": "We prepare it in the background and email you when it's ready. The download link works for 24 hours.",
+      "prepare": "Prepare my data",
+      "prepareAgain": "Prepare again",
+      "tryAgain": "Try again",
+      "started": "We're preparing your data. We'll email you when it's ready.",
+      "tooSoon": "You asked for a copy less than an hour ago. Use that one, or try again later.",
+      "working": "Preparing your data… This usually takes under a minute.",
+      "ready": "Ready · {size} KB · the link expires {time}",
+      "download": "Download",
+      "failed": "We couldn't prepare your data this time.",
+      "expired": "Your last download link has expired."
+    },
+    "delete": {
+      "heading": "Delete my account",
+      "description": "Permanently remove your account and everything in it.",
+      "open": "Delete my account",
+      "pointGrace": "You have 7 days to change your mind: just log in again to cancel.",
+      "pointBilling": "Your subscription is cancelled right away and won't come back if you cancel the deletion.",
+      "pointData": "After 7 days your recipes, photos, plans, chats and friends are removed for good.",
+      "confirmTitle": "Delete your account?",
+      "confirmBody": "You'll be signed out on every device. Log in within 7 days to keep your account; after that it's gone for good.",
+      "passwordLabel": "Your password",
+      "passwordRequired": "Enter your password to confirm.",
+      "wrongPassword": "That password isn't right.",
+      "socialConfirm": "You log in with Google or Apple, so you confirm by being recently logged in.",
+      "loginAgain": "For your safety, please log in again, then come back here to delete your account.",
+      "loginAgainButton": "Log in again",
+      "confirm": "Delete my account",
+      "scheduled": "Your account will be deleted in 7 days. Log in before then to keep it."
+    }
+  },
+  "admin": {
+    "title": "Admin",
+    "nav": {
+      "label": "Admin sections",
+      "overview": "Overview",
+      "users": "Users",
+      "catalog": "Catalog",
+      "content": "Content",
+      "reports": "Reports",
+      "feedback": "Feedback",
+      "audit": "Audit log",
+      "open": "open"
+    },
+    "common": {
+      "pages": "Pages",
+      "previous": "Previous",
+      "next": "Next",
+      "pageOf": "Page {page} of {pageCount}",
+      "search": "Search"
+    },
+    "overview": {
+      "heading": "Overview",
+      "description": "How Cooky is doing right now.",
+      "users": "Users",
+      "newThisWeek": "{count, plural, =0 {No one new this week} one {# new this week} other {# new this week}}",
+      "mrr": "Monthly revenue (MRR)",
+      "mrrHint": "Paying subscriptions; yearly plans count as a twelfth. Before tax.",
+      "subscriptions": "Paying subscriptions",
+      "trials": "{count, plural, =0 {No trials running} one {# trial running} other {# trials running}}",
+      "catalog": "Discover dishes",
+      "userDishes": "Dishes in recipe boxes",
+      "shared": "{count, plural, =0 {none shared} one {# shared with friends} other {# shared with friends}}",
+      "reviews": "Written reviews",
+      "triesHeading": "Tries used this month",
+      "noTries": "No tries used yet this month."
+    },
+    "users": {
+      "heading": "Users",
+      "description": "{count, plural, one {# account} other {# accounts}}. Search by name or email.",
+      "searchLabel": "Search users",
+      "searchPlaceholder": "Name or email",
+      "noMatch": "No account matches “{q}”.",
+      "none": "No accounts yet.",
+      "plan": {
+        "free": "Free",
+        "plus": "Plus",
+        "pro": "Pro"
+      },
+      "comp": "Complimentary",
+      "admin": "Admin",
+      "suspended": "Suspended",
+      "pendingDeletion": "Deletion scheduled",
+      "unverified": "Email not confirmed",
+      "joined": "Joined {date}",
+      "back": "Users",
+      "dishes": "Dishes",
+      "sessions": "Signed-in devices",
+      "reportsAgainst": "Reports about them",
+      "lockout": "Locked until",
+      "notLocked": "Not locked",
+      "selfNote": "This is your own account: you can't suspend, demote, sign out or delete yourself here.",
+      "accountActions": "Account",
+      "markVerified": "Mark email as confirmed",
+      "verifiedDone": "Email marked as confirmed.",
+      "unlock": "Unlock logins",
+      "unlockedDone": "Logins unlocked.",
+      "signOut": "Sign out everywhere",
+      "signedOutDone": "Signed out on every device.",
+      "makeAdmin": "Make admin",
+      "adminDone": "They're an admin now.",
+      "revokeAdmin": "Remove admin",
+      "revokedDone": "Admin role removed.",
+      "suspend": "Suspend",
+      "suspendedDone": "Account suspended.",
+      "unsuspend": "Lift suspension",
+      "unsuspendedDone": "Suspension lifted.",
+      "delete": "Delete account",
+      "deletedDone": "Account deleted. Its files and billing are being removed.",
+      "notOnYourself": "You can't do this to your own account.",
+      "compHeading": "Complimentary plan",
+      "compHint": "Give this person a paid plan for free, for a while or until you take it back. Billing never overrides it.",
+      "compUntil": "{plan}, complimentary until {date}.",
+      "compForever": "{plan}, complimentary until revoked.",
+      "compPlan": "Plan",
+      "compLength": "For",
+      "compUntilRevoked": "Until revoked",
+      "compMonths": "{count, plural, one {# month} other {# months}}",
+      "grantComp": "Grant plan",
+      "compDone": "Complimentary plan granted.",
+      "revokeComp": "Take back",
+      "compRevokedDone": "Complimentary plan taken back.",
+      "confirm": {
+        "suspend": {
+          "title": "Suspend {name}?",
+          "body": "They're signed out everywhere, can't log in, and disappear from search. You can lift it any time."
+        },
+        "unsuspend": {
+          "title": "Lift {name}'s suspension?",
+          "body": "They'll be able to log in again."
+        },
+        "signOut": {
+          "title": "Sign {name} out everywhere?",
+          "body": "Every device they're logged in on will need to log in again."
+        },
+        "makeAdmin": {
+          "title": "Make {name} an admin?",
+          "body": "They'll see this panel and can do everything you can, including managing other admins."
+        },
+        "revokeAdmin": {
+          "title": "Remove {name}'s admin role?",
+          "body": "They'll lose access to this panel."
+        },
+        "delete": {
+          "title": "Delete {name}'s account?",
+          "body": "This can't be undone. Their recipes, photos, chats and billing customer are removed right away, without a grace period."
+        }
+      }
+    },
+    "catalog": {
+      "heading": "Catalog",
+      "description": "{count, plural, one {# Discover dish} other {# Discover dishes}}. Missing translations are flagged.",
+      "new": "New dish",
+      "searchLabel": "Search the catalog",
+      "searchPlaceholder": "Name or country code",
+      "noMatch": "No dish matches “{q}”.",
+      "none": "The catalog is empty. Add the first dish.",
+      "featured": "Featured",
+      "saves": "{count, plural, =0 {not saved yet} one {saved by # person} other {saved by # people}}",
+      "missing": {
+        "fr": "French missing",
+        "ar": "Arabic missing"
+      },
+      "back": "Catalog",
+      "newTitle": "New Discover dish",
+      "editTitle": "Edit “{name}”",
+      "formHint": "English is required. French and Arabic are shown when filled in; otherwise people see the English text.",
+      "basics": "Basics",
+      "name": "Name",
+      "descriptionField": "Short description",
+      "slug": "Slug",
+      "slugHint": "Lowercase words joined by dashes, e.g. chicken-tagine. Must be unique.",
+      "country": "Country",
+      "countryHint": "Two-letter code, e.g. MA for Morocco.",
+      "course": "Course",
+      "servings": "Servings",
+      "difficulty": "Difficulty",
+      "seasons": "Seasons",
+      "diet": "Diet",
+      "collections": "Collections",
+      "ingredients": "Ingredients",
+      "amount": "Amount",
+      "unit": "Unit",
+      "noUnit": "No unit",
+      "removeIngredient": "Remove ingredient {n}",
+      "ingredientName": "Ingredient {n}",
+      "ingredientNote": "Note (optional)",
+      "addIngredient": "Add ingredient",
+      "steps": "Steps",
+      "timer": "Timer (minutes)",
+      "removeStep": "Remove step {n}",
+      "stepText": "Step {n}",
+      "addStep": "Add step",
+      "lang": {
+        "en": "English",
+        "fr": "French",
+        "ar": "Arabic"
+      },
+      "required": "required",
+      "missingShort": "missing",
+      "save": "Save changes",
+      "create": "Create dish",
+      "saved": "“{name}” saved.",
+      "slugTaken": "Another dish already uses this slug. Pick a different one.",
+      "checkFields": "Some fields need fixing: every English text, a slug and a two-letter country are required.",
+      "delete": "Delete dish",
+      "deleteTitle": "Delete “{name}” from Discover?",
+      "deleteBody": "It disappears from Discover. People who saved it keep their copy.",
+      "deleted": "“{name}” deleted."
+    },
+    "content": {
+      "heading": "Content",
+      "description": "Recent reviews and dishes people share with friends.",
+      "tabsLabel": "Content type",
+      "tabs": {
+        "reviews": "Reviews",
+        "shared": "Shared dishes"
+      },
+      "noReviews": "No written reviews yet.",
+      "noShared": "No shared dishes right now.",
+      "stars": "{count, plural, one {# star} other {# stars}}",
+      "onDish": "On “{name}”",
+      "deleteReview": "Delete review",
+      "deleteReviewTitle": "Delete this review?",
+      "deleteReviewBody": "{name}'s review and rating are removed for good.",
+      "reviewDeleted": "Review deleted.",
+      "visibility": {
+        "friends": "shared with all friends",
+        "groups": "shared with groups"
+      },
+      "makePrivate": "Make private",
+      "makePrivateTitle": "Make “{name}” private?",
+      "makePrivateBody": "Friends stop seeing it. The owner keeps the dish.",
+      "madePrivate": "The dish is private now.",
+      "deleteDish": "Delete dish",
+      "deleteDishTitle": "Delete “{name}”?",
+      "deleteDishBody": "This removes the dish from {name}'s recipe box for good.",
+      "dishDeleted": "Dish deleted."
+    },
+    "reports": {
+      "heading": "Reports",
+      "description": "What people reported. The person reported never sees who reported them.",
+      "statusLabel": "Report status",
+      "tabs": {
+        "open": "Open",
+        "resolved": "Resolved",
+        "dismissed": "Dismissed"
+      },
+      "noneOpen": "No open reports. All caught up.",
+      "none": "Nothing here.",
+      "target": {
+        "user": "Person",
+        "dish": "Dish",
+        "message": "Message",
+        "review": "Review"
+      },
+      "by": "Reported by {name}, {time}",
+      "deletedAccount": "a deleted account",
+      "openOwner": "Open their account",
+      "gone": "This has already been removed.",
+      "details": "Details:",
+      "handle": "Handle",
+      "closed": {
+        "resolved": "Resolved",
+        "dismissed": "Dismissed"
+      },
+      "handleTitle": "Handle this report",
+      "handleBody": "Choose an outcome. Everything you do here is recorded in the audit log.",
+      "outcome": "Outcome",
+      "outcomes": {
+        "resolved": "Resolved: there was a problem",
+        "dismissed": "Dismissed: nothing wrong"
+      },
+      "alsoDo": "Also",
+      "actions": {
+        "none": "Nothing else",
+        "remove_content": "Remove what was reported",
+        "suspend_user": "Suspend the person responsible"
+      },
+      "note": "Note for the record (optional)",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "handled": "Report handled."
+    },
+    "feedback": {
+      "heading": "Feedback",
+      "description": "Messages from Settings → Help & feedback.",
+      "statusLabel": "Status",
+      "kindLabel": "Type",
+      "all": "All",
+      "allKinds": "All types",
+      "status": {
+        "open": "Open",
+        "resolved": "Resolved"
+      },
+      "none": "No feedback here.",
+      "deletedAccount": "A deleted account",
+      "resolve": "Mark resolved",
+      "resolved": "Marked as resolved.",
+      "reopen": "Reopen",
+      "reopened": "Reopened.",
+      "delete": "Delete",
+      "deleteTitle": "Delete this feedback?",
+      "deleteBody": "The message is removed for good.",
+      "deleted": "Feedback deleted."
+    },
+    "audit": {
+      "heading": "Audit log",
+      "description": "Every admin action and sensitive account action, newest first.",
+      "searchLabel": "Filter by action",
+      "searchPlaceholder": "Action starts with, e.g. admin. or auth.",
+      "none": "No entries match.",
+      "system": "System"
+    }
+  },
+  "og": {
+    "headline": "What do I cook today?",
+    "line": "Your recipes, your kitchen and the weather: decide, plan, shop and cook with friends."
   }
 }

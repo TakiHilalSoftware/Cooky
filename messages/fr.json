@@ -16,7 +16,8 @@
     "copy": "Copier",
     "copied": "Copié",
     "or": "ou",
-    "pricing": "Tarifs"
+    "pricing": "Tarifs",
+    "discover": "Découvrir"
   },
   "language": {
     "label": "Langue",
@@ -38,25 +39,50 @@
   "home": {
     "headline": "Qu'est-ce que je cuisine aujourd'hui ?",
     "tagline": "Planifiez, cuisinez et faites vos courses sans hésiter.",
-    "pillarsLabel": "Ce que fait Cooky",
-    "pillars": {
-      "decide": {
-        "title": "Décider en quelques secondes",
-        "body": "Cooky classe vos propres plats selon ce que vous avez déjà en cuisine, la saison et la météo du jour."
-      },
-      "plan": {
-        "title": "Planifier, acheter, cuisiner",
-        "body": "Planifiez la semaine, recevez vos invités, obtenez une seule liste de courses et cuisinez étape par étape avec des minuteurs."
-      },
-      "share": {
-        "title": "Cuisiner entre amis",
-        "body": "Partagez vos recettes avec les personnes de votre choix, discutez et découvrez ce qu'elles ont aimé."
-      }
-    },
     "ctaSignUp": "Créer mon compte gratuit",
     "ctaLogIn": "Se connecter",
     "ctaSignedIn": "Ouvrir mes plats",
-    "seePricing": "Voir les formules et les tarifs"
+    "seePricing": "Voir les formules et les tarifs",
+    "featuresHeading": "Tout pour la cuisine, au même endroit",
+    "comingSoon": "Bientôt",
+    "features": {
+      "dishes": {
+        "title": "Mes plats",
+        "body": "Vos recettes avec ingrédients, étapes et notes, adaptées à tous les nombres d’invités."
+      },
+      "cook": {
+        "title": "Cuisiner",
+        "body": "Que faire avec ce que vous avez ? Vos plats, classés selon les ingrédients qui manquent."
+      },
+      "spin": {
+        "title": "Roue",
+        "body": "Vous hésitez ? Laissez Cooky choisir le plat du soir."
+      },
+      "calendar": {
+        "title": "Calendrier",
+        "body": "Tout ce que vous avez cuisiné et prévu, jour par jour."
+      },
+      "planner": {
+        "title": "Planning",
+        "body": "Planifiez les repas et les événements de la semaine en quelques gestes."
+      },
+      "timer": {
+        "title": "Minuteurs",
+        "body": "Des minuteurs nommés qui continuent de tourner, avec une alarme."
+      },
+      "shopping": {
+        "title": "Liste de courses",
+        "body": "Une seule liste pour la semaine, triée par rayon, qui marche hors ligne."
+      },
+      "assistant": {
+        "title": "Assistant",
+        "body": "Demandez quoi cuisiner, remplacez un ingrédient ou préparez un menu, simplement."
+      }
+    },
+    "discoverHeading": "Des plats à essayer",
+    "discoverAll": "Parcourir Découvrir",
+    "pricingHeading": "Commencez gratuitement, passez à plus quand vous voulez",
+    "pricingBody": "Cuisiner, planifier et faire les courses, c’est gratuit pour tout le monde. Les formules payantes ajoutent plus d’aide de l’IA, de place et de façons de cuisiner ensemble."
   },
   "notFound": {
     "title": "Cette page n'est pas au menu",
@@ -143,6 +169,24 @@
       "button": "Voir le reçu",
       "expiry": "Retrouvez tous vos reçus dans Paramètres, rubrique Formule et facturation.",
       "ignore": "Ce paiement vous surprend ? Vérifiez votre formule dans Paramètres, rubrique Formule et facturation."
+    },
+    "dataExportReady": {
+      "subject": "Vos données Cooky sont prêtes",
+      "preview": "Votre copie peut être téléchargée pendant les prochaines 24 heures.",
+      "heading": "Vos données sont prêtes",
+      "body": "La copie de vos données Cooky que vous avez demandée est prête. Ouvrez Paramètres → Vos données pour la télécharger.",
+      "button": "Ouvrir Vos données",
+      "expiry": "Le téléchargement reste disponible 24 heures. Ensuite, vous pourrez préparer une nouvelle copie.",
+      "ignore": "Vous n'avez rien demandé ? Changez votre mot de passe et vérifiez vos appareils dans Paramètres → Sécurité."
+    },
+    "accountDeletionScheduled": {
+      "subject": "Votre compte Cooky sera supprimé dans 7 jours",
+      "preview": "Vous avez changé d'avis ? Reconnectez-vous dans les 7 jours pour garder votre compte.",
+      "heading": "La suppression de votre compte est programmée",
+      "body": "Nous avons résilié votre abonnement et vous avons déconnecté partout. Dans 7 jours, votre compte et tout son contenu seront supprimés définitivement.",
+      "button": "Me connecter pour garder mon compte",
+      "expiry": "Vous connecter à tout moment dans les 7 prochains jours annule la suppression.",
+      "ignore": "Vous n'avez rien demandé ? Connectez-vous maintenant pour l'arrêter, puis changez votre mot de passe."
     }
   },
   "auth": {
@@ -257,7 +301,8 @@
     "logIn": "Se connecter",
     "signUp": "S'inscrire",
     "billing": "Formule et facturation",
-    "dishes": "Mes plats"
+    "dishes": "Mes plats",
+    "kitchen": "Ma cuisine"
   },
   "settings": {
     "title": "Paramètres",
@@ -268,7 +313,10 @@
       "account": "Profil et apparence",
       "security": "Sécurité",
       "billing": "Formule et facturation",
-      "data": "Vos données"
+      "data": "Vos données",
+      "notifications": "Notifications",
+      "privacy": "Confidentialité et sécurité",
+      "help": "Aide et avis"
     },
     "security": {
       "title": "Sécurité",
@@ -374,7 +422,8 @@
       "saving": "Enregistrement…",
       "saved": "Nom affiché enregistré.",
       "emailLabel": "E-mail",
-      "emailHint": "Vous vous connectez avec cette adresse."
+      "emailHint": "Vous vous connectez avec cette adresse.",
+      "photoAlt": "Votre photo de profil"
     },
     "appearance": {
       "heading": "Apparence",
@@ -400,29 +449,274 @@
       "preview": "Planifiez, cuisinez et faites vos courses sans hésiter.",
       "saved": "Enregistré",
       "saveFailed": "Ce changement n'a pas pu être enregistré, il a donc été annulé. Réessayez."
+    },
+    "kitchen": {
+      "heading": "Cuisine",
+      "description": "Où vous cuisinez et ce que vous mangez. Cooky s’en sert pour la météo, la saison et les suggestions.",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "saved": "Cuisine enregistrée",
+      "setup": "Refaire la configuration de départ",
+      "cityNotFound": "Enregistré. Nous n'avons pas trouvé « {city} » sur la carte, donc pas encore de météo. Vérifiez l'orthographe ou utilisez votre position."
+    },
+    "offline": {
+      "heading": "Sur cet appareil",
+      "description": "Pour faire les courses sans réseau.",
+      "label": "Garder ma liste de courses et la recette du jour sur cet appareil",
+      "hint": "Elles s'ouvrent même sans connexion, et les cases cochées se synchronisent à votre retour. Supprimées à la déconnexion.",
+      "turnedOn": "Votre liste sera gardée sur cet appareil",
+      "turnedOff": "Supprimée de cet appareil"
+    },
+    "calendarFeed": {
+      "heading": "Flux de calendrier",
+      "description": "Voyez votre planning et vos événements dans Google, Apple ou Outlook Agenda.",
+      "proOnly": "Le flux de calendrier est inclus avec Pro.",
+      "seePlans": "Voir les offres",
+      "yourLink": "Votre lien de calendrier privé",
+      "copy": "Copier",
+      "copied": "Lien copié. Ajoutez-le dans votre agenda comme abonnement (« depuis une URL »).",
+      "onlyOnce": "Ce lien n'est affiché qu'une fois. Gardez-le privé : toute personne qui l'a peut voir votre planning.",
+      "activeSince": "Votre flux est actif (lien créé le {date}). Lien perdu ? Créez-en un nouveau.",
+      "none": "Pas encore de lien de calendrier.",
+      "create": "Créer le lien de calendrier",
+      "newLink": "Créer un nouveau lien",
+      "turnOff": "Désactiver",
+      "revoked": "Lien de calendrier désactivé. Les agendas qui l'utilisent ne se mettent plus à jour.",
+      "privacy": "Créer un nouveau lien désactive l'ancien."
+    },
+    "notifications": {
+      "pushHeading": "Notifications sur cet appareil",
+      "pushDescription": "Recevez une notification quand Cooky est fermé, par exemple quand un ami vous écrit. Chaque appareil se règle séparément.",
+      "turnOn": "Activer",
+      "turnOff": "Désactiver",
+      "checking": "Vérification de cet appareil…",
+      "turnedOn": "Les notifications sont activées sur cet appareil.",
+      "turnedOff": "Les notifications sont désactivées sur cet appareil.",
+      "couldNotTurnOn": "Cet appareil n'a pas pu activer les notifications. Réessayez.",
+      "onHere": "Activées sur cet appareil. Se déconnecter ou retirer cet appareil les désactive.",
+      "offHere": "Désactivées sur cet appareil.",
+      "blocker": {
+        "server": "Les notifications ne sont pas encore disponibles sur Cooky. Les alertes dans l'appli fonctionnent quand Cooky est ouvert.",
+        "unsupported": "Ce navigateur ne peut pas afficher de notifications. Essayez un autre navigateur, ou installez Cooky.",
+        "ios": "Sur iPhone et iPad, ajoutez d'abord Cooky à l'écran d'accueil (Partager → Sur l'écran d'accueil), ouvrez-le depuis là, puis activez les notifications.",
+        "denied": "Les notifications sont bloquées pour Cooky dans ce navigateur. Autorisez-les dans les réglages du site, puis revenez ici."
+      },
+      "kindsHeading": "Me prévenir pour",
+      "kindsDescription": "S'applique à tous vos appareils. Enregistré dès que vous changez.",
+      "kind": {
+        "messages": {
+          "label": "Messages",
+          "hint": "Quand un ami vous envoie un message."
+        },
+        "friend_requests": {
+          "label": "Demandes d'ami",
+          "hint": "Quand quelqu'un veut devenir votre ami."
+        },
+        "friend_accepted": {
+          "label": "Demandes acceptées",
+          "hint": "Quand quelqu'un accepte votre demande d'ami."
+        },
+        "timers": {
+          "label": "Minuteurs",
+          "hint": "Quand un minuteur se termine alors que Cooky est en arrière-plan."
+        },
+        "billing": {
+          "label": "Formule et facturation",
+          "hint": "Fin d'essai, problèmes de paiement et reçus."
+        }
+      }
+    },
+    "privacy": {
+      "blockedHeading": "Personnes bloquées",
+      "blockedDescription": "Elles ne peuvent ni vous trouver, ni vous ajouter, ni vous écrire, et ne sont pas prévenues. Débloquer leur permet de vous retrouver et de vous ajouter ; l'amitié n'est pas rétablie.",
+      "noneBlocked": "Vous n'avez bloqué personne.",
+      "unblock": "Débloquer",
+      "unblockLabel": "Débloquer {name}",
+      "unblocked": "{name} est débloqué."
     }
   },
   "legal": {
-    "draftNotice": "Résumé provisoire. Le texte juridique complet sera publié avant le lancement de Cooky ; c'est cette version qui est enregistrée lors de votre inscription.",
     "version": "Version {version}",
+    "contents": "Sur cette page",
+    "related": "Voir aussi : <terms>Conditions d'utilisation</terms> · <privacy>Politique de confidentialité</privacy> · <refunds>Politique de remboursement</refunds> · <imprint>Mentions légales</imprint>",
+    "contactEmail": "Vous pouvez nous écrire à {email}.",
+    "contactInApp": "Vous pouvez nous écrire à tout moment depuis Paramètres → Aide et avis.",
     "terms": {
       "title": "Conditions d'utilisation",
-      "points": {
-        "account": "Vous êtes responsable de votre compte et de la confidentialité de votre mot de passe.",
-        "content": "Les recettes et notes que vous ajoutez restent les vôtres. Vous autorisez Cooky à les stocker et à les montrer aux personnes de votre choix.",
-        "fairUse": "N'abusez pas de Cooky : pas de spam, d'abus ni de tentative de casser ou de surcharger le service.",
-        "plans": "Les offres payantes se renouvellent jusqu'à leur résiliation. Après résiliation, votre offre reste active jusqu'à la fin de la période.",
-        "changes": "Si ces conditions changent de façon importante, nous vous prévenons avant l'application de la nouvelle version."
+      "intro": "Ces conditions forment l'accord entre vous et Cooky lorsque vous utilisez l'appli. Nous les avons voulues courtes et claires.",
+      "sections": {
+        "service": {
+          "title": "Ce qu'est Cooky",
+          "body": "Cooky est un compagnon de cuisine maison : un carnet de recettes, des outils pour décider quoi cuisiner, planifier les repas, faire les courses et minuter la cuisson, et un moyen de partager des recettes et de discuter avec vos amis. Certaines fonctions sont gratuites ; d'autres font partie des formules payantes Plus et Pro décrites sur la page Tarifs."
+        },
+        "account": {
+          "title": "Votre compte",
+          "body": "Vous devez avoir au moins 16 ans pour créer un compte. Gardez votre mot de passe secret et prévenez-nous si vous pensez que quelqu'un d'autre utilise votre compte. Vous êtes responsable de ce qui se passe avec votre compte.\n\nVous pouvez supprimer votre compte à tout moment depuis Paramètres → Vos données."
+        },
+        "content": {
+          "title": "Vos recettes et contenus",
+          "body": "Les recettes, photos, notes, avis et messages que vous ajoutez restent à vous. Vous autorisez Cooky à les conserver et à les montrer, à vous et aux personnes avec qui vous choisissez de les partager, uniquement pour faire fonctionner le service.\n\nN'ajoutez que des contenus que vous avez le droit de partager. Les recettes importées d'un site gardent un lien vers leur source."
+        },
+        "sharing": {
+          "title": "Partage et amis",
+          "body": "Les plats sont privés tant que vous ne les partagez pas avec tous vos amis ou avec les groupes de votre choix. Vos amis peuvent lire un plat partagé et le copier dans leur propre carnet. Vous pouvez arrêter de partager, retirer un ami ou bloquer quelqu'un à tout moment."
+        },
+        "conduct": {
+          "title": "Utiliser Cooky loyalement",
+          "body": "N'utilisez pas Cooky pour envoyer du spam, harceler ou tromper qui que ce soit, partager des contenus illégaux ou haineux, ni pour casser, surcharger ou contourner le service et ses limites. Nous pouvons supprimer des contenus ou suspendre des comptes qui enfreignent ces règles. Vous pouvez signaler une personne, un plat, un avis ou un message depuis l'appli."
+        },
+        "plans": {
+          "title": "Formules payantes et essais",
+          "body": "Les formules payantes se renouvellent automatiquement chaque mois ou chaque année jusqu'à résiliation. Les prix sont affichés avant le paiement, taxes comprises le cas échéant. Certaines fonctions utilisent des essais (par exemple l'Assistant) ; leur nombre par période dépend de votre formule et s'affiche dans l'appli.\n\nUn essai gratuit est proposé une seule fois par compte. Les paiements sont gérés par Stripe. Notre politique de remboursement explique les résiliations et remboursements."
+        },
+        "availability": {
+          "title": "Disponibilité et évolutions",
+          "body": "Nous faisons en sorte que Cooky reste disponible et que vos données soient en sécurité, mais nous ne pouvons pas garantir que le service ne sera jamais interrompu. Nous pouvons modifier ou retirer des fonctions ; si un changement vous retire quelque chose que vous payez, nous vous prévenons à l'avance."
+        },
+        "liability": {
+          "title": "Responsabilité",
+          "body": "Les suggestions de Cooky (y compris celles de l'IA, les valeurs nutritionnelles et la météo) sont là pour aider, pas pour remplacer votre jugement. Vérifiez vous-même les ingrédients pour les allergies et la sécurité alimentaire.\n\nNous ne sommes pas responsables des pertes indirectes. Rien dans ces conditions ne limite les droits que vous accorde la loi de votre pays."
+        },
+        "ending": {
+          "title": "Fin de l'accord",
+          "body": "Vous pouvez arrêter d'utiliser Cooky et supprimer votre compte quand vous voulez. Nous pouvons suspendre ou fermer un compte qui enfreint gravement ou de façon répétée ces conditions, et nous vous dirons pourquoi sauf si la loi l'interdit."
+        },
+        "law": {
+          "title": "Droit applicable",
+          "body": "Ces conditions sont régies par le droit du pays où est établi l'éditeur de Cooky, indiqué dans les mentions légales, sans vous priver de la protection du droit de votre pays de résidence."
+        },
+        "changes": {
+          "title": "Modifications de ces conditions",
+          "body": "Si nous modifions ces conditions de façon importante, nous vous prévenons dans l'appli ou par e-mail avant que la nouvelle version s'applique. La version que vous avez acceptée est enregistrée avec votre compte."
+        }
       }
     },
     "privacy": {
       "title": "Politique de confidentialité",
-      "points": {
-        "collect": "Nous ne conservons que ce dont Cooky a besoin : votre compte, vos recettes et plannings, et les réglages que vous choisissez.",
-        "never": "Nous ne vendons jamais vos données et ne montrons jamais votre adresse e-mail à d'autres personnes.",
-        "processors": "Des prestataires de confiance font fonctionner certaines parties de Cooky, comme l'hébergement, l'e-mail et les paiements. Ils agissent uniquement selon nos instructions.",
-        "rights": "Vous pouvez tout exporter ou supprimer votre compte à tout moment depuis les Paramètres.",
-        "cookies": "Nous n'utilisons que les cookies nécessaires pour vous garder connecté. Aucun traceur publicitaire."
+      "intro": "Voici ce que Cooky collecte, pourquoi, qui nous aide à le faire fonctionner et quels choix vous avez. Nous collectons le moins possible et ne vendons jamais vos données.",
+      "sections": {
+        "who": {
+          "title": "Qui est responsable",
+          "body": "L'éditeur indiqué dans les mentions légales est responsable de vos données personnelles dans Cooky."
+        },
+        "collect": {
+          "title": "Ce que nous collectons",
+          "body": "Compte : votre nom, votre adresse e-mail, votre mot de passe (conservé uniquement sous forme d'empreinte sécurisée) ou votre connexion Google/Apple, et la version de ces documents que vous avez acceptée.\n\nCe que vous ajoutez : recettes, photos, notes, notes et avis, votre cuisine, plannings, événements, listes de courses, conversations avec l'Assistant, amis, groupes, messages et signalements.\n\nRéglages : langue, apparence, unités, la ville choisie (ou des coordonnées approximatives de l'appareil, arrondies à environ 1 km, si vous choisissez « utiliser ma position »), préférences alimentaires et choix de notifications.\n\nTechnique : appareils connectés (navigateur et système) et une adresse IP conservée uniquement sous forme d'empreinte chiffrée pour la sécurité. Les rapports d'erreur excluent tout contenu personnel."
+        },
+        "use": {
+          "title": "Comment nous les utilisons",
+          "body": "Pour faire fonctionner Cooky : afficher et synchroniser vos recettes, classer les plats, planifier et faire les courses, transmettre messages et notifications, et traiter les paiements. Pour protéger les comptes (connexion sécurisée, prévention des abus) et corriger les problèmes. Nous n'utilisons pas vos données pour la publicité et ne créons pas de profils publicitaires."
+        },
+        "legalBasis": {
+          "title": "Bases légales",
+          "body": "Fournir le service auquel vous vous êtes inscrit (contrat). Sécuriser Cooky et prévenir les abus (intérêts légitimes). Notifications et position de l'appareil, seulement si vous les activez (consentement, que vous pouvez retirer dans les Paramètres). Conserver les documents de facturation (obligation légale)."
+        },
+        "processors": {
+          "title": "Qui nous aide à faire fonctionner Cooky",
+          "body": "Ces prestataires traitent des données pour nous, uniquement sur nos instructions et dans le cadre de contrats de sous-traitance :"
+        },
+        "transfers": {
+          "title": "Transferts hors de votre pays",
+          "body": "Certains prestataires sont établis aux États-Unis ou y utilisent des serveurs. Lorsque des données quittent l'Espace économique européen, nous appliquons les garanties exigées par la loi, comme les clauses contractuelles types de l'UE ou le cadre de protection des données UE-États-Unis."
+        },
+        "retention": {
+          "title": "Durée de conservation",
+          "body": "Les données de votre compte sont conservées tant que vous avez un compte. Les plats et collections supprimés peuvent être restaurés pendant une journée, puis sont effacés. Le texte des messages supprimés est effacé après une journée. Les conversations avec l'Assistant inutilisées depuis 90 jours sont supprimées. Les exports de données sont téléchargeables pendant 24 heures, puis le fichier est supprimé.\n\nQuand vous supprimez votre compte, tout est effacé 7 jours plus tard (vous pouvez annuler en vous reconnectant pendant ce délai), y compris vos photos et votre client de facturation. Les prestataires de paiement conservent les factures exigées par la loi."
+        },
+        "rights": {
+          "title": "Vos droits",
+          "body": "Vous pouvez consulter, corriger, télécharger et supprimer vos données. Paramètres → Vos données permet de télécharger une copie complète et de supprimer votre compte ; les Paramètres permettent aussi de modifier votre profil, vos notifications et qui voit vos plats. Vous pouvez également vous opposer à un traitement ou demander sa limitation, et saisir votre autorité de protection des données."
+        },
+        "security": {
+          "title": "Sécurité",
+          "body": "Les données sont chiffrées en transit, les photos sont stockées en privé et affichées uniquement via des liens de courte durée, les mots de passe sont hachés et vérifiés contre les fuites connues, et vous pouvez ajouter la vérification en deux étapes ou des clés d'accès. Les autres ne voient jamais votre adresse e-mail."
+        },
+        "cookies": {
+          "title": "Cookies",
+          "body": "Cooky n'utilise que les cookies nécessaires : pour vous garder connecté, mémoriser votre langue et sécuriser la connexion. Il n'y a ni cookie publicitaire ni traceur, donc pas de bandeau cookies. Votre appareil peut aussi conserver votre thème, la taille du texte, les minuteurs en cours et, si vous l'autorisez, votre liste de courses hors ligne ; la déconnexion efface la copie hors ligne."
+        },
+        "children": {
+          "title": "Enfants",
+          "body": "Cooky n'est pas destiné aux enfants de moins de 16 ans, et nous ne collectons pas sciemment leurs données."
+        },
+        "changes": {
+          "title": "Modifications de cette politique",
+          "body": "Si nous modifions cette politique de façon importante, nous vous prévenons avant qu'elle s'applique. La version que vous avez acceptée est enregistrée avec votre compte."
+        }
+      },
+      "processorTable": {
+        "caption": "Prestataires qui traitent des données personnelles pour Cooky",
+        "name": "Prestataire",
+        "purpose": "Pour quoi",
+        "location": "Où",
+        "purposes": {
+          "hosting": "Hébergement de l'appli",
+          "database": "Base de données",
+          "jobs": "Limites de débit et tâches en arrière-plan",
+          "storage": "Photos et exports de données",
+          "email": "Envoi des e-mails",
+          "payments": "Paiements et factures",
+          "realtime": "Discussion en temps réel",
+          "ai": "Fonctions d'IA (Assistant, voix, import)",
+          "weather": "Météo de votre ville",
+          "errors": "Rapports d'erreur (sans contenu personnel)",
+          "signin": "Connexion avec Google ou Apple"
+        }
+      }
+    },
+    "refunds": {
+      "title": "Politique de remboursement",
+      "intro": "Comment fonctionnent la résiliation, les essais et les remboursements des formules payantes de Cooky.",
+      "sections": {
+        "summary": {
+          "title": "En bref",
+          "body": "Vous pouvez résilier à tout moment. Votre formule reste active jusqu'à la fin de la période payée, et rien de ce que vous avez ajouté n'est supprimé quand vous repassez à Gratuit."
+        },
+        "cancel": {
+          "title": "Résilier",
+          "body": "Résiliez depuis Paramètres → Formule et facturation. Vous gardez votre formule jusqu'à la fin du mois ou de l'année en cours, et elle ne se renouvelle pas. Un essai gratuit peut être résilié avant sa fin sans être facturé."
+        },
+        "withdrawal": {
+          "title": "Votre droit de rétractation de 14 jours",
+          "body": "Si vous vivez dans l'UE ou au Royaume-Uni, vous pouvez vous rétracter d'un nouvel abonnement dans les 14 jours suivant le premier paiement. Comme les fonctions payantes démarrent dès la souscription, nous pouvons retenir un montant correspondant aux jours déjà utilisés, comme la loi le permet."
+        },
+        "request": {
+          "title": "Demander un remboursement",
+          "body": "Prévenez-nous dans les 14 jours suivant un paiement : nous le remboursons si la loi l'exige ou si une erreur vient de nous (par exemple, un double prélèvement). Les remboursements sont versés sur le moyen de paiement utilisé."
+        },
+        "failed": {
+          "title": "Paiements refusés",
+          "body": "Si un paiement de renouvellement échoue, vous gardez votre formule 7 jours le temps de mettre à jour votre carte. Ensuite, votre compte passe à Gratuit."
+        },
+        "downgrade": {
+          "title": "Passer à une formule inférieure",
+          "body": "Rien n'est supprimé. Si vous dépassez ce que permet la nouvelle formule (par exemple, plus de plats), le surplus reste consultable et cuisinable, mais vous ne pouvez plus en ajouter tant que vous n'êtes pas repassé sous la limite ou n'avez pas changé de formule."
+        }
+      }
+    },
+    "imprint": {
+      "title": "Mentions légales",
+      "intro": "Qui édite Cooky et comment nous contacter.",
+      "operatorPending": "Les informations sur l'éditeur sont publiées ici avant l'ouverture de Cooky au public.",
+      "fields": {
+        "name": "Éditeur",
+        "address": "Adresse",
+        "director": "Directeur de la publication",
+        "registration": "Immatriculation",
+        "vatId": "Numéro de TVA",
+        "email": "E-mail"
+      },
+      "sections": {
+        "operator": {
+          "title": "Éditeur"
+        },
+        "contact": {
+          "title": "Contact"
+        },
+        "disputes": {
+          "title": "Litiges de consommation",
+          "body": "La Commission européenne met à disposition une plateforme de règlement en ligne des litiges à l'adresse https://ec.europa.eu/consumers/odr. Nous préférons résoudre les problèmes directement : contactez-nous d'abord."
+        }
       }
     }
   },
@@ -456,7 +750,18 @@
     "noteTooLong": "Votre note doit faire moins de 2 000 caractères.",
     "duplicate": "Chaque choix ne peut être sélectionné qu’une fois.",
     "collectionNameRequired": "Donnez un nom à la collection.",
-    "collectionNameTooLong": "Le nom doit faire moins de 60 caractères."
+    "collectionNameTooLong": "Le nom doit faire moins de 60 caractères.",
+    "cityTooLong": "La ville doit faire moins de 80 caractères.",
+    "messageRequired": "Écrivez d'abord un message.",
+    "messageTooLong": "Restez sous 500 caractères.",
+    "invalidDate": "Choisissez une date valide.",
+    "eventNameRequired": "Donnez un nom à l'événement.",
+    "eventNameTooLong": "Restez sous 100 caractères.",
+    "guestsRange": "Le nombre d'invités doit être un nombre entier de 1 à 500.",
+    "searchTooShort": "Tapez au moins 2 lettres.",
+    "groupNameRequired": "Donnez un nom au groupe.",
+    "groupNameTooLong": "Le nom doit faire moins de 40 caractères.",
+    "reportDetailsTooLong": "Les détails doivent faire moins de 1 000 caractères."
   },
   "plans": {
     "free": {
@@ -764,7 +1069,10 @@
       "allowanceHint": "Votre formule permet jusqu’à {limit} plats.",
       "atCap": "Votre boîte à recettes est pleine : {limit} plats sur {limit}. Passez à une formule supérieure pour plus de place, ou supprimez un plat que vous ne cuisinez plus.",
       "readOnly": "Vous avez {count} plats et votre formule en permet {limit}. Tout reste consultable et cuisinable. Pour ajouter ou modifier des plats, supprimez-en {over, plural, one {#} other {#}} ou changez de formule.",
-      "getMore": "Avoir plus de place"
+      "getMore": "Avoir plus de place",
+      "setupTitle": "Terminez la configuration de votre cuisine",
+      "setupBody": "Deux minutes : votre ville, ce que vous mangez et quelques plats pour commencer.",
+      "setupCta": "Configurer ma cuisine"
     },
     "favorite": {
       "add": "Ajouter {name} aux favoris",
@@ -799,7 +1107,9 @@
       "notFoundTitle": "Plat introuvable",
       "notFoundBody": "Il a peut-être été supprimé, ou le lien est incorrect.",
       "seasonsLabel": "Saisons",
-      "dietLabel": "Régime"
+      "dietLabel": "Régime",
+      "source": "Source : {site}",
+      "noReviews": "Pas encore d'avis."
     },
     "note": {
       "heading": "Mes notes",
@@ -877,6 +1187,40 @@
       "body": "Votre formule permet {limit} plats. Passez à une formule supérieure pour plus de place, ou supprimez un plat que vous ne cuisinez plus.",
       "readOnlyBody": "Vous avez {count} plats et votre formule en permet {limit}. Supprimez-en ou changez de formule pour en ajouter.",
       "back": "Retour à mes plats"
+    },
+    "import": {
+      "heading": "Importer depuis un lien",
+      "body": "Collez l’adresse d’une page de recette. Cooky remplit le formulaire, que vous vérifiez avant d’enregistrer.",
+      "label": "Adresse de la page de recette",
+      "placeholder": "https://…",
+      "button": "Importer",
+      "importing": "Lecture de la page…",
+      "imported": "Importé depuis {site}. Vérifiez tout avant d’enregistrer.",
+      "viewSource": "Ouvrir l’original",
+      "startOver": "Recommencer",
+      "errors": {
+        "invalid": "Ce lien ne peut pas être importé. Collez l’adresse complète d’une page de recette, commençant par https://.",
+        "not_found": "Aucune recette trouvée sur cette page. Certains sites ne partagent pas leurs recettes d’une façon lisible ; vous pouvez toujours la saisir ci-dessous. Votre essai n’a pas été utilisé.",
+        "unavailable": "Impossible d’accéder à cette page. Vérifiez le lien ou réessayez dans un instant. Votre essai n’a pas été utilisé."
+      }
+    },
+    "voice": {
+      "button": "Dicter les ingrédients",
+      "stop": "Arrêter et ajouter",
+      "listening": "À l’écoute… dites vos ingrédients, par exemple « 2 pommes de terre, 500 grammes de poulet et du sel ».",
+      "working": "Transformation de vos mots en ingrédients…",
+      "added": "{count, plural, one {# ingrédient ajouté} other {# ingrédients ajoutés}}. Vérifiez-les ci-dessous.",
+      "hint": "Utilise un essai de dictée. Si ça ne marche pas, la saisie fonctionne toujours.",
+      "errors": {
+        "blocked": "Votre navigateur a bloqué le micro. Autorisez-le dans les réglages du site (l’icône à côté de l’adresse), puis réessayez.",
+        "insecure": "La dictée vocale nécessite une connexion sécurisée (https).",
+        "noMicrophone": "Aucun micro trouvé sur cet appareil.",
+        "offline": "Vous êtes hors ligne. La dictée nécessite une connexion ; la saisie marche toujours.",
+        "tooLong": "C’était plus d’une minute. Essayez une liste plus courte, ou dictez-la en plusieurs fois.",
+        "nothingHeard": "Nous n’avons rien entendu. Réessayez un peu plus près du micro.",
+        "unavailable": "La dictée vocale n’est pas disponible pour le moment. Votre essai n’a pas été utilisé, et la saisie fonctionne toujours.",
+        "unsupported": "Ce navigateur ne peut pas enregistrer de son. La saisie fonctionne partout."
+      }
     }
   },
   "collections": {
@@ -949,5 +1293,1263 @@
     "failedTitle": "Le dernier import ne s’est pas terminé",
     "failedBody": "Réessayez avec le même fichier. Les plats déjà ajoutés ne seront pas dupliqués.",
     "viewDishes": "Voir mes plats"
+  },
+  "discover": {
+    "title": "Découvrir",
+    "subtitle": "Des plats de {count} pays, prêts à cuisiner ou à garder dans votre boîte.",
+    "featured": "À la une",
+    "featuredLabel": "Plats à la une",
+    "countryLabel": "Pays",
+    "allCountries": "Tous les pays",
+    "courseLabel": "Type de plat",
+    "allCourses": "Tous les types",
+    "dietLabel": "Régime",
+    "allDiets": "Tous les régimes",
+    "haveLabel": "Ingrédients que vous avez",
+    "havePlaceholder": "pois chiches, tomate, citron",
+    "haveHint": "Séparez-les par des virgules. Les plats qui les utilisent tous passent en premier.",
+    "apply": "Afficher les plats",
+    "clear": "Effacer les filtres",
+    "collectionsLabel": "Collections",
+    "allCollections": "Tous les plats",
+    "collection": {
+      "ramadan_iftar": "Ftour du Ramadan",
+      "eid_sweets": "Douceurs de l’Aïd",
+      "summer_salads": "Salades d’été",
+      "winter_comfort": "Réconfort d’hiver",
+      "quick": "Rapide"
+    },
+    "results": "{count, plural, =0 {Aucun plat} one {# plat} other {# plats}}",
+    "matchAny": "Aucun plat n’utilise tous ces ingrédients : voici ceux qui en utilisent une partie.",
+    "matchNone": "Aucun plat n’utilise ces ingrédients. Essayez-en moins ou d’autres.",
+    "noResultsTitle": "Aucun plat ne correspond",
+    "noResultsBody": "Essayez d’autres filtres, ou effacez-les pour tout voir.",
+    "save": "Garder dans mes plats",
+    "saving": "Enregistrement…",
+    "savedToast": "« {name} » est dans vos plats",
+    "inYourDishes": "Dans vos plats",
+    "openCopy": "Ouvrir ma copie",
+    "logInToSave": "Se connecter pour garder",
+    "saveLabel": "Garder {name} dans mes plats",
+    "back": "Découvrir",
+    "fromCountry": "Origine : {country}",
+    "signUpPitch": "Inscrivez-vous pour garder des plats, planifier votre semaine et préparer vos courses.",
+    "signUp": "S’inscrire gratuitement",
+    "followsNote": "Les plats gardés s’affichent dans votre langue tant que vous ne les modifiez pas."
+  },
+  "footer": {
+    "tagline": "Planifiez, cuisinez et faites vos courses sans vous prendre la tête.",
+    "explore": "Explorer",
+    "discover": "Découvrir",
+    "pricing": "Tarifs",
+    "account": "Compte",
+    "legal": "Mentions",
+    "terms": "Conditions d’utilisation",
+    "privacy": "Politique de confidentialité",
+    "rights": "© {year} Cooky. Tous droits réservés.",
+    "refunds": "Remboursements",
+    "imprint": "Mentions légales"
+  },
+  "onboarding": {
+    "title": "Préparez votre cuisine",
+    "progress": "Étape {step} sur {total}",
+    "skipAll": "Passer la configuration",
+    "back": "Retour",
+    "next": "Suivant",
+    "finish": "Terminer",
+    "finishing": "Configuration…",
+    "skipStep": "Passer cette étape",
+    "welcome": "Bienvenue ! {count, plural, =0 {Votre boîte est prête.} one {# plat est dans votre boîte.} other {# plats sont dans votre boîte.}}",
+    "language": {
+      "heading": "Dans quelle langue cuisinez-vous ?",
+      "body": "Cooky, ses e-mails et ses plats suivent ce choix. Vous pouvez le changer à tout moment."
+    },
+    "city": {
+      "heading": "Où cuisinez-vous ?",
+      "body": "Cooky s’en sert pour la météo et la saison, pour vous proposer une soupe réconfortante un jour de froid.",
+      "label": "Ville",
+      "placeholder": "Casablanca",
+      "useLocation": "Utiliser ma position",
+      "locating": "Localisation…",
+      "located": "Position enregistrée (arrondie à environ 1 km).",
+      "clearLocation": "Oublier ma position",
+      "denied": "Votre navigateur n’a pas partagé votre position. Saisissez votre ville, ou autorisez la localisation dans les réglages du site.",
+      "unavailable": "Impossible d’obtenir votre position. Saisissez votre ville.",
+      "privacy": "Nous ne gardons qu’une position approximative, jamais votre adresse."
+    },
+    "diet": {
+      "heading": "Quelque chose que vous ne mangez pas ?",
+      "body": "Cochez ce qui s’applique. Cooky met en avant les plats adaptés, pratique aussi quand vous recevez."
+    },
+    "favorites": {
+      "heading": "Choisissez quelques plats qui vous plaisent",
+      "body": "Ils vont directement dans votre boîte en favoris, prêts pour Cuisiner, la Roue et le Planning.",
+      "picked": "{count, plural, =0 {Choisissez-en au moins 3} one {# choisi, encore 2} other {# choisis}}",
+      "enough": "{count} choisis"
+    },
+    "done": "Tout est prêt",
+    "staples": {
+      "heading": "Qu'avez-vous toujours ?",
+      "body": "Cochez vos basiques. Cuisiner ne les comptera pas comme manquants, pour des suggestions réalistes.",
+      "label": "Basiques",
+      "picked": "{count, plural, =0 {Rien de coché pour l'instant} one {# basique coché} other {# basiques cochés}}",
+      "all": "Tout cocher",
+      "none": "Tout décocher"
+    }
+  },
+  "photos": {
+    "add": "Ajouter une photo",
+    "replace": "Changer la photo",
+    "remove": "Retirer la photo",
+    "uploading": "Envoi en cours…",
+    "saved": "Photo enregistrée",
+    "removed": "Photo retirée",
+    "hint": "JPEG, PNG, WebP ou AVIF, jusqu'à 5 Mo. La localisation et les infos de l'appareil sont supprimées.",
+    "disabled": "L'ajout de photos n'est pas encore disponible. Tout le reste fonctionne normalement.",
+    "dishHeading": "Photo",
+    "dishDescription": "Les changements de photo sont enregistrés tout de suite.",
+    "addToDish": "Ajouter une photo",
+    "errors": {
+      "tooLarge": "Cette photo dépasse 5 Mo. Choisissez-en une plus légère, ou faites-en une capture d'écran.",
+      "wrongType": "Ce fichier n'est pas une photo utilisable. Choisissez une image JPEG, PNG, WebP ou AVIF.",
+      "unreadable": "Impossible de lire cette photo. Essayez-en une autre, ou enregistrez-la d'abord en JPEG.",
+      "unavailable": "Les photos ne peuvent pas être enregistrées pour le moment. Réessayez dans quelques minutes.",
+      "offline": "Vous êtes hors ligne. Les photos ont besoin d'une connexion."
+    }
+  },
+  "weather": {
+    "condition": {
+      "sunny": "Ensoleillé",
+      "clear_night": "Nuit claire",
+      "cloudy": "Nuageux",
+      "rainy": "Pluvieux",
+      "stormy": "Orageux",
+      "snowy": "Neigeux",
+      "foggy": "Brumeux",
+      "windy": "Venteux"
+    },
+    "feel": {
+      "hot": "quelque chose de frais",
+      "freezing": "temps à soupe",
+      "stormy": "parfait pour un plat mijoté",
+      "snowy": "chaud et réconfortant",
+      "cozy": "plats réconfortants d'abord",
+      "light": "plats légers d'abord"
+    },
+    "label": "{condition}, {temp} °C",
+    "labelWithFeel": "{condition}, {temp} °C · {feel}",
+    "feelsLike": "Ressenti",
+    "wind": "Vent",
+    "windValue": "{speed} km/h",
+    "rain": "Pluie",
+    "rainValue": "{mm} mm",
+    "noRain": "Aucune pour l'instant",
+    "mood": {
+      "cozy": "Cuisiner met les plats réconfortants en premier aujourd'hui.",
+      "light": "Cuisiner met les plats légers et frais en premier aujourd'hui.",
+      "neutral": "Cuisiner suit la saison aujourd'hui : {season}."
+    },
+    "setCity": "Indiquer votre ville",
+    "setCityHint": "Ajoutez votre ville pour voir la météo et des plats qui s'y prêtent.",
+    "notFound": "Nous n'avons pas trouvé « {city} »",
+    "notFoundHint": "Vérifiez l'orthographe dans les Paramètres, ou utilisez votre position.",
+    "openSettings": "Ouvrir les Paramètres"
+  },
+  "kitchen": {
+    "title": "Ma cuisine",
+    "description": "Ce que vous avez chez vous. Cuisiner met en premier les plats que vous pouvez faire tout de suite.",
+    "addLabel": "Ajouter un ingrédient",
+    "addPlaceholder": "ex. poulet, tomates, riz",
+    "add": "Ajouter",
+    "addAsStaple": "J'en ai toujours (un basique)",
+    "added": "« {name} » ajouté",
+    "haveHeading": "Dans ma cuisine en ce moment",
+    "haveHint": "Les produits frais vont et viennent. Retirez-les quand il n'y en a plus.",
+    "emptyHave": "Rien pour l'instant. Ajoutez ce qu'il y a dans votre frigo et vos placards.",
+    "staplesHeading": "J'en ai toujours",
+    "staplesHint": "Sel, huile, épices… Cuisiner ne les compte jamais comme manquants.",
+    "emptyStaples": "Pas encore de basiques. Touchez ceux que vous avez toujours ci-dessous.",
+    "suggestedHeading": "Basiques courants",
+    "suggestedHint": "Touchez pour l'ajouter comme « j'en ai toujours ».",
+    "remove": "Retirer {name}",
+    "removed": "« {name} » retiré",
+    "makeStaple": "Marquer {name} comme toujours disponible",
+    "unmakeStaple": "{name} : ne plus marquer comme toujours disponible",
+    "full": "Ma cuisine contient au plus {limit} éléments. Retirez-en quelques-uns pour en ajouter.",
+    "offline": "Vous êtes hors ligne. Les changements de Ma cuisine ont besoin d'une connexion."
+  },
+  "cook": {
+    "title": "Cuisiner",
+    "description": "Vos plats, en commençant par ceux que vous pouvez faire tout de suite.",
+    "seasonNote": "Ensuite, les plats de saison : {season}.",
+    "spinInstead": "Indécis ? Faites tourner",
+    "haveHeading": "Ce que vous avez",
+    "editKitchen": "Modifier Ma cuisine",
+    "haveHint": "Touchez un élément pour essayer sans, ou ajoutez ce que vous pourriez acheter. Ma cuisine ne change pas.",
+    "emptyKitchen": "Rien dans votre cuisine pour l'instant. <link>Ajoutez ce que vous avez</link> pour voir ce qui est prêt à cuisiner.",
+    "leaveOut": "Essayer sans {name}",
+    "putBack": "Remettre {name}",
+    "removeExtra": "Retirer {name}",
+    "addExtraLabel": "Ajouter un ingrédient à essayer",
+    "addExtraPlaceholder": "Ce que vous pourriez acheter, ex. citrons",
+    "addExtra": "Essayer avec",
+    "emptyTitle": "Pas encore de plats à classer",
+    "emptyBody": "Ajoutez vos recettes ou enregistrez-en depuis Découvrir, et Cuisiner vous dira quoi faire.",
+    "addDish": "Ajouter un plat",
+    "browseDiscover": "Parcourir Découvrir",
+    "resultsLabel": "Plats, du plus adapté au moins adapté",
+    "ready": "Prêt à cuisiner",
+    "missingCount": "{count, plural, one {# manquant :} other {# manquants :}}",
+    "listSeparator": ", ",
+    "weatherFit": "Idéal aujourd'hui",
+    "weatherFitHint": "Fait pour ce temps ou cette saison.",
+    "dietMismatch": "Hors de votre régime",
+    "dietMismatchHint": "Il ne correspond pas à toutes les préférences alimentaires de vos paramètres.",
+    "neverCooked": "Jamais cuisiné",
+    "cookedAgo": "{days, plural, =0 {Cuisiné aujourd'hui} one {Cuisiné hier} other {Cuisiné il y a # jours}}",
+    "startCooking": "Commencer à cuisiner",
+    "logToday": "Noter pour aujourd'hui",
+    "offline": "Vous êtes hors ligne. Noter un plat cuisiné demande une connexion.",
+    "logged": "« {name} » noté pour aujourd'hui",
+    "dishHeading": "Le cuisiner",
+    "history": "{count, plural, one {Cuisiné une fois} other {Cuisiné # fois}}, {days, plural, =0 {la dernière fois aujourd'hui} one {la dernière fois hier} other {la dernière fois il y a # jours}}.",
+    "neverCookedLong": "Vous ne l'avez pas encore cuisiné.",
+    "addToShopping": "Ajouter à la liste de courses",
+    "addedToShopping": "{count, plural, =0 {Tout est déjà sur votre liste} one {# article ajouté à votre liste} other {# articles ajoutés à votre liste}}",
+    "openList": "Ouvrir la liste"
+  },
+  "cooking": {
+    "title": "En cuisine : {name}",
+    "fallbackTitle": "Mode cuisine",
+    "ingredientsHeading": "Préparez tout",
+    "doneHeading": "C'est prêt",
+    "stepOf": "Étape {step} sur {total}",
+    "awake": "L'écran reste allumé pendant que vous cuisinez.",
+    "servings": "{count, plural, one {Pour # part} other {Pour # parts}}",
+    "exit": "Quitter le mode cuisine",
+    "timeUp": "C'est l'heure !",
+    "timeUpBanner": "Minuteur terminé pour l'étape {steps}.",
+    "dismiss": "Compris",
+    "start": "Lancer {minutes} min",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "reset": "Réinitialiser le minuteur",
+    "enjoy": "Bon appétit !",
+    "usedUp": "Quelque chose est terminé ?",
+    "usedUpHint": "Les éléments cochés quittent Ma cuisine. Les basiques restent toujours.",
+    "logToday": "Noter pour aujourd'hui",
+    "loggedNote": "Noté pour aujourd'hui.",
+    "rateHeading": "C'était comment ?",
+    "backToDish": "Retour au plat",
+    "back": "Retour",
+    "next": "Suivant",
+    "finish": "Terminer"
+  },
+  "rating": {
+    "heading": "Votre note",
+    "afterCooking": "Vous pourrez noter ce plat après l'avoir cuisiné. Notez une préparation pour commencer.",
+    "starsLabel": "Étoiles",
+    "stars": "{count, plural, one {# étoile} other {# étoiles}}",
+    "pickStars": "Choisissez d'abord le nombre d'étoiles.",
+    "reviewLabel": "Avis (facultatif)",
+    "reviewPlaceholder": "Ce qui a marché, ce que vous changeriez la prochaine fois…",
+    "save": "Enregistrer la note",
+    "update": "Mettre à jour la note",
+    "saved": "Note enregistrée",
+    "change": "Modifier ma note"
+  },
+  "spin": {
+    "title": "Tirage",
+    "description": "Indécis ? Laissez Cooky choisir un de vos plats, selon la météo du jour. Pas de répétition aujourd'hui.",
+    "optionsHeading": "Options du tirage",
+    "modeLabel": "Choisir parmi",
+    "random": "Tous mes plats",
+    "withIngredients": "Avec mes ingrédients",
+    "ingredientsHint": "Les plats qui utilisent tout ceci passent d'abord ; sinon, ceux qui en utilisent une partie. Jusqu'à {max}.",
+    "removeIngredient": "Retirer {name}",
+    "addIngredientLabel": "Ajouter un ingrédient",
+    "addIngredientPlaceholder": "ex. poulet",
+    "add": "Ajouter",
+    "collectionLabel": "Dans une collection",
+    "allDishes": "Tous les plats",
+    "spin": "Faire tourner",
+    "spinAgain": "Relancer",
+    "spinning": "Ça tourne…",
+    "needIngredients": "Ajoutez au moins un ingrédient, ou choisissez tous mes plats.",
+    "pickedToday": "Déjà tirés aujourd'hui",
+    "listSeparator": ", ",
+    "noRepeats": "Ils ne reviendront pas avant demain.",
+    "anyNote": "Aucun plat n'utilise tous ces ingrédients, voici donc un plat qui en utilise une partie.",
+    "notNow": "Pas maintenant",
+    "nothingTitle": "Plus rien à tirer",
+    "nothingBody": "Vous avez vu tous les plats qui correspondent à ces choix aujourd'hui. Changez les ingrédients ou la collection, ou demandez des idées à l'Assistant.",
+    "askAssistant": "Demander à l'Assistant",
+    "offline": "Vous êtes hors ligne. Le tirage demande une connexion.",
+    "idle": "Choisissez parmi quoi tirer, puis faites tourner. Les plats de saison sortent un peu plus souvent.",
+    "emptyTitle": "Rien à tirer pour l'instant",
+    "emptyBody": "Ajoutez quelques plats ou enregistrez-en depuis Découvrir, puis revenez faire tourner.",
+    "addDish": "Ajouter un plat",
+    "browseDiscover": "Parcourir Découvrir"
+  },
+  "nav": {
+    "label": "Principal",
+    "cook": "Cuisiner",
+    "dishes": "Mes plats",
+    "kitchen": "Ma cuisine",
+    "spin": "Tirage",
+    "assistant": "Assistant",
+    "discover": "Découvrir",
+    "settings": "Paramètres",
+    "billing": "Offre et facturation",
+    "more": "Plus",
+    "planner": "Planning",
+    "calendar": "Calendrier",
+    "shopping": "Courses",
+    "timer": "Minuteur",
+    "friends": "Amis",
+    "messages": "Messages",
+    "admin": "Admin",
+    "newRequests": "{count, plural, one {# nouvelle demande d'ami} other {# nouvelles demandes d'ami}}",
+    "unread": "messages non lus",
+    "somethingNew": "du nouveau à l'intérieur"
+  },
+  "assistant": {
+    "title": "Assistant",
+    "intro": "Demandez quoi cuisiner, comment utiliser ce que vous avez, ou une idée légère pour ce soir. Je propose des plats de votre carnet et de Découvrir, et je connais votre cuisine et la météo du jour.",
+    "quick": {
+      "withChicken": "Que faire avec du poulet et des pommes de terre ?",
+      "quickTonight": "Quelque chose de rapide pour ce soir",
+      "lightDinner": "Une idée de dîner léger",
+      "nextEvent": "Des idées pour mon prochain repas entre amis"
+    },
+    "inputLabel": "Votre message",
+    "placeholder": "Posez votre question sur quoi cuisiner…",
+    "send": "Envoyer",
+    "speak": "Demander à voix haute",
+    "thinking": "Je réfléchis…",
+    "newChat": "Nouvelle discussion",
+    "history": "Vos discussions",
+    "noHistory": "Vos conversations apparaîtront ici.",
+    "disclaimer": "L'IA peut se tromper. Vérifiez les allergènes, les quantités et les temps de cuisson.",
+    "unavailable": "L'Assistant n'a pas pu répondre pour le moment. Votre essai n'a pas été utilisé ; réessayez dans un instant.",
+    "notSetUp": "L'Assistant n'est pas encore disponible. Cuisiner et Tirage fonctionnent normalement.",
+    "offline": "Vous êtes hors ligne. L'Assistant a besoin d'une connexion.",
+    "fromYourDishes": "Parmi vos plats",
+    "fromDiscover": "Depuis Découvrir",
+    "cookToday": "Le cuisiner aujourd'hui",
+    "saveRecipe": "Enregistrer dans mes plats",
+    "inYourDishes": "Dans vos plats",
+    "savedToDishes": "« {name} » est maintenant dans vos plats",
+    "delete": "Supprimer « {title} »",
+    "deleteTitle": "Supprimer cette discussion ?",
+    "deleteBody": "« {title} » et ses messages seront supprimés définitivement.",
+    "deleteConfirm": "Supprimer la discussion",
+    "cancel": "Annuler",
+    "deleted": "Discussion supprimée"
+  },
+  "planner": {
+    "title": "Planning",
+    "description": "Planifiez la semaine : glissez un plat sur un jour, ou touchez un plat puis le « + » d'un jour.",
+    "previousWeek": "Semaine précédente",
+    "nextWeek": "Semaine suivante",
+    "thisWeek": "Cette semaine",
+    "copyLastWeek": "Copier la semaine dernière",
+    "copied": "{count, plural, one {# repas copié de la semaine dernière} other {# repas copiés de la semaine dernière}}",
+    "nothingToCopy": "Cette semaine contient déjà tout ce qu'il y avait la semaine dernière.",
+    "placing": "Touchez « + » sur un jour pour ajouter {name}.",
+    "cancelPlacing": "Annuler",
+    "emptyTitle": "Rien à planifier pour l'instant",
+    "emptyBody": "Ajoutez quelques plats à votre carnet, puis planifiez votre semaine ici.",
+    "addDish": "Ajouter un plat",
+    "pickFor": "Ajouter un plat au {day}",
+    "libraryLabel": "Vos plats",
+    "libraryHeading": "Vos plats",
+    "libraryHint": "Glissez-en un sur un jour, ou touchez-le puis le « + » d'un jour.",
+    "searchLabel": "Rechercher dans vos plats",
+    "searchPlaceholder": "Rechercher",
+    "collectionLabel": "Collection",
+    "allDishes": "Tous les plats",
+    "noMatch": "Aucun plat ne correspond.",
+    "dragDish": "Glisser {name} sur un jour",
+    "dragMeal": "Glisser {name} vers un autre jour",
+    "mealMenu": "Options pour {name}",
+    "today": "Aujourd'hui",
+    "nothingPlanned": "Rien de prévu.",
+    "add": "Ajouter un plat",
+    "addHere": "Ajouter {name} ici",
+    "added": "{name} prévu pour {day}",
+    "removed": "{name} retiré du planning",
+    "startCooking": "Commencer à cuisiner",
+    "slot": "Repas",
+    "moveTo": "Déplacer vers",
+    "repeat": "Répéter…",
+    "remove": "Retirer",
+    "slots": {
+      "none": "N'importe quand",
+      "breakfast": "Petit-déjeuner",
+      "lunch": "Déjeuner",
+      "dinner": "Dîner",
+      "snack": "Collation"
+    },
+    "repeatTitle": "Répéter {name}",
+    "repeatBody": "Choisissez les jours où le prévoir à nouveau, au même repas.",
+    "thisWeekLabel": "Cette semaine",
+    "nextWeekLabel": "Semaine prochaine",
+    "cancel": "Annuler",
+    "repeatConfirm": "{count, plural, =0 {Répéter ce repas} one {Répéter sur # jour} other {Répéter sur # jours}}",
+    "repeated": "{name} : {count, plural, =0 {déjà prévu ces jours-là} one {prévu sur # jour de plus} other {prévu sur # jours de plus}}",
+    "offline": "Vous êtes hors ligne. Le planning a besoin d'une connexion.",
+    "dayFull": "Ce jour est complet (20 repas). Déplacez-en ou retirez-en un d'abord.",
+    "weekRange": "{start} – {end}",
+    "events": "Événements",
+    "guests": "{count, plural, one {# invité} other {# invités}}",
+    "shopWeek": "Faire les courses de la semaine",
+    "shopped": "{count, plural, =0 {Tout pour cette semaine est déjà sur votre liste} one {# article ajouté à votre liste de courses} other {# articles ajoutés à votre liste de courses}}"
+  },
+  "calendar": {
+    "title": "Calendrier",
+    "description": "Ce que vous avez cuisiné et ce qui est prévu. Touchez un jour pour le voir ou le modifier.",
+    "previousMonth": "Mois précédent",
+    "nextMonth": "Mois suivant",
+    "thisMonth": "Ce mois-ci",
+    "plannedCount": "{count, plural, one {# prévu} other {# prévus}}",
+    "cookedCount": "{count, plural, one {# cuisiné} other {# cuisinés}}",
+    "legendCooked": "Cuisiné",
+    "legendPlanned": "Prévu",
+    "emptyDay": "Rien ce jour-là.",
+    "planThisDay": "Planifier cette semaine",
+    "cooked": "Cuisiné",
+    "planned": "Prévu",
+    "moveTo": "Déplacer au",
+    "cook": "Cuisiner",
+    "remove": "Retirer {name}",
+    "openWeek": "Ouvrir cette semaine dans le planning",
+    "moved": "{name} déplacé au {date}",
+    "removed": "{name} retiré",
+    "eventCount": "{count, plural, one {# événement} other {# événements}}",
+    "event": "Événement",
+    "guests": "{count, plural, one {# invité} other {# invités}}"
+  },
+  "events": {
+    "title": "Événements",
+    "description": "Des repas pour vos invités : une date, combien, et un plat par service.",
+    "backToPlanner": "Planning",
+    "allowance": "{count} sur {limit} événements à venir avec votre offre",
+    "new": "Nouvel événement",
+    "newBody": "Vous choisirez les plats ensuite.",
+    "create": "Créer l'événement",
+    "emptyTitle": "Pas encore d'événement",
+    "emptyBody": "Un dîner en famille ou entre amis ? Indiquez la date et les invités : Cooky adapte chaque recette et prépare une seule liste de courses.",
+    "upcoming": "À venir",
+    "noUpcoming": "Rien de prévu.",
+    "past": "Passés",
+    "guests": "{count, plural, one {# invité} other {# invités}}",
+    "courseCount": "{count, plural, =0 {pas encore de plats} one {# service} other {# services}}",
+    "nameLabel": "Nom",
+    "namePlaceholder": "Dîner du vendredi",
+    "dateLabel": "Date",
+    "guestsLabel": "Invités",
+    "guestsHint": "Les recettes s'adaptent à ce nombre de parts.",
+    "backToEvents": "Événements",
+    "edit": "Modifier",
+    "cancelEdit": "Annuler la modification",
+    "save": "Enregistrer",
+    "saved": "Événement enregistré",
+    "shopForMenu": "Faire les courses du menu",
+    "shopped": "{count, plural, =0 {Tout le menu est déjà sur votre liste} one {# article ajouté à votre liste de courses} other {# articles ajoutés à votre liste de courses}}",
+    "openList": "Ouvrir la liste",
+    "delete": "Supprimer l'événement",
+    "deleteTitle": "Supprimer « {name} » ?",
+    "deleteBody": "L'événement et son menu seront supprimés. Vos plats restent dans votre carnet.",
+    "cancel": "Annuler",
+    "deleteConfirm": "Supprimer l'événement",
+    "deleted": "« {name} » supprimé",
+    "suggest": "Suggérer",
+    "suggestAi": "Suggérer avec l'IA",
+    "recipeFor": "{count, plural, one {Recette pour # part} other {Recette pour # parts}}",
+    "clearCourse": "Vider {course}",
+    "noDish": "Pas encore de plat.",
+    "chooseFor": "Choisir un plat pour {course}",
+    "choose": "Choisir un plat…",
+    "change": "Changer de plat…",
+    "otherDishes": "Autres plats",
+    "useIt": "Prendre ce plat",
+    "saveFirst": "Enregistrez-le d'abord dans vos plats, puis choisissez-le ici.",
+    "dismiss": "Pas celui-ci",
+    "noSuggestion": "Rien à suggérer pour {course}. Ajoutez un plat ou regardez dans Découvrir.",
+    "aiUnavailable": "Les suggestions IA ne sont pas disponibles pour le moment. Votre essai n'a pas été utilisé ; la suggestion simple fonctionne toujours."
+  },
+  "shopping": {
+    "title": "Liste de courses",
+    "description": "Tout ce qu'il vous faut, regroupé par rayon. Les basiques que vous avez toujours sont exclus.",
+    "share": "Partager",
+    "shareTitle": "Liste de courses",
+    "copied": "Liste copiée. Collez-la dans un message.",
+    "doneShopping": "Courses terminées",
+    "moreActions": "Autres actions",
+    "clearChecked": "Retirer les articles cochés",
+    "clearAll": "Vider toute la liste",
+    "progress": "{checked} sur {total} dans le panier",
+    "addLabel": "Ajouter un article",
+    "addPlaceholder": "Ajoutez quelque chose, ex. essuie-tout",
+    "add": "Ajouter",
+    "emptyTitle": "Votre liste est vide",
+    "emptyBody": "Planifiez votre semaine ou choisissez un plat, puis faites les courses en un geste. Vous pouvez aussi ajouter des articles vous-même.",
+    "planWeek": "Planifier la semaine",
+    "pickDish": "Choisir un plat",
+    "forDishes": "{count, plural, other {pour # plats}}",
+    "remove": "Retirer {name}",
+    "removed": "« {name} » retiré",
+    "doneTitle": "Courses terminées ?",
+    "doneBody": "{count, plural, one {L'article coché quitte la liste.} other {Les # articles cochés quittent la liste.}}",
+    "stockKitchen": "Ajouter mes achats à Ma cuisine",
+    "cancel": "Annuler",
+    "doneConfirm": "Terminer",
+    "done": "{count, plural, one {# article retiré} other {# articles retirés}}",
+    "doneWithKitchen": "{count, plural, one {# article retiré} other {# articles retirés}}, {kitchen} ajoutés à Ma cuisine",
+    "clearTitle": "Vider toute la liste ?",
+    "clearBody": "{count, plural, one {# article sera retiré.} other {Les # articles seront retirés.}}",
+    "clearConfirm": "Vider la liste",
+    "cleared": "{count, plural, one {# article retiré} other {# articles retirés}}",
+    "offline": "Vous êtes hors ligne. Ce changement demande une connexion.",
+    "aisles": {
+      "produce": "Fruits et légumes",
+      "meat_fish": "Viande et poisson",
+      "dairy_eggs": "Produits laitiers et œufs",
+      "bakery": "Boulangerie",
+      "grains_pasta": "Riz, pâtes et céréales",
+      "canned_jars": "Conserves et bocaux",
+      "spices": "Épices",
+      "oils_condiments": "Huiles et condiments",
+      "baking": "Pâtisserie",
+      "frozen": "Surgelés",
+      "drinks": "Boissons",
+      "other": "Autres"
+    },
+    "household": {
+      "heading": "Partager avec votre foyer",
+      "description": "Toutes les personnes invitées font les courses sur cette même liste. Les cases cochées s'affichent pour tous.",
+      "proOnly": "Partager une liste avec votre foyer est inclus avec Pro.",
+      "seePlans": "Voir les offres",
+      "emailLabel": "Son e-mail",
+      "emailPlaceholder": "E-mail de son compte Cooky",
+      "invite": "Inviter",
+      "invited": "Si {email} a un compte Cooky, l'invitation apparaîtra sur sa liste de courses.",
+      "full": "Une liste de foyer compte au plus 6 personnes.",
+      "memberCount": "{count, plural, one {# personne} other {# personnes}}",
+      "active": "partage",
+      "pending": "invité",
+      "remove": "Retirer {name}",
+      "removed": "{name} retiré",
+      "inviteFrom": "{name} vous invite à partager sa liste de courses.",
+      "accept": "Rejoindre",
+      "decline": "Non merci",
+      "joined": "Vous faites maintenant les courses sur la liste partagée",
+      "declined": "Invitation refusée",
+      "sharedBy": "Vous faites les courses sur la liste de {name}.",
+      "leave": "Quitter",
+      "left": "Retour à votre propre liste"
+    }
+  },
+  "offline": {
+    "title": "Hors ligne",
+    "banner": "Vous êtes hors ligne. Les cases cochées sont gardées sur cet appareil et synchronisées à votre retour en ligne.",
+    "noList": "Votre liste de courses n'est pas encore sur cet appareil. Ouvrez-la une fois en ligne.",
+    "progress": "{checked} sur {total} dans le panier",
+    "recipe": "Recette du jour",
+    "ingredients": "Ingrédients",
+    "steps": "Étapes",
+    "retry": "Réessayer"
+  },
+  "timer": {
+    "title": "Minuteur de cuisine",
+    "description": "Plusieurs minuteurs nommés à la fois, et un chronomètre. Ils continuent si vous rechargez la page, et l'écran reste allumé.",
+    "newTimer": "Nouveau minuteur",
+    "labelLabel": "Nom (facultatif)",
+    "labelPlaceholder": "Riz, four, thé…",
+    "presets": "Départ rapide",
+    "minutes": "{count, plural, one {# min} other {# min}}",
+    "hours": "Heures",
+    "minutesField": "Minutes",
+    "seconds": "Secondes",
+    "start": "Lancer",
+    "running": "Vos minuteurs",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "restart": "Relancer {name}",
+    "delete": "Supprimer {name}",
+    "timeUp": "C'est l'heure : {names}",
+    "dismiss": "Arrêter",
+    "notifyTitle": "C'est l'heure !",
+    "defaultLabel": "{minutes, plural, one {Minuteur de # minute} other {Minuteur de # minutes}}",
+    "stopwatch": "Chronomètre",
+    "startStopwatch": "Démarrer",
+    "lap": "Tour",
+    "reset": "Remettre à zéro",
+    "lapNumber": "Tour {number}"
+  },
+  "search": {
+    "open": "Rechercher",
+    "title": "Rechercher dans Cooky",
+    "placeholder": "Plats, amis, Découvrir, événements, pages…",
+    "hint": "Tapez au moins 2 lettres. ↑ ↓ pour vous déplacer, Entrée pour ouvrir, Échap pour fermer.",
+    "noResults": "Rien trouvé pour « {query} ». Essayez une autre orthographe.",
+    "groups": {
+      "pages": "Pages",
+      "dishes": "Mes plats",
+      "discover": "Découvrir",
+      "events": "Événements",
+      "shared": "Partagés avec vous",
+      "friends": "Amis"
+    },
+    "pages": {
+      "cook": "Cuisiner",
+      "dishes": "Mes plats",
+      "newDish": "Ajouter un plat",
+      "kitchen": "Ma cuisine",
+      "planner": "Planning",
+      "events": "Événements",
+      "calendar": "Calendrier",
+      "shopping": "Liste de courses",
+      "timer": "Minuteur",
+      "spin": "Tirage",
+      "assistant": "Assistant",
+      "discover": "Découvrir",
+      "settings": "Paramètres",
+      "billing": "Offre et facturation",
+      "friends": "Amis",
+      "messages": "Messages"
+    }
+  },
+  "friends": {
+    "title": "Amis",
+    "description": "Retrouvez les personnes avec qui vous cuisinez, partagez des plats et discutez.",
+    "offline": "Vous êtes hors ligne. Les amis ont besoin d'une connexion.",
+    "tooManyRequests": "Beaucoup de demandes en une heure. Réessayez un peu plus tard.",
+    "nowFriends": "{name} et vous êtes maintenant amis.",
+    "requestSent": "Demande d'ami envoyée à {name}.",
+    "requestCancelled": "Demande annulée.",
+    "answerRequest": "Répondre",
+    "message": "Message",
+    "messageHint": "Ouvrir votre discussion avec {name}",
+    "requested": "Demandé",
+    "cancelHint": "En attente de réponse. Touchez pour annuler la demande.",
+    "addFriend": "Ajouter",
+    "addHint": "Envoyer une demande d'ami à {name}",
+    "moreFor": "Plus d'options pour {name}",
+    "unfriend": "Retirer des amis",
+    "block": "Bloquer",
+    "report": "Signaler",
+    "unfriendTitle": "Retirer {name} de vos amis ?",
+    "unfriendBody": "Les plats que vous partagez ne s'affichent plus, {name} quitte vos groupes et votre discussion passe en lecture seule. Vous pourrez vous ajouter à nouveau plus tard.",
+    "unfriended": "Vous n'êtes plus ami avec {name}.",
+    "blockTitle": "Bloquer {name} ?",
+    "blockBody": "{name} ne sera pas prévenu. Cette personne ne pourra plus vous trouver, vous ajouter ni vous écrire, et toute amitié ou demande entre vous prend fin. Vous pourrez la débloquer dans Paramètres → Confidentialité et sécurité.",
+    "blocked": "{name} est bloqué.",
+    "requestsHeading": "Demandes d'ami",
+    "requestsHint": "Acceptez pour partager des plats et discuter. Refuser est discret : la personne n'est pas prévenue.",
+    "friendsHeading": "Vos amis",
+    "emptyTitle": "Pas encore d'amis",
+    "emptyBody": "Cherchez des personnes ci-dessus par nom ou e-mail, puis partagez des plats et discutez.",
+    "findPeople": "Trouver des personnes",
+    "friendsSince": "Amis depuis le {date}",
+    "sentHeading": "Demandes envoyées",
+    "sentHint": "En attente de réponse. Vous pouvez annuler une demande à tout moment.",
+    "sentAgo": "Envoyée {time}",
+    "receivedAgo": "Reçue {time}",
+    "blockedNote": "Vous avez bloqué quelqu'un ? Gérez les personnes bloquées dans <link>Paramètres → Confidentialité et sécurité</link>.",
+    "accept": "Accepter",
+    "declineLabel": "Refuser la demande de {name}",
+    "blockLabel": "Bloquer {name}",
+    "declined": "Demande de {name} refusée.",
+    "backToFriends": "Amis",
+    "status": {
+      "none": "Pas encore amis",
+      "outgoing": "Demande d'ami envoyée",
+      "incoming": "Souhaite devenir votre ami",
+      "friend": "Amis"
+    },
+    "sharedCount": "{count, plural, =0 {N'a pas encore partagé de plat avec vous} one {Partage # plat avec vous} other {Partage # plats avec vous}}",
+    "oldChat": "Ancienne discussion",
+    "sharedHeading": "Plats que {name} partage avec vous",
+    "notFriendsTitle": "Les plats partagés sont réservés aux amis",
+    "notFriendsBody": "Une fois que vous serez amis avec {name}, les plats partagés s'afficheront ici.",
+    "noSharedTitle": "Rien de partagé pour l'instant",
+    "noSharedBody": "{name} n'a encore partagé aucun plat avec vous. Demandez-lui une recette !",
+    "pagesLabel": "Plus de plats",
+    "newer": "Plats plus récents",
+    "older": "Plats plus anciens",
+    "page": "Page {page}",
+    "search": {
+      "heading": "Trouver des personnes",
+      "description": "Cherchez par nom affiché, ou tapez l'adresse e-mail complète de la personne.",
+      "label": "Nom ou e-mail",
+      "placeholder": "ex. Lina ou lina@exemple.com",
+      "hint": "Les e-mails ne sont jamais affichés. Un e-mail ne trouve quelqu'un que s'il correspond exactement.",
+      "offline": "Vous êtes hors ligne. La recherche a besoin d'une connexion.",
+      "searching": "Recherche…",
+      "noMatch": "Personne trouvé avec ce nom. Essayez plutôt son adresse e-mail complète.",
+      "noEmailMatch": "Personne trouvé avec cet e-mail exact. Vérifiez l'orthographe, ou demandez-lui le nom qu'il utilise sur Cooky.",
+      "results": "{count, plural, one {# personne trouvée} other {# personnes trouvées}}"
+    },
+    "groups": {
+      "heading": "Groupes",
+      "hint": "Des listes privées d'amis, comme Famille ou Travail, pour partager certains plats avec eux seuls. Personne n'est prévenu des groupes dont il fait partie.",
+      "new": "Nouveau groupe",
+      "allowance": "{count} groupes sur {limit} avec votre formule",
+      "empty": "Pas encore de groupe. Créez-en un pour partager des plats avec une partie de vos amis.",
+      "members": "{count, plural, =0 {Aucun membre} one {# membre} other {# membres}}",
+      "editLabel": "Modifier {name}",
+      "deleteLabel": "Supprimer {name}",
+      "deleteTitle": "Supprimer « {name} » ?",
+      "deleteBody": "Les plats partagés uniquement avec ce groupe ne seront plus visibles que par vous. Vos amis restent vos amis.",
+      "delete": "Supprimer le groupe",
+      "deleted": "« {name} » supprimé.",
+      "saved": "« {name} » enregistré.",
+      "created": "« {name} » créé.",
+      "nameTaken": "Vous avez déjà un groupe avec ce nom.",
+      "editTitle": "Modifier « {name} »",
+      "newTitle": "Nouveau groupe",
+      "dialogBody": "Choisissez des amis avec qui partager certains plats. Ils ne seront pas prévenus.",
+      "nameLabel": "Nom du groupe",
+      "namePlaceholder": "ex. Famille",
+      "membersLabel": "Membres",
+      "chosen": "{count} choisis",
+      "noFriendsYet": "Ajoutez d'abord des amis, puis placez-les dans des groupes.",
+      "save": "Enregistrer le groupe",
+      "create": "Créer le groupe"
+    }
+  },
+  "report": {
+    "title": {
+      "user": "Signaler {subject}",
+      "dish": "Signaler « {subject} »",
+      "message": "Signaler un message de {subject}",
+      "review": "Signaler l'avis de {subject}"
+    },
+    "description": "Notre équipe va l'examiner. La personne ne saura pas qui l'a signalée.",
+    "reasonLabel": "Quel est le problème ?",
+    "reason": {
+      "spam": "Spam ou arnaque",
+      "harassment": "Harcèlement ou haine",
+      "inappropriate": "Contenu inapproprié",
+      "impersonation": "Se fait passer pour quelqu'un d'autre",
+      "other": "Autre chose"
+    },
+    "detailsLabel": "Autre chose à nous dire ? (facultatif)",
+    "detailsPlaceholder": "Que s'est-il passé ?",
+    "pickReason": "Choisissez le problème.",
+    "submit": "Envoyer le signalement",
+    "sent": "Merci. Votre signalement a été envoyé à notre équipe."
+  },
+  "sharing": {
+    "heading": "Qui peut voir ce plat",
+    "description": "Les amis qui le voient peuvent le lire et le copier dans leurs plats. Ils ne peuvent pas modifier le vôtre.",
+    "offline": "Vous êtes hors ligne. Le partage a besoin d'une connexion.",
+    "option": {
+      "private": "Moi seulement",
+      "friends": "Tous mes amis",
+      "groups": "Groupes choisis"
+    },
+    "optionHint": {
+      "private": "Personne d'autre ne le voit.",
+      "groups": "Seulement les amis des groupes choisis."
+    },
+    "friendsHint": "{count, plural, =0 {Vous n'avez pas encore d'amis sur Cooky.} one {Votre ami peut le voir.} other {Vos # amis peuvent le voir.}}",
+    "noGroups": "Vous n'avez pas encore de groupe. <link>Créez-en un dans Amis</link>.",
+    "pickGroups": "Partager avec",
+    "pickOne": "Choisissez au moins un groupe.",
+    "memberCount": "{count, plural, =0 {personne encore} one {# personne} other {# personnes}}",
+    "save": "Enregistrer le partage",
+    "saved": {
+      "private": "Vous seul voyez désormais ce plat.",
+      "friends": "Vos amis voient désormais ce plat.",
+      "groups": "Les groupes choisis voient désormais ce plat."
+    },
+    "friendDish": {
+      "back": "Profil de {name}",
+      "sharedBy": "Partagé par {name}",
+      "copy": "Copier dans mes plats",
+      "openCopy": "Ouvrir ma copie",
+      "copied": "« {name} » copié dans vos plats.",
+      "report": "Signaler « {name} »",
+      "copyHint": "C'est la recette de {name}. Copiez-la dans vos plats pour la cuisiner, la planifier ou la noter. Noter votre copie note aussi l'originale.",
+      "haveCopyHint": "Vous en avez déjà une copie. Cuisinez-la, planifiez-la et notez-la depuis vos plats.",
+      "noReviews": "Pas encore d'avis. Copiez-le, cuisinez-le et soyez le premier à le noter.",
+      "offline": "Vous êtes hors ligne. La copie a besoin d'une connexion.",
+      "noSteps": "{name} n'a pas encore écrit les étapes de ce plat."
+    }
+  },
+  "reviews": {
+    "heading": "Avis",
+    "average": "{average} · {count, plural, one {# note} other {# notes}}",
+    "stars": "{count, plural, one {# étoile} other {# étoiles}}",
+    "report": "Signaler l'avis de {name}"
+  },
+  "messages": {
+    "title": "Messages",
+    "description": "Discutez avec vos amis et envoyez-vous des plats.",
+    "newFrom": "Nouveau message de {name}",
+    "open": "Ouvrir",
+    "offline": "Vous êtes hors ligne. Votre message n'a pas été envoyé.",
+    "inboxHint": "Les plus récents en premier.",
+    "archivedHeading": "Discussions archivées. Un nouveau message ramène la discussion dans votre boîte.",
+    "backToInbox": "Retour aux messages",
+    "showArchived": "{count, plural, one {Archivées (#)} other {Archivées (#)}}",
+    "emptyTitle": "Pas encore de messages",
+    "emptyBody": "Lancez une discussion depuis le profil d'un ami, ou trouvez d'abord des amis.",
+    "noArchivedTitle": "Rien d'archivé",
+    "noArchivedBody": "Les discussions archivées attendent ici jusqu'au prochain message.",
+    "goToFriends": "Aller aux amis",
+    "unread": "Non lu",
+    "deletedPreview": "Message supprimé",
+    "dishPreview": "A partagé un plat",
+    "youPrefix": "Vous : {text}",
+    "chatOptions": "Options de la discussion",
+    "archive": "Archiver la discussion",
+    "unarchive": "Remettre dans la boîte",
+    "archived": "Discussion archivée.",
+    "unarchived": "Discussion remise dans votre boîte.",
+    "deleteChat": "Supprimer la discussion",
+    "deleteChatTitle": "Supprimer cette discussion ?",
+    "deleteChatBody": "Les messages jusqu'ici disparaissent pour vous seulement. {name} garde sa copie, et les nouveaux messages vous parviendront toujours.",
+    "chatDeleted": "Discussion supprimée pour vous.",
+    "reportPerson": "Signaler {name}",
+    "typing": "{name} écrit…",
+    "tapForProfile": "Touchez pour voir son profil",
+    "theirDishes": "Plats partagés avec vous",
+    "noSharedYet": "{name} n'a encore partagé aucun plat avec vous.",
+    "viewProfile": "Voir le profil",
+    "deleted": "Message supprimé",
+    "youDeleted": "Vous avez supprimé ce message",
+    "theyDeleted": "{name} a supprimé ce message",
+    "messageOptions": "Options du message envoyé à {time}",
+    "edit": "Modifier",
+    "editLabel": "Modifier votre message",
+    "saveEdit": "Enregistrer",
+    "delete": "Supprimer",
+    "edited": "modifié",
+    "reportMessage": "Signaler le message",
+    "dishUnavailable": "Ce plat n'est plus partagé avec vous.",
+    "openDish": "Ouvrir le plat",
+    "status": {
+      "sent": "Envoyé",
+      "delivered": "Distribué",
+      "seen": "Vu"
+    },
+    "readOnly": "Vous ne pouvez pas écrire à {name} pour l'instant.",
+    "attached": "Plat joint : {name}",
+    "removeAttachment": "Retirer {name}",
+    "attachDish": "Joindre un de vos plats",
+    "messageLabel": "Message à {name}",
+    "placeholder": "Écrire à {name}…",
+    "send": "Envoyer",
+    "enterHint": "Entrée pour envoyer · Maj+Entrée pour aller à la ligne",
+    "charsLeft": "{count, plural, one {# caractère restant} other {# caractères restants}}",
+    "loadEarlier": "Charger les messages précédents",
+    "startHint": "Dites bonjour à {name}, ou envoyez-lui un de vos plats avec le trombone.",
+    "nothingHere": "Aucun message ici.",
+    "sending": "Envoi…",
+    "readOnlyNotice": "{name} et vous n'êtes plus amis, la discussion est donc en lecture seule. <link>Voir son profil</link>.",
+    "attach": {
+      "title": "Joindre un plat",
+      "description": "Seuls les plats que {name} peut voir sont listés.",
+      "loading": "Chargement de vos plats…",
+      "retry": "Réessayer",
+      "empty": "Aucun de vos plats n'est encore partagé avec {name}. Ouvrez un plat et choisissez « Tous mes amis » sous « Qui peut voir ce plat ».",
+      "goToDishes": "Aller à mes plats"
+    }
+  },
+  "push": {
+    "message": {
+      "title": "Message de {name}",
+      "body": "Ouvrez Cooky pour le lire."
+    },
+    "friendRequest": {
+      "title": "Nouvelle demande d'ami",
+      "body": "{name} veut devenir votre ami sur Cooky"
+    },
+    "friendAccepted": {
+      "title": "Vous êtes maintenant amis",
+      "body": "{name} a accepté votre demande d'ami"
+    },
+    "adminFeedback": {
+      "title": "Nouvel avis",
+      "body": "Quelqu'un a envoyé un avis ({kind}). Ouvrez l'administration pour le lire."
+    },
+    "trialEnding": {
+      "title": "Votre essai se termine dans 2 jours",
+      "body": "Gardez votre formule, sinon vous passerez à Gratuit. Rien n'est supprimé."
+    },
+    "paymentFailed": {
+      "title": "Votre paiement n'est pas passé",
+      "body": "Mettez à jour votre carte sous 7 jours pour garder votre formule."
+    },
+    "cancellationConfirmed": {
+      "title": "Abonnement résilié",
+      "body": "Votre formule reste active jusqu'à la fin de la période payée."
+    },
+    "receipt": {
+      "title": "Merci pour votre paiement",
+      "body": "Votre reçu Cooky est disponible dans Formule et facturation."
+    }
+  },
+  "checklist": {
+    "heading": "Votre première semaine avec Cooky",
+    "description": "Cinq petites étapes pour faire de Cooky votre outil. Une minute chacune.",
+    "progress": "{done} sur {total} faits",
+    "hide": "Masquer cette liste",
+    "done": "fait",
+    "todo": "à faire",
+    "step": {
+      "dishes": "Ajouter 3 plats",
+      "kitchen": "Cocher ce qu'il y a dans votre cuisine",
+      "cook": "Noter un plat cuisiné",
+      "plan": "Planifier une journée",
+      "friend": "Ajouter un ami"
+    }
+  },
+  "helpFeedback": {
+    "heading": "Aide et avis",
+    "description": "Un bug, une idée ? Dites-le-nous. Chaque message est lu par une vraie personne.",
+    "kindLabel": "De quoi s'agit-il ?",
+    "kind": {
+      "bug": "Quelque chose ne marche pas",
+      "feature": "Une idée",
+      "other": "Autre chose"
+    },
+    "messageLabel": "Votre message",
+    "placeholder": {
+      "bug": "Que s'est-il passé, et qu'attendiez-vous ? Sur quelle page étiez-vous ?",
+      "feature": "Qu'est-ce qui rendrait Cooky plus utile pour vous ?",
+      "other": "Dites-nous tout."
+    },
+    "attached": "Votre langue et votre navigateur sont joints pour nous aider. Rien d'autre.",
+    "send": "Envoyer",
+    "sent": "Merci ! Votre message est arrivé à l'équipe.",
+    "tooMany": "Vous avez envoyé plusieurs messages dans l'heure. Réessayez un peu plus tard."
+  },
+  "yourData": {
+    "export": {
+      "heading": "Télécharger vos données",
+      "description": "Une copie de tout ce que Cooky conserve sur vous : compte, recettes, cuisine, plannings, discussions et plus.",
+      "whatsIncluded": "Nous la préparons en arrière-plan et vous prévenons par e-mail. Le lien de téléchargement reste valable 24 heures.",
+      "prepare": "Préparer mes données",
+      "prepareAgain": "Préparer à nouveau",
+      "tryAgain": "Réessayer",
+      "started": "Nous préparons vos données. Vous recevrez un e-mail quand elles seront prêtes.",
+      "tooSoon": "Vous avez demandé une copie il y a moins d'une heure. Utilisez-la, ou réessayez plus tard.",
+      "working": "Préparation de vos données… Cela prend généralement moins d'une minute.",
+      "ready": "Prêt · {size} Ko · le lien expire {time}",
+      "download": "Télécharger",
+      "failed": "Nous n'avons pas pu préparer vos données cette fois.",
+      "expired": "Votre dernier lien de téléchargement a expiré."
+    },
+    "delete": {
+      "heading": "Supprimer mon compte",
+      "description": "Supprimer définitivement votre compte et tout son contenu.",
+      "open": "Supprimer mon compte",
+      "pointGrace": "Vous avez 7 jours pour changer d'avis : reconnectez-vous simplement pour annuler.",
+      "pointBilling": "Votre abonnement est résilié tout de suite et ne revient pas si vous annulez la suppression.",
+      "pointData": "Après 7 jours, vos recettes, photos, plannings, discussions et amis sont supprimés définitivement.",
+      "confirmTitle": "Supprimer votre compte ?",
+      "confirmBody": "Vous serez déconnecté sur tous vos appareils. Reconnectez-vous dans les 7 jours pour garder votre compte ; ensuite, il est supprimé définitivement.",
+      "passwordLabel": "Votre mot de passe",
+      "passwordRequired": "Saisissez votre mot de passe pour confirmer.",
+      "wrongPassword": "Ce mot de passe n'est pas correct.",
+      "socialConfirm": "Vous vous connectez avec Google ou Apple : vous confirmez en vous étant connecté récemment.",
+      "loginAgain": "Par sécurité, reconnectez-vous, puis revenez ici pour supprimer votre compte.",
+      "loginAgainButton": "Me reconnecter",
+      "confirm": "Supprimer mon compte",
+      "scheduled": "Votre compte sera supprimé dans 7 jours. Reconnectez-vous d'ici là pour le garder."
+    }
+  },
+  "admin": {
+    "title": "Administration",
+    "nav": {
+      "label": "Sections de l'administration",
+      "overview": "Vue d'ensemble",
+      "users": "Utilisateurs",
+      "catalog": "Catalogue",
+      "content": "Contenu",
+      "reports": "Signalements",
+      "feedback": "Avis",
+      "audit": "Journal d'audit",
+      "open": "ouverts"
+    },
+    "common": {
+      "pages": "Pages",
+      "previous": "Précédent",
+      "next": "Suivant",
+      "pageOf": "Page {page} sur {pageCount}",
+      "search": "Rechercher"
+    },
+    "overview": {
+      "heading": "Vue d'ensemble",
+      "description": "L'état de Cooky en ce moment.",
+      "users": "Utilisateurs",
+      "newThisWeek": "{count, plural, =0 {Personne de nouveau cette semaine} one {# nouveau cette semaine} other {# nouveaux cette semaine}}",
+      "mrr": "Revenu mensuel (MRR)",
+      "mrrHint": "Abonnements payants ; les formules annuelles comptent pour un douzième. Hors taxes.",
+      "subscriptions": "Abonnements payants",
+      "trials": "{count, plural, =0 {Aucun essai en cours} one {# essai en cours} other {# essais en cours}}",
+      "catalog": "Plats de Découvrir",
+      "userDishes": "Plats dans les carnets",
+      "shared": "{count, plural, =0 {aucun partagé} one {# partagé avec des amis} other {# partagés avec des amis}}",
+      "reviews": "Avis écrits",
+      "triesHeading": "Essais utilisés ce mois-ci",
+      "noTries": "Aucun essai utilisé ce mois-ci."
+    },
+    "users": {
+      "heading": "Utilisateurs",
+      "description": "{count, plural, one {# compte} other {# comptes}}. Recherchez par nom ou e-mail.",
+      "searchLabel": "Rechercher des utilisateurs",
+      "searchPlaceholder": "Nom ou e-mail",
+      "noMatch": "Aucun compte ne correspond à « {q} ».",
+      "none": "Pas encore de compte.",
+      "plan": {
+        "free": "Gratuit",
+        "plus": "Plus",
+        "pro": "Pro"
+      },
+      "comp": "Offert",
+      "admin": "Admin",
+      "suspended": "Suspendu",
+      "pendingDeletion": "Suppression programmée",
+      "unverified": "E-mail non confirmé",
+      "joined": "Inscrit le {date}",
+      "back": "Utilisateurs",
+      "dishes": "Plats",
+      "sessions": "Appareils connectés",
+      "reportsAgainst": "Signalements le concernant",
+      "lockout": "Bloqué jusqu'à",
+      "notLocked": "Non bloqué",
+      "selfNote": "C'est votre propre compte : vous ne pouvez pas vous suspendre, vous rétrograder, vous déconnecter ni vous supprimer ici.",
+      "accountActions": "Compte",
+      "markVerified": "Marquer l'e-mail comme confirmé",
+      "verifiedDone": "E-mail marqué comme confirmé.",
+      "unlock": "Débloquer les connexions",
+      "unlockedDone": "Connexions débloquées.",
+      "signOut": "Déconnecter partout",
+      "signedOutDone": "Déconnecté sur tous les appareils.",
+      "makeAdmin": "Nommer admin",
+      "adminDone": "Cette personne est maintenant admin.",
+      "revokeAdmin": "Retirer le rôle admin",
+      "revokedDone": "Rôle admin retiré.",
+      "suspend": "Suspendre",
+      "suspendedDone": "Compte suspendu.",
+      "unsuspend": "Lever la suspension",
+      "unsuspendedDone": "Suspension levée.",
+      "delete": "Supprimer le compte",
+      "deletedDone": "Compte supprimé. Ses fichiers et sa facturation sont en cours de suppression.",
+      "notOnYourself": "Vous ne pouvez pas faire cela sur votre propre compte.",
+      "compHeading": "Formule offerte",
+      "compHint": "Offrez une formule payante à cette personne, pour un temps ou jusqu'à ce que vous la repreniez. La facturation ne la remplace jamais.",
+      "compUntil": "{plan}, offert jusqu'au {date}.",
+      "compForever": "{plan}, offert jusqu'à révocation.",
+      "compPlan": "Formule",
+      "compLength": "Durée",
+      "compUntilRevoked": "Jusqu'à révocation",
+      "compMonths": "{count, plural, one {# mois} other {# mois}}",
+      "grantComp": "Offrir la formule",
+      "compDone": "Formule offerte.",
+      "revokeComp": "Reprendre",
+      "compRevokedDone": "Formule offerte reprise.",
+      "confirm": {
+        "suspend": {
+          "title": "Suspendre {name} ?",
+          "body": "Cette personne est déconnectée partout, ne peut plus se connecter et disparaît de la recherche. Vous pouvez lever la suspension à tout moment."
+        },
+        "unsuspend": {
+          "title": "Lever la suspension de {name} ?",
+          "body": "Cette personne pourra de nouveau se connecter."
+        },
+        "signOut": {
+          "title": "Déconnecter {name} partout ?",
+          "body": "Chaque appareil connecté devra se reconnecter."
+        },
+        "makeAdmin": {
+          "title": "Nommer {name} admin ?",
+          "body": "Cette personne verra cette administration et pourra tout faire comme vous, y compris gérer les autres admins."
+        },
+        "revokeAdmin": {
+          "title": "Retirer le rôle admin de {name} ?",
+          "body": "Cette personne n'aura plus accès à cette administration."
+        },
+        "delete": {
+          "title": "Supprimer le compte de {name} ?",
+          "body": "C'est irréversible. Ses recettes, photos, discussions et son client de facturation sont supprimés immédiatement, sans délai de grâce."
+        }
+      }
+    },
+    "catalog": {
+      "heading": "Catalogue",
+      "description": "{count, plural, one {# plat de Découvrir} other {# plats de Découvrir}}. Les traductions manquantes sont signalées.",
+      "new": "Nouveau plat",
+      "searchLabel": "Rechercher dans le catalogue",
+      "searchPlaceholder": "Nom ou code pays",
+      "noMatch": "Aucun plat ne correspond à « {q} ».",
+      "none": "Le catalogue est vide. Ajoutez le premier plat.",
+      "featured": "À la une",
+      "saves": "{count, plural, =0 {pas encore enregistré} one {enregistré par # personne} other {enregistré par # personnes}}",
+      "missing": {
+        "fr": "Français manquant",
+        "ar": "Arabe manquant"
+      },
+      "back": "Catalogue",
+      "newTitle": "Nouveau plat de Découvrir",
+      "editTitle": "Modifier « {name} »",
+      "formHint": "L'anglais est obligatoire. Le français et l'arabe s'affichent quand ils sont remplis ; sinon, le texte anglais est montré.",
+      "basics": "Informations",
+      "name": "Nom",
+      "descriptionField": "Courte description",
+      "slug": "Identifiant (slug)",
+      "slugHint": "Mots en minuscules reliés par des tirets, ex. tajine-poulet. Doit être unique.",
+      "country": "Pays",
+      "countryHint": "Code à deux lettres, ex. MA pour le Maroc.",
+      "course": "Type de plat",
+      "servings": "Parts",
+      "difficulty": "Difficulté",
+      "seasons": "Saisons",
+      "diet": "Régime",
+      "collections": "Collections",
+      "ingredients": "Ingrédients",
+      "amount": "Quantité",
+      "unit": "Unité",
+      "noUnit": "Sans unité",
+      "removeIngredient": "Retirer l'ingrédient {n}",
+      "ingredientName": "Ingrédient {n}",
+      "ingredientNote": "Note (facultatif)",
+      "addIngredient": "Ajouter un ingrédient",
+      "steps": "Étapes",
+      "timer": "Minuteur (minutes)",
+      "removeStep": "Retirer l'étape {n}",
+      "stepText": "Étape {n}",
+      "addStep": "Ajouter une étape",
+      "lang": {
+        "en": "Anglais",
+        "fr": "Français",
+        "ar": "Arabe"
+      },
+      "required": "obligatoire",
+      "missingShort": "manquant",
+      "save": "Enregistrer",
+      "create": "Créer le plat",
+      "saved": "« {name} » enregistré.",
+      "slugTaken": "Un autre plat utilise déjà cet identifiant. Choisissez-en un autre.",
+      "checkFields": "Certains champs sont à corriger : chaque texte anglais, un identifiant et un code pays à deux lettres sont obligatoires.",
+      "delete": "Supprimer le plat",
+      "deleteTitle": "Supprimer « {name} » de Découvrir ?",
+      "deleteBody": "Il disparaît de Découvrir. Les personnes qui l'ont enregistré gardent leur copie.",
+      "deleted": "« {name} » supprimé."
+    },
+    "content": {
+      "heading": "Contenu",
+      "description": "Avis récents et plats partagés avec des amis.",
+      "tabsLabel": "Type de contenu",
+      "tabs": {
+        "reviews": "Avis",
+        "shared": "Plats partagés"
+      },
+      "noReviews": "Pas encore d'avis écrit.",
+      "noShared": "Aucun plat partagé pour le moment.",
+      "stars": "{count, plural, one {# étoile} other {# étoiles}}",
+      "onDish": "Sur « {name} »",
+      "deleteReview": "Supprimer l'avis",
+      "deleteReviewTitle": "Supprimer cet avis ?",
+      "deleteReviewBody": "L'avis et la note de {name} sont supprimés définitivement.",
+      "reviewDeleted": "Avis supprimé.",
+      "visibility": {
+        "friends": "partagé avec tous les amis",
+        "groups": "partagé avec des groupes"
+      },
+      "makePrivate": "Rendre privé",
+      "makePrivateTitle": "Rendre « {name} » privé ?",
+      "makePrivateBody": "Les amis ne le voient plus. Son propriétaire garde le plat.",
+      "madePrivate": "Le plat est maintenant privé.",
+      "deleteDish": "Supprimer le plat",
+      "deleteDishTitle": "Supprimer « {name} » ?",
+      "deleteDishBody": "Le plat est retiré définitivement du carnet de {name}.",
+      "dishDeleted": "Plat supprimé."
+    },
+    "reports": {
+      "heading": "Signalements",
+      "description": "Ce que les gens ont signalé. La personne signalée ne voit jamais qui l'a signalée.",
+      "statusLabel": "Statut des signalements",
+      "tabs": {
+        "open": "Ouverts",
+        "resolved": "Résolus",
+        "dismissed": "Classés"
+      },
+      "noneOpen": "Aucun signalement ouvert. Tout est traité.",
+      "none": "Rien ici.",
+      "target": {
+        "user": "Personne",
+        "dish": "Plat",
+        "message": "Message",
+        "review": "Avis"
+      },
+      "by": "Signalé par {name}, {time}",
+      "deletedAccount": "un compte supprimé",
+      "openOwner": "Ouvrir son compte",
+      "gone": "Cela a déjà été supprimé.",
+      "details": "Détails :",
+      "handle": "Traiter",
+      "closed": {
+        "resolved": "Résolu",
+        "dismissed": "Classé"
+      },
+      "handleTitle": "Traiter ce signalement",
+      "handleBody": "Choisissez une issue. Tout ce que vous faites ici est consigné dans le journal d'audit.",
+      "outcome": "Issue",
+      "outcomes": {
+        "resolved": "Résolu : il y avait un problème",
+        "dismissed": "Classé : rien d'anormal"
+      },
+      "alsoDo": "Aussi",
+      "actions": {
+        "none": "Rien d'autre",
+        "remove_content": "Supprimer ce qui a été signalé",
+        "suspend_user": "Suspendre la personne responsable"
+      },
+      "note": "Note pour le dossier (facultatif)",
+      "cancel": "Annuler",
+      "confirm": "Confirmer",
+      "handled": "Signalement traité."
+    },
+    "feedback": {
+      "heading": "Avis",
+      "description": "Messages envoyés depuis Paramètres → Aide et avis.",
+      "statusLabel": "Statut",
+      "kindLabel": "Type",
+      "all": "Tous",
+      "allKinds": "Tous les types",
+      "status": {
+        "open": "Ouvert",
+        "resolved": "Résolu"
+      },
+      "none": "Aucun avis ici.",
+      "deletedAccount": "Un compte supprimé",
+      "resolve": "Marquer comme résolu",
+      "resolved": "Marqué comme résolu.",
+      "reopen": "Rouvrir",
+      "reopened": "Rouvert.",
+      "delete": "Supprimer",
+      "deleteTitle": "Supprimer cet avis ?",
+      "deleteBody": "Le message est supprimé définitivement.",
+      "deleted": "Avis supprimé."
+    },
+    "audit": {
+      "heading": "Journal d'audit",
+      "description": "Chaque action d'admin et action sensible sur un compte, des plus récentes aux plus anciennes.",
+      "searchLabel": "Filtrer par action",
+      "searchPlaceholder": "L'action commence par, ex. admin. ou auth.",
+      "none": "Aucune entrée ne correspond.",
+      "system": "Système"
+    }
+  },
+  "og": {
+    "headline": "Qu'est-ce que je cuisine aujourd'hui ?",
+    "line": "Vos recettes, votre cuisine et la météo : décidez, planifiez, faites les courses et cuisinez entre amis."
   }
 }

@@ -33,6 +33,17 @@ export const VALIDATION_KEYS = [
   "duplicate",
   "collectionNameRequired",
   "collectionNameTooLong",
+  "cityTooLong",
+  "messageRequired",
+  "messageTooLong",
+  "invalidDate",
+  "eventNameRequired",
+  "eventNameTooLong",
+  "guestsRange",
+  "searchTooShort",
+  "groupNameRequired",
+  "groupNameTooLong",
+  "reportDetailsTooLong",
 ] as const;
 
 export type ValidationKey = (typeof VALIDATION_KEYS)[number];
