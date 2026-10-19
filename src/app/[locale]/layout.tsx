@@ -8,6 +8,7 @@ import { Providers } from "@/components/app-shell/providers";
 import { directionOf, routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { getAccountSummary } from "@/server/features/account/queries";
+import { env } from "@/server/env";
 import { getAppearance } from "@/server/features/profile/queries";
 
 import { bodyFont, displayFont } from "../fonts";
@@ -21,6 +22,11 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
   return {
     title: { default: t("title"), template: `%s · Cooky` },
     description: t("description"),
+    // Absolute URLs for share previews (opengraph-image.tsx next to this layout).
+    metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
+    openGraph: { siteName: "Cooky", type: "website", locale, title: t("title"), description: t("description") },
+    twitter: { card: "summary_large_image" },
+    icons: { apple: "/icons/apple-touch-icon.png" },
   };
 }
 
