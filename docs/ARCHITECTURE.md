@@ -37,7 +37,7 @@ Pin exact versions when the project is created, using the latest stable releases
 | AI | **Vercel AI SDK** (`ai`) with Groq + OpenAI providers | Structured output validated by Zod, provider fallback, transcription. Server-only, metered |
 | Weather | **Open-Meteo** (commercial plan) | Forecast + geocoding, cached server-side |
 | Prayer times | **adhan** | Iftar/suhoor times for Ramadan mode from city coordinates |
-| Link import | **cheerio** + **ipaddr.js** | Parse schema.org `Recipe` JSON-LD; SSRF guard |
+| Link import | Node `http`/`https` + `node:dns` (no extra deps) | Pinned-DNS SSRF guard; schema.org `Recipe` JSON-LD parser |
 | Calendar feed | **ical-generator** | Pro iCal feed |
 | Observability | **Sentry**, **pino**, **posthog-node** | Errors with PII scrubbing, structured logs, server-side product events only |
 | Testing | **Vitest**, **Testing Library**, **MSW**, **Playwright** | Unit, component, provider mocks, E2E |
@@ -68,7 +68,7 @@ Pin exact versions when the project is created, using the latest stable releases
 |   ├─ auth (Better Auth) billing quota       |---> R2 (private, signed URLs)
 |   ├─ ai weather storage realtime notify     |---> Groq / OpenAI (AI SDK)
 |   └─ outbox jobs audit                      |---> Open-Meteo (cached)
-|  api/: auth, webhooks, pusher auth, jobs,   |---> Resend (email)
+|  api/: auth, webhooks, jobs, cron,         |---> Resend (email)
 |        cron, ical, share-target, downloads  |---> Web Push services
 +-------+-------------------------+-----------+
         | Drizzle (pooled)        | REST              ^
@@ -158,42 +158,45 @@ Drizzle schema in `src/server/db/schema/`. Ownership and sharing rules live in `
 - **`dish_ingredients`**: `dish_id`, `position`, `name`, `amount` (numeric), `unit` (enum), `note`, `ingredient_id` (FK set null), `catalog_ingredient_id` (FK set null)
 - **`dish_steps`**: `dish_id`, `position`, `text`, `timer_seconds`, `prep_day_before` (bool)
 - **`ingredients`** (dictionary): `slug`, `name_en`/`name_fr`/`name_ar` + `variants[]` (plurals, regional Arabic), `aisle`, `default_unit`, `is_common_staple`, `search` (every name normalized by the matching service, trigram-indexed). Seeded by `pnpm db:seed:ingredients`. `dish_ingredients.ingredient_id` is linked on save when a line's normalized name is one of an entry's names or variants
-- **`dish_ratings`**: `dish_id`, `user_id`, `rating` (1–5), `review`, unique (dish, user)
+- **`dish_ratings`**: `dish_id`, `user_id`, `stars` (1–5), `review`, unique (user, dish). `rateDish` refuses (`forbidden`) until the person has a `cook_log` entry for the dish
 - **`dish_notes`**: (`dish_id`, `user_id`) PK, `text`
 - **`favorites`**: (`user_id`, `dish_id`) PK · **`collections`**: `user_id`, `name` (unique per person, case-insensitive, among live ones), `position`, `deleted_at` (Undo) · **`collection_dishes`**: (`collection_id`, `dish_id`). The count is capped by `plan_limits.collections` under a per-user advisory lock
 - **`backup_imports`**: `user_id`, `status` (queued|running|done|failed), `dishes` (the file's dishes, cleared once imported), `total`, `imported`, `skipped` ({duplicate, full, invalid}). Recipe backups are a versioned JSON file (`format: "cooky-backup"`, `version: 1`, ≤ 500 dishes, ≤ 5 MB; Server Actions accept 6 MB bodies for it). Export is on every plan; import (`plan_limits.backup_import`) is queued and run by the outbox job `backup_import`: dishes are checked one by one, same-name dishes and anything past the dish cap are skipped and counted
 - **`dish_share_links`**: `dish_id`, `token_hash`, `revoked_at`, `views`
 - **`dish_sources`**: `dish_id`, `url`, `site_name`, `imported_at`
 - **`dish_groups`**: (`dish_id`, `group_id`)
-- **`pantry_items`**: `user_id`, `ingredient_id` or `name`, `is_staple`
-- **`catalog_dishes`** / **`catalog_ingredients`** / **`catalog_steps`**: the Discover catalog, with `country`, `course`, `dietary_tags[]`, `image_key`, `collections[]` and translations per locale (EN required; FR/AR fall back to EN)
+- **`pantry_items`**: `user_id`, `ingredient_id` (nullable), `name` (as typed), `key` (`i:{ingredient_id}` or `n:{normalized name}`, unique per user, so "Tomatoes" and "tomate" are one item), `is_staple`. At most 300 per user (advisory lock); adding as a staple never demotes
+- **`catalog_dishes`** / **`catalog_ingredients`** / **`catalog_steps`**: the Discover catalog, with `country` (ISO 3166-1 alpha-2, named with `Intl.DisplayNames` on the server only, since browsers and Node name some regions differently), `course`, `dietary_tags[]`, `collections[]` (ramadan_iftar, eid_sweets, summer_salads, winter_comfort, quick), `featured` and translations per locale in `_en`/`_fr`/`_ar` columns (EN required; FR/AR fall back to EN). Catalog ingredients link to the dictionary. Seeded by `pnpm db:seed:catalog` (24 dishes, 14 countries). "Save to my dishes" creates a `dishes` row with `catalog_dish_id` and `follows_catalog = true`: until the person edits it, it shows the catalog's text in the viewer's language; the copy also stores its own text so it survives the entry being retired. "Ingredients you have" matches by dictionary entry when the wanted word is one (so طحين never stands in for طحينة), and by the text rules otherwise
+- **`profiles`** (added in Phase 3): `city`, `latitude`/`longitude` (rounded to 2 decimals, about 1 km), `dietary_prefs[]`, `onboarded_at` (the starter pack is done or skipped)
 
 ### 4.4 Deciding & Planning
-- **`cook_log`**: `user_id`, `dish_id`, `date`, `meal_slot`, `source` (cook|spin|planner|assistant)
-- **`spin_sessions`**: (`user_id`, `date`) PK, `picked_dish_ids[]`, `mode`, `filters`
+- **`cook_log`**: `user_id`, `dish_id`, `date` (the person's local day, from the `cooky.tz` cookie), `meal_slot`, `source` (cook|spin|planner|assistant). Logging can remove non-staple kitchen items that ran out; Undo deletes the entry
+- **`spin_sessions`**: (`user_id`, `date`) PK, `picked_dish_ids[]`, `mode` (random|ingredients)
 - **`assistant_threads`** / **`assistant_messages`**: `thread_id`, `role`, `content`, `picks` (jsonb DTO), `tokens_in/out` (90-day retention)
 - **`events`**: `user_id`, `name` (1–100), `date`, `guests` (1–500) · **`event_dishes`**: `event_id`, `dish_id`, `course`, unique (event, course)
 - **`shopping_lists`**: `owner_id`, `name`, `version` · **`shopping_list_members`** (Pro) · **`shopping_items`**: `list_id`, `ingredient_id`/`name`, `amount`, `unit`, `aisle`, `checked`, `checked_at`, `source_dish_ids[]`, `manual`
 - **`calendar_feeds`**: `user_id`, `token_hash`, `revoked_at`
 
 ### 4.5 Social
-- **`friend_requests`**: `from_user_id`, `to_user_id`, `status` (pending|accepted|declined); one pending per direction
-- **`friendships`**: `user_a_id` < `user_b_id` (canonical pair, unique)
-- **`user_blocks`**: (`blocker_id`, `blocked_id`) PK. A block in either direction keeps two users apart.
-- **`friend_groups`**: `owner_id`, `name` (1–40, unique per owner, case-insensitive) · **`friend_group_members`**: (`group_id`, `member_id`)
-- **`conversations`**: `user_a_id` < `user_b_id`, `archived_by_a/b`, `deleted_by_a/b`. Kept after an unfriend, read-only.
-- **`messages`**: `conversation_id`, `sender_id`, `content` (≤4000), `dish_id` (set null), `edited_at`, `deleted_at` (soft), `delivered_at`
-- **`conversation_reads`**: (`conversation_id`, `user_id`) → `last_read_at`
-- **`activity_events`**: `user_id`, `kind` (cooked|rated|shared), `dish_id`, `at`. Written only if `share_activity` is on, and read through the sharing policy.
-- **`reports`**: `reporter_id`, `target_type` (user|dish|message|review), `target_id`, `reason`, `status`, `resolution`
+Every social read and write goes through `features/social/policy.ts` (`areFriends`, `isBlockedEitherWay`, `dishVisibleToSql`, `findViewableDish`).
+- **`friend_requests`**: `from_user_id`, `to_user_id`, `status` (pending|declined), `sent_at`, `cancelled_at`; one row per direction (unique pair). Accepting creates the friendship and deletes the requests. A decline stays, so the sender still sees "Requested" and asking again changes nothing for 30 days (`DECLINE_COOLDOWN_MS`, from `sent_at`); withdrawing a declined request sets `cancelled_at` (hidden from the sender, cooldown kept). 20 requests per hour, counted in the table (`REQUESTS_PER_HOUR`); crossing requests accept each other. Pair changes run under `lockPair` (advisory lock)
+- **`friendships`**: `user_a_id` < `user_b_id` (canonical pair, PK, CHECK)
+- **`user_blocks`**: (`blocker_id`, `blocked_id`) PK. A block in either direction keeps two users apart: search, requests (`not_found`, same as an unknown id), profiles, shared dishes and writing to a chat. Blocking ends the friendship, requests and group memberships; nobody is told
+- **`friend_groups`**: `owner_id`, `name` (1–40, unique per owner, case-insensitive), capped by `plan_limits.friend_groups` under an advisory lock · **`friend_group_members`**: (`group_id`, `member_id`), current friends only (checked on save; unfriending removes them)
+- **`dishes.visibility`** (private|friends|groups) + **`dish_groups`** (`dish_id`, `group_id`); **`dishes.copied_from_dish_id`**: "Copy to my dishes" makes a private copy (within the dish cap, photo copied under the copier's R2 prefix); rating the copy also rates the original while it's still visible
+- **`conversations`**: `user_a_id` < `user_b_id` (unique, CHECK), `archived_by_a/b`, `cleared_at_a/b` ("delete chat" hides what came before for that side only), `last_message_at`. Kept after an unfriend, read-only (`canWrite` = friends and no block)
+- **`messages`**: `conversation_id`, `sender_id`, `content` (≤4000), `dish_id` (set null; only a dish the recipient can open, re-checked when read), `edited_at`, `deleted_at` (soft; Undo for 2 minutes; the daily purge blanks the text after a day), `delivered_at`
+- **`conversation_reads`**: (`conversation_id`, `user_id`) → `last_read_at` (drives "seen" and the unread dot)
+- **`reports`**: `reporter_id` (set null), `target_type` (user|dish|message|review), `target_id`, `reason` (spam|harassment|inappropriate|impersonation|other), `details`, `status` (open|resolved|dismissed), `resolution`, `resolved_by`, `resolved_at`; one open report per reporter and target. Only what the reporter can see can be reported
+- **`push_subscriptions`**: see §4.1 · **`profiles.notifications_off[]`** (messages|friend_requests|friend_accepted|timers|billing), **`profiles.friends_seen_at`** (new-request badge), **`profiles.checklist_dismissed_at`** (first-week checklist)
+- *Fast-follow:* `activity_events`, `dish_share_links` (public links) arrive with their features.
 
 ### 4.6 Operations
-- **`outbox`**: `kind` (email|push|pusher|export|import|stripe_sync|purge|reminder), `payload` (jsonb), `status`, `attempts`, `run_after`, `last_error`
-- **`audit_log`**: `actor_id`, `action`, `target_type`, `target_id`, `meta`, `ip_hash`, `at`
-- **`feedback`**: `user_id`, `kind` (bug|feature|other), `message` (≤4000), `locale`, `user_agent`, `status` (open|resolved), `resolved_at`
-- **`reminders`**: `user_id`, `kind` (plan_tomorrow|event_shopping|rate_cook|prep), `local_time`, `enabled`, `next_run_at`
-- **`timer_alerts`**: `user_id`, `session_id`, `label`, `fires_at`, `qstash_message_id`, `cancelled_at`
-- **`data_exports`**: `user_id`, `status`, `object_key`, `expires_at`
+- **`outbox`**: `kind` (email|backup_import|push|pusher|data_export|stripe_cancel|account_purge), `payload` (jsonb, re-validated by `outbox/jobs.ts` when drained), `status`, `attempts`, `run_after`, `last_error`. Realtime and push jobs are queued only when their provider is configured (`notify/queue.ts`)
+- **`audit_log`**: `actor_id` (set null on purge), `action`, `target_type`, `target_id`, `meta`, `ip_hash`, `at`. Every admin action writes one inside its transaction (`admin.*`), plus account events (`auth.*`, `account.*`)
+- **`feedback`**: `user_id` (set null), `kind` (bug|feature|other), `message` (≤4000), `locale`, `user_agent`, `status` (open|resolved), `resolved_at`; 5 per hour per person (counted in the table); admins get a push (`adminFeedback`, not switchable)
+- **`data_exports`**: `user_id`, `status` (queued|running|ready|failed), `object_key` (R2 `u/{userId}/exports/{id}.json`), `content` (only when R2 isn't configured, local development), `size_bytes`, `expires_at` (24 h), `finished_at`
+- *Fast-follow:* `reminders` and server-side `timer_alerts` (today a running timer notifies from the open tab; it respects the "timers" preference).
 
 ---
 
@@ -228,11 +231,12 @@ Drizzle schema in `src/server/db/schema/`. Ownership and sharing rules live in `
    - Signing out or a password change revokes sessions. A cascade removes those devices' push subscriptions, and the client wipes offline data.
    - Auth emails are sent through the outbox → Resend.
 5. **Weather & Top-bar Chip Pipeline:**
-   - The `(app)` layout calls `getWeatherChip(user)` with the profile's `lat/lon` (geocoded from the city once, server-side).
-   - It checks Redis under `wx:{lat.1}:{lon.1}` (coordinates rounded to 0.1°, 30-min TTL). On a miss, it fetches Open-Meteo `current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,is_day` (3 s timeout).
+   - Saving the kitchen with a typed city (and no device coordinates) geocodes it server-side (Open-Meteo geocoding) and stores rough coordinates; typing a city clears device coordinates. An unknown city is saved as typed and the chip says it wasn't found.
+   - The `(app)` layout streams the chip behind `<Suspense>` (`app/[locale]/(app)/_parts/weather-chip-slot.tsx`), so a slow lookup never blocks the page.
+   - It checks Redis under `cooky:wx:{lat.1}:{lon.1}` (coordinates rounded to 0.1°, 30-min TTL; an in-memory map when Upstash isn't configured). On a miss, it fetches Open-Meteo (`customer-api` with `OPEN_METEO_API_KEY`; without a key, the free endpoint in development only, and no weather in production) `current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,is_day` (3 s timeout).
    - **WMO code → condition:** 0–1 → `sunny`/`clear_night` (by `is_day`) · 2–3 → `cloudy` · 45, 48 → `foggy` · 51–67, 80–82 → `rainy` · 71–77, 85–86 → `snowy` · 95–99 → `stormy`. Wind ≥ 40 km/h turns sunny/cloudy into `windy`. Accent: ≥ 30 °C → `hot`, ≤ 0 °C → `freezing`.
    - The same result gives the ranking mood (`cozy`/`light`/`neutral`) for Cook, Spin and the Assistant.
-   - DTO: `{ condition, accent, tempC, feelsLikeC, windKmh, precipMm, isDay, iftarAt? }`, with no coordinates and no provider URL.
+   - DTO: `{ condition, accent, tempC, feelsLikeC, windKmh, precipMm, isDay, mood }` plus the hemisphere `season` (meteorological, flipped south of the equator), with no coordinates and no provider URL. `loadWeatherContext(userId)` is the one source for the chip, Cook, Spin and the Assistant.
    - On failure, the chip hides and the mood is neutral.
 6. **Ingredient Matching Service:**
    - `normalize()` folds case and accents, unifies Arabic letter forms (أ/إ/آ→ا, ة→ه, ى→ي), and strips the article "ال" from words longer than 3 letters.
@@ -241,30 +245,40 @@ Drizzle schema in `src/server/db/schema/`. Ownership and sharing rules live in `
    - Autocomplete (`suggestIngredients`) ranks dictionary entries by word-start match, then `pg_trgm` similarity, shown in the current locale, then the person's own unlinked names. My Dishes search uses `matches()` on dish names and ingredients, plus trigram similarity for typos.
    - The shopping merge keys on `ingredient_id` when linked, otherwise on the normalized name. Amounts are summed when units convert (g↔kg, ml↔l, tsp↔tbsp…).
 7. **Cook / Spin Pipeline:**
-   - `rankDishes(extraHave?)`: load the user's dishes + pantry + weather mood + hemisphere season + dietary prefs + recent `cook_log`. Sort by missing count, then weather fit, dietary fit and recency. Return ordered DTOs (name, image URL, missing names, badges).
-   - `spin(mode, filters)`: try/limit check → weighted random pick from the server-side pool, excluding today's `spin_sessions.picked_dish_ids` → one DTO.
+   - `rankDishes` (`features/cook/service.ts`, pure): a line is had when a kitchen item has the same dictionary entry, or every word of the item matches the line. Sort by missing count, then weather fit (dish season in the mood's favoured seasons > no season > other season), dietary fit, then recency (cooked in the last 3 days goes down; never cooked counts as 30 days). Missing names show in the viewer's language when linked to the dictionary. Cook's what-if bar uses `?with=` (extra names) and `?without=` (kitchen item ids) and never changes the kitchen.
+   - `spinDish` (`meteredAction("spins")`): the pool is narrowed by an owned collection and/or up to 10 ingredients (all, then any, reported as `matchMode`), minus today's picks, then a weighted draw (weather fit ×3/×2/×1). Nothing left → `not_found` and the spin is refunded.
+   - Cooking mode (`/dishes/[id]/cook`): ingredients, one step per screen (XL text), step timers that keep running across steps and ring with a beep and vibration, Screen Wake Lock, swipe and arrow keys (mirrored in RTL), then Log it (with "used up?" kitchen items) and a rating.
 8. **Assistant Pipeline:**
-   - `askAssistant(threadId?, text)` → reserve a try → load the context (dishes, catalog, last 14 days of cooking, events in the next 21 days, weather, pantry, dietary prefs).
+   - `askAssistant(threadId?, text)` → reserve a try → load the context (dishes, catalog, last 14 days of cooking, weather, pantry, dietary prefs; upcoming events join in Phase 5) and the last 10 turns (ordered by `created_at`, then the UUID v7 id, since a turn's two rows share a transaction timestamp). Models: `AI_CHAT_MODEL` on Groq, `AI_FALLBACK_MODEL` on OpenAI (`server/ai/chat.ts`, `generateStructured`). Without either key the page says the Assistant isn't available and nothing is charged.
    - **Shortlist** ≤40 own + ≤16 Discover candidates ranked against the conversation, shown to the model as short aliases (`m3`, `d12`).
    - AI SDK structured output with a Zod schema `{ reply, picks: [{ id, why }] }`. Groq primary → OpenAI fallback on 429/5xx, with a 25 s timeout.
    - Unknown ids are dropped, the messages persisted, the try committed, and a DTO returned.
    - User and dish text are treated as data, never instructions. The model has no tools with side effects.
-9. **Voice Pipeline:** The client records with MediaRecorder → `transcribe(formData)` action (≤4 MB, MIME sniffed) → reserve a try → AI SDK transcription with a per-locale style prompt → commit/refund → for dictation, the server parses the text into structured ingredient rows.
-10. **Upload Pipeline:** The client crops locally → `uploadImage(file, purpose)` action → size and magic-byte check → `sharp` (resize 1280 px dish / 512 px avatar, WebP, strip metadata) → R2 `u/{userId}/{uuid}.webp` → store the key. Reads: a 10-min signed GET URL is put in the DTO only if the policy allows the viewer.
+   - Cards are re-hydrated from the DB when shown (a deleted dish disappears). Voice questions go through `transcribeQuestion` (a voice try) into the message box, to check before sending. Threads untouched for 90 days are pruned by the daily `purge-deleted` job.
+9. **Voice Pipeline:** The client records with MediaRecorder (≤ 60 s; under 2 KB nothing is sent) → `dictateIngredients(formData)` (`meteredAction("voice")`, ≤ 4 MB, magic bytes sniffed: webm/ogg/mp4/wav/mp3) → AI SDK `transcribe` with a per-locale style prompt, Groq (`AI_TRANSCRIBE_MODEL`, default `whisper-large-v3-turbo`) then OpenAI, 25 s timeout → `splitIngredientText` + `parseIngredientLine` (EN/FR/AR units, fractions, Arabic digits) → ingredient rows appended to the form. Nothing heard → `not_found`; no provider configured or both failing → `unavailable`; both refund the try. The keys are optional: without them the button explains that voice is unavailable and typing always works.
+10. **Upload Pipeline:** `uploadDishPhoto(formData)` / `uploadAvatar(formData)` (`server/actions/photos.ts`) → ownership + read-only check → ≤ 5 MB and magic bytes (`storage/image.ts`: JPEG, PNG, WebP, GIF, AVIF; HEIC refused, and the picker's `accept` makes iPhones send JPEG) → `sharp` (EXIF auto-orient, 40 MP input cap, WebP q80, no metadata kept): dish 1280 px inside + 480×360 cover, avatar 512² + 96² cover with attention crop (server-side, instead of a client crop step) → R2 `u/{userId}/{uuid}.webp` and `…-sm.webp` → swap the key under a row lock, then delete the replaced objects (best effort; failures stay under the owner's prefix for the account purge). Reads: 10-minute signed GET URLs go in the DTO only after the policy check (`photo`, `photoUrl`, `avatarUrl`); the UI uses plain `<img>` since the URLs change per render. The daily purge deletes a purged dish's objects. Without all four `R2_*` variables, `storageConfigured()` is false: pickers say uploads aren't available and nothing else changes. An imported recipe's `image` is fetched through the importer's guard (`fetchImage`) and stored on save, best effort.
 11. **Realtime & Notifications:**
-    - `sendMessage` → friendship/block/policy check → insert → outbox. Pusher gets `{ type: "message", conversationId }` on the recipient's private channel. Push is localized and respects preferences.
-    - The recipient's client refreshes the thread through the server.
-    - Typing events are server-triggered and rate-limited. Delivered and seen receipts are updated through actions.
+    - Each person listens on `private-user-{userId}`. pusher-js loads only when realtime is configured (`account.realtime`), and its `channelAuthorization.customHandler` calls the `authorizeRealtime` Server Action, which signs only the caller's own channel: there is no `/api/pusher/auth` route.
+    - Events (`server/realtime/dto.ts`) carry ids only: `message` (new, to the recipient), `message_changed` (edit/delete/restore), `receipt` (delivered/seen), `typing` (sent by the composer at most every 4 s), `friends` (request/accept). They go through the outbox (`pusher` job), never straight from an action body.
+    - The client refreshes through the server: the open thread refreshes itself; elsewhere `RealtimeShell` refreshes the badges, marks messages delivered, and shows an in-app toast with the sender's name (fetched by id).
+    - Without Pusher, an open thread refreshes every 8 s while visible; the unread dot updates on navigation.
+    - Web Push (`notify/push.ts`, `web-push` + VAPID): a subscription per device and session; the payload is rendered in the device's language and carries the sender's name, never message text; switched-off kinds are skipped; 404/410 subscriptions are deleted. The service worker skips the system notification while a Cooky window is focused. Billing lifecycle events push alongside their emails.
 12. **Outbox & Jobs:**
     - QStash calls `/api/jobs/drain` (signature-verified) every minute, with exponential backoff (max 8 attempts → dead letter + alert).
-    - Schedules: expired auth data cleanup, stale reservation release, account purge after the grace period (cancel Stripe, delete R2 objects, delete rows), orphan R2 cleanup, assistant history pruning, Stripe reconcile, data export expiry.
+    - Schedules (`pnpm jobs:schedule`, `scripts/schedule-jobs.ts`): `cleanup` hourly (expired sessions and verification tokens, expired export files and rows, delivered jobs older than 30 days), `release-reservations` every 5 min, `purge-deleted` daily (dishes, collections, old import summaries, deleted message text, assistant threads idle 90 days), `purge-accounts` daily, `billing-reconcile` daily.
+    - A dead-lettered job is logged and sent to Sentry (`Outbox job dead-lettered`, tagged with its kind).
+18. **Account deletion & data export (PRD §3.1):**
+    - `requestAccountDeletion` re-checks the password (`auth.api.verifyPassword`), or for Google/Apple-only accounts requires a login from the last 15 minutes. In one transaction: queue `stripe_cancel` (live subscriptions cancelled now), the `accountDeletionScheduled` email, audit, then `status = pending_deletion`, `deletion_requested_at = now` and all sessions deleted. Logging in during the 7 days restores the account (Better Auth `session.create.after` hook).
+    - `purge-accounts` (daily) runs `purgeAccount` for each account past the grace: delete the Stripe customer, delete every R2 object under `u/{userId}/`, delete the user row (everything owned cascades), audit `account.purged`. It's idempotent, and a failure is retried the next day.
+    - Admin deletion bans the account at once (so a login can't cancel it) and queues `account_purge`.
+    - `requestDataExport` (one per hour) queues `data_export`; the job builds JSON with `buildDataExport` (other people by display name only, no storage keys), stores it privately, and emails a link to Settings → Your data. The file streams from `/api/downloads/[id]?e=&s=`: an HMAC-signed, expiring link that also requires the owner's session.
 13. **Email Pipeline:** React Email template (per locale) → outbox → Resend. Links are built from the validated `APP_URL`, never from the request. Tokens are single-use, hashed and short-lived.
 14. **Recipe Import Pipeline:**
     - `importFromUrl(url)` → reserve a try.
-    - **SSRF guard:** https only, resolve DNS and reject private/loopback/link-local ranges (`ipaddr.js`), re-check each redirect, 5 s timeout, 2 MB cap, `text/html` only.
-    - `cheerio` parses JSON-LD `Recipe`. If none is found, AI extraction runs (same try).
-    - The result becomes a **draft DTO** (ingredients mapped through the matching service) shown in the dish form. Nothing is saved until the user confirms, and the image is copied into R2 on save.
-    - The PWA `share_target` posts to `/api/share-target`, which redirects to the import form.
+    - **SSRF guard** (`server/importer/fetch.ts`, `ip.ts`): http(s) on default ports only, no credentials in the URL; every DNS answer is checked against private, loopback, link-local, CGNAT, multicast, documentation, IPv4-mapped and NAT64 ranges and the socket is pinned to the checked address (no rebinding); each redirect is re-checked (max 3); 8 s timeout; 3 MB cap measured after decompression; `text/html` only. Sites that block non-browser TLS clients (e.g. Allrecipes) answer 403 and get the "couldn't reach" message: we don't impersonate browsers.
+    - `extractRecipe` reads JSON-LD `Recipe` (also inside `@graph` and arrays; `HowToStep`/`HowToSection`, `image`), clamps yield and counts, and credits `og:site_name` or the host. Pages without it go to `aiExtractRecipe` (same try): the page's readable text (≤ 12k chars) → structured `{ found, name, servings, ingredients[], steps[] }`, copied as written, then parsed like any line. No recipe either way → `not_found` (try refunded).
+    - The result is a **draft DTO** shown in the dish form; nothing is saved until the user confirms. On save, `dish_sources` keeps the link and the dish page shows "From {site}". Copying the photo waits on uploads (3f).
+    - The PWA `share_target` (in `app/manifest.ts`) is a GET to `/en/dishes/new?title&text&url`; the page pre-fills the first http(s) link and never imports on its own.
 15. **Offline Shopping Sync:**
     - With the setting on, the shopping and cooking-mode pages pass the client a versioned snapshot DTO of the user's own active list and today's recipe. The client stores it in IndexedDB under the user id.
     - Offline check-offs are queued as `{ itemId, checked, at }`. On reconnect they replay through `toggleShoppingItem` (idempotent, last-write-wins by `at`), then the client reloads the server version.

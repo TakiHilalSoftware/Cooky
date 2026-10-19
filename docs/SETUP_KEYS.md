@@ -67,28 +67,28 @@ Create a Redis database in the same region and copy the REST URL and token.
 ✅ **Check:** sending 31 chat messages within a minute → the 31st returns "too fast".
 
 ## 6. Upstash QStash
-Copy the token and both signing keys, then run `pnpm jobs:schedule`. It registers the schedules: outbox drain (every minute), cleanup (hourly), reminders (hourly), reconcile + purge (daily).
-✅ **Check:** request a password reset → the `outbox` row goes `pending → done` and the email arrives. Start a 1-minute named timer, close the tab → the push arrives.
+Copy the token and both signing keys, then run `pnpm jobs:schedule` (or `pnpm jobs:schedule https://your-domain`). It registers, idempotently: outbox drain (every minute), stale try release (every 5 minutes), cleanup of expired sessions, tokens and export files (hourly), purge of deleted dishes and old assistant threads (daily), account purge after the 7-day grace (daily), Stripe reconcile (daily).
+✅ **Check:** request a password reset → the `outbox` row goes `pending → done` and the email arrives. In the QStash console, the six `cooky-*` schedules point at the production URL.
 
 ## 7. Resend
 Verify the sending domain (SPF, DKIM, DMARC) and set `RESEND_API_KEY` and `EMAIL_FROM="Cooky <hello@yourdomain>"`.
 ✅ **Check:** `pnpm email:dev` previews every template in all 3 languages. Real emails land in the inbox, not spam.
 
 ## 8. Cloudflare R2
-Create a **private** bucket (no public access, no r2.dev URL) and an API token scoped to it (Object Read & Write). Add the bucket's S3 endpoint host to the CSP `img-src`.
+Create a **private** bucket (no public access, no r2.dev URL) and an API token scoped to it (Object Read & Write). Set all four variables; the CSP `img-src` picks up `https://<account id>.r2.cloudflarestorage.com` automatically. Until they're set, photo uploads say they aren't available and the rest of the app works.
 ✅ **Check:** upload a phone photo → the stored object is WebP with no EXIF/GPS. Its URL expires after 10 minutes, and a non-friend gets 403.
 
 ## 9. Pusher Channels
-Create a Channels app and **disable client events**. Set `PUSHER_APP_ID`, `PUSHER_SECRET` (server) and `NEXT_PUBLIC_PUSHER_KEY`, `NEXT_PUBLIC_PUSHER_CLUSTER` (client).
-✅ **Check:** two friends in two browsers → messages appear instantly. In the Pusher debug console, events contain **only ids**.
+Create a Channels app and **disable client events**. Set `PUSHER_APP_ID`, `PUSHER_SECRET` (server) and `NEXT_PUBLIC_PUSHER_KEY`, `NEXT_PUBLIC_PUSHER_CLUSTER` (client). The browser's private channel is signed by the `authorizeRealtime` Server Action (no auth endpoint to configure). Without the four variables, chat still works: an open conversation refreshes every few seconds and typing indicators are off.
+✅ **Check:** two friends in two browsers → messages, typing and "Seen" appear instantly. In the Pusher debug console, events contain **only ids** (`{ type, conversationId }`).
 
 ## 10. Web Push
-`npx web-push generate-vapid-keys` → `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT=mailto:you@yourdomain`. **Never rotate** without a migration plan (it invalidates every subscription). Push needs a production build over HTTPS, and on iOS the app must be added to the Home Screen first.
+`npx web-push generate-vapid-keys` → `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT=mailto:you@yourdomain`. **Never rotate** without a migration plan (it invalidates every subscription). Push needs a production build over HTTPS, and on iOS the app must be added to the Home Screen first. Without the keys, Settings → Notifications says push isn't available and in-app alerts still work.
 ✅ **Check:** enable push → close the app → a friend's message arrives as a localized notification. Revoke that device → no more pushes.
 
 ## 11. AI (Vercel AI SDK)
 - Chat primary: Groq (`GROQ_API_KEY`, `AI_CHAT_MODEL`, e.g. a current `gpt-oss` model; Groq retires models, so check its model list). Fallback: OpenAI (`OPENAI_API_KEY`, `AI_FALLBACK_MODEL`, e.g. a current mini model).
-- Transcription: `AI_TRANSCRIBE_MODEL` (Groq Whisper or OpenAI transcribe).
+- Transcription: `AI_TRANSCRIBE_MODEL` (default `whisper-large-v3-turbo` on Groq; OpenAI falls back to `whisper-1`). Both keys are optional: without them voice dictation says it's unavailable and refunds the try.
 - Use **paid tiers** in production; free token-per-minute caps can't serve paying users.
 ✅ **Check:** a Free user asks 10 questions, and the 11th opens the upgrade sheet. Break the primary key → answers still arrive via the fallback, without using an extra try.
 
@@ -107,10 +107,15 @@ The free API is **non-commercial only**, so subscribe to the commercial plan and
 - [ ] `pnpm db:migrate` + `pnpm db:seed` ran on production; PITR on; a restore rehearsed once
 - [ ] Production env complete (live Stripe keys + webhook secret, OAuth production credentials)
 - [ ] Stripe live: products synced, portal configured, Tax on, webhook returns 200
-- [ ] QStash schedules registered against the production URL
+- [ ] QStash schedules registered against the production URL (`pnpm jobs:schedule https://your-domain`)
+- [ ] Pusher and VAPID keys set (optional at boot, required for launch: live chat and push)
+- [ ] R2 set (optional at boot, required for launch: photos and data exports)
+- [ ] Operator details filled in `config/legal.ts` (`OPERATOR`): the imprint and legal pages show them
+- [ ] Legal texts (`messages/*.json` → `legal`) reviewed by a lawyer for your country; bump `LEGAL_VERSIONS` when they change
+- [ ] At least one admin: `pnpm admin:set you@yourdomain`
 - [ ] Security: securityheaders.com A+, no `unsafe-eval` in the CSP, no secrets in client chunks (CI greps the build output for key prefixes)
 - [ ] Zero-leak review: every page's RSC payload contains only DTO fields
 - [ ] Sending domain verified (SPF/DKIM/DMARC)
-- [ ] Legal: terms, privacy policy (processors: Stripe, Resend, Pusher, Cloudflare, AI providers, Open-Meteo, Sentry, PostHog, Neon, Vercel, Upstash), refund policy, imprint
+- [ ] Legal: terms, privacy policy (processors listed in `config/legal.ts` → `PROCESSORS`; add PostHog there if you turn it on), refund policy, imprint — published at `/terms`, `/privacy`, `/refunds`, `/imprint`
 - [ ] Alerts: error spikes, webhook failures, outbox dead letters; uptime monitors on `/` and `/api/webhooks/stripe`
 - [ ] At least two admins; secrets in a password manager; `BETTER_AUTH_SECRET` and VAPID keys backed up
