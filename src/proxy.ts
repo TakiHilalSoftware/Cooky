@@ -6,6 +6,7 @@ import { routing } from "@/i18n/routing";
 import { signedOutRedirect } from "@/server/auth/gate";
 import { env } from "@/server/env";
 import { buildCsp } from "@/server/security/headers";
+import { storageImageHost } from "@/server/storage/host";
 
 const intl = createIntlMiddleware(routing);
 
@@ -23,6 +24,7 @@ export default function proxy(request: NextRequest): NextResponse {
     nonce,
     isDev: env.NODE_ENV === "development",
     pusherCluster: env.NEXT_PUBLIC_PUSHER_CLUSTER,
+    imageHosts: [storageImageHost()].filter((host) => host !== null),
   });
 
   // Next reads the nonce from the request's CSP header while rendering and

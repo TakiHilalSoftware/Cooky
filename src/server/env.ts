@@ -139,6 +139,44 @@ export const serverSchema = {
   QSTASH_TOKEN: required(z.string().min(1)),
   QSTASH_CURRENT_SIGNING_KEY: required(z.string().min(1)),
   QSTASH_NEXT_SIGNING_KEY: required(z.string().min(1)),
+
+  // AI (§8): Groq first, OpenAI as the fallback. Optional: without them, voice
+  // dictation and the Assistant say they're unavailable and give the try back.
+  GROQ_API_KEY: z.string().min(1).optional(),
+  OPENAI_API_KEY: z.string().min(1).optional(),
+  AI_TRANSCRIBE_MODEL: z.string().min(1).default("whisper-large-v3-turbo"),
+  // Groq retires models: check its model list (docs/SETUP_KEYS.md §11) and override here.
+  AI_CHAT_MODEL: z.string().min(1).default("openai/gpt-oss-120b"),
+  AI_FALLBACK_MODEL: z.string().min(1).default("gpt-4.1-mini"),
+
+  // Cloudflare R2 (§8): dish and profile photos in a private bucket, read through signed URLs.
+  // Optional even when deployed (the go-live checklist requires it): without all four, photo
+  // uploads say they're off and everything else works, so a preview never fails to boot over it.
+  R2_ACCOUNT_ID: z
+    .string()
+    .regex(/^[a-f0-9]{32}$/, "R2_ACCOUNT_ID is the 32-character id from the R2 dashboard")
+    .optional(),
+  R2_ACCESS_KEY_ID: z.string().min(1).optional(),
+  R2_SECRET_ACCESS_KEY: z.string().min(1).optional(),
+  R2_BUCKET: z
+    .string()
+    .regex(/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/, "R2_BUCKET must be a bucket name such as cooky-photos")
+    .optional(),
+
+  // Pusher (§9) and Web Push (§10). Optional like R2 (the go-live checklist requires them):
+  // without Pusher, open chats refresh on a short timer; without VAPID, push is off and
+  // Settings says so. Everything else in Social works either way.
+  PUSHER_APP_ID: z.string().min(1).optional(),
+  PUSHER_SECRET: z.string().min(1).optional(),
+  VAPID_PRIVATE_KEY: z.string().min(1).optional(),
+  VAPID_SUBJECT: z
+    .string()
+    .regex(/^(mailto:|https:\/\/)/, "VAPID_SUBJECT must be mailto:you@yourdomain or an https URL")
+    .optional(),
+
+  // Open-Meteo (§12): the commercial key. Without it, development uses the free
+  // (non-commercial) endpoint and deployed builds hide the weather chip.
+  OPEN_METEO_API_KEY: z.string().min(1).optional(),
 } as const;
 
 export const env = createEnv({
