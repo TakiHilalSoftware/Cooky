@@ -1,5 +1,6 @@
 import "server-only";
 
+import * as Sentry from "@sentry/nextjs";
 import { and, asc, eq, inArray, lte, sql } from "drizzle-orm";
 
 import { getDb } from "@/server/db/client";
@@ -66,6 +67,12 @@ export async function drainOutbox({ limit }: { limit: number }): Promise<DrainRe
       if (dead) {
         result.dead++;
         logger.error({ err, outboxId: row.id, kind: row.kind }, "outbox job dead-lettered");
+        // The dead-letter alert (PRD §4): someone has to look at it.
+        Sentry.captureMessage("Outbox job dead-lettered", {
+          level: "error",
+          tags: { outboxKind: row.kind },
+          extra: { outboxId: row.id, attempts: row.attempts },
+        });
       } else {
         result.retried++;
         logger.warn({ err, outboxId: row.id, attempts: row.attempts }, "outbox job failed; will retry");

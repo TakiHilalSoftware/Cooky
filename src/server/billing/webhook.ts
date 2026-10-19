@@ -7,6 +7,7 @@ import { getDb, type Executor } from "@/server/db/client";
 import { stripeEvents, subscriptions, user } from "@/server/db/schema";
 import { env } from "@/server/env";
 import type { EmailTemplate } from "@/server/notify/email/render";
+import { queuePush } from "@/server/notify/queue";
 import { drainSoon, enqueue } from "@/server/outbox/enqueue";
 
 import { recomputeEntitlement } from "./entitlements";
@@ -30,10 +31,15 @@ function subscriptionIdOf(event: Stripe.Event): string | null {
   return null;
 }
 
-async function email(tx: Executor, userId: string, template: EmailTemplate, url: string) {
+/** A lifecycle email, with a matching push on devices that have push on (PRD §3.7). */
+async function email(tx: Executor, userId: string, template: BillingTemplate, url: string) {
   const [owner] = await tx.select({ email: user.email }).from(user).where(eq(user.id, userId)).limit(1);
-  if (owner) await enqueue(tx, { kind: "email", payload: { template, userId, to: owner.email, url } });
+  if (!owner) return;
+  await enqueue(tx, { kind: "email", payload: { template, userId, to: owner.email, url } });
+  await queuePush(tx, userId, template, {}, "/settings/billing");
 }
+
+type BillingTemplate = Extract<EmailTemplate, "trialEnding" | "paymentFailed" | "cancellationConfirmed" | "receipt">;
 
 /**
  * Applies one verified Stripe event (ARCHITECTURE §5.3). Fresh data is fetched

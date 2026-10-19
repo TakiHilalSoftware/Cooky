@@ -1,6 +1,7 @@
 import "server-only";
 
 import { passkey } from "@better-auth/passkey";
+import { and, eq } from "drizzle-orm";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError, createAuthMiddleware, isAPIError } from "better-auth/api";
@@ -174,6 +175,19 @@ export const auth = betterAuth({
             targetId: session.id,
             ip: session.ipAddress,
           });
+          // PRD §3.1: logging in during the 7-day grace cancels a scheduled deletion.
+          const restored = await getDb()
+            .update(schema.user)
+            .set({ status: "active", deletionRequestedAt: null })
+            .where(and(eq(schema.user.id, session.userId), eq(schema.user.status, "pending_deletion")))
+            .returning({ id: schema.user.id });
+          if (restored.length > 0) {
+            await audit(getDb(), {
+              actorId: session.userId,
+              action: "account.deletion_cancelled",
+              ip: session.ipAddress,
+            });
+          }
         },
       },
       delete: {
