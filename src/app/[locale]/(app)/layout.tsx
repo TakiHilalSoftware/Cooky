@@ -1,6 +1,8 @@
 import { getLocale } from "next-intl/server";
+import { Suspense } from "react";
 
 import { PublicShell } from "@/components/app-shell/public-shell";
+import { WeatherChipSlot } from "./_parts/weather-chip-slot";
 import { redirect } from "@/i18n/navigation";
 import { getAccountSummary } from "@/server/features/account/queries";
 
@@ -11,5 +13,16 @@ import { getAccountSummary } from "@/server/features/account/queries";
 export default async function AppLayout({ children }: LayoutProps<"/[locale]">) {
   const account = await getAccountSummary();
   if (!account) return redirect({ href: "/login", locale: await getLocale() });
-  return <PublicShell account={account}>{children}</PublicShell>;
+  return (
+    <PublicShell
+      account={account}
+      weather={
+        <Suspense fallback={null}>
+          <WeatherChipSlot />
+        </Suspense>
+      }
+    >
+      {children}
+    </PublicShell>
+  );
 }
