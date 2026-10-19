@@ -54,7 +54,7 @@ export function dishValues(input: DishFields) {
  * them. Lines whose name is a dictionary entry are linked to it, so matching,
  * aisles and the shopping merge know what they are.
  */
-export async function writeContents(tx: Executor, dishId: string, input: DishInput) {
+export async function writeContents(tx: Executor, dishId: string, input: Pick<DishInput, "ingredients" | "steps">) {
   const ingredientIds = await resolveIngredientIds(input.ingredients.map((i) => i.name));
   await tx.delete(dishIngredients).where(eq(dishIngredients.dishId, dishId));
   await tx.delete(dishSteps).where(eq(dishSteps.dishId, dishId));

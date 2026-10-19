@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
+import { HOME_AFTER_SIGN_IN } from "@/lib/routes";
 
 import { AuthCard } from "@/components/auth/auth-card";
 import { SignUpForm } from "@/components/auth/sign-up-form";
@@ -13,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SignUpPage() {
-  if (await getAccountSummary()) return redirect({ href: "/settings", locale: await getLocale() });
+  if (await getAccountSummary()) return redirect({ href: HOME_AFTER_SIGN_IN, locale: await getLocale() });
   const t = await getTranslations("auth.signUp");
   return (
     <AuthCard

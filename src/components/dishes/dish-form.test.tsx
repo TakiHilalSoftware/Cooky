@@ -9,6 +9,7 @@ import { renderWithIntl } from "../../../tests/setup/render";
 const actions = vi.hoisted(() => ({ createDish: vi.fn(), updateDish: vi.fn() }));
 vi.mock("@/server/actions/dishes", () => actions);
 vi.mock("@/server/actions/ingredients", () => ({ suggestIngredients: vi.fn(async () => ({ data: [] })) }));
+vi.mock("@/server/actions/voice", () => ({ dictateIngredients: vi.fn() }));
 const router = vi.hoisted(() => ({ push: vi.fn() }));
 vi.mock("@/i18n/navigation", () => ({ useRouter: () => router }));
 const onActionError = vi.hoisted(() => vi.fn());

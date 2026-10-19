@@ -1,0 +1,104 @@
+import { ArrowRightIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
+
+import { PricingPlans } from "@/components/billing/pricing-plans";
+import { CatalogCard } from "@/components/discover/catalog-card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
+import type { PricingDto } from "@/server/features/billing/dto";
+import type { CatalogCardDto } from "@/server/features/discover/dto";
+
+import { FEATURES } from "./features";
+
+/** The eight features (PRD §3.0): each opens its page, or sign-up for visitors. */
+export function FeatureGrid({ signedIn }: { signedIn: boolean }) {
+  const t = useTranslations("home");
+  return (
+    <section aria-labelledby="features-heading" className="space-y-6 border-t border-border py-12 sm:py-16">
+      <h2 id="features-heading" className="font-heading text-3xl">
+        {t("featuresHeading")}
+      </h2>
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {FEATURES.map(({ key, href, icon: Icon, available }) => {
+          // Visitors are invited to sign up; signed-in people go to the page once it exists.
+          const target = !signedIn ? "/signup" : available ? href : null;
+          return (
+            <li
+              key={key}
+              className="group relative flex flex-col gap-3 rounded-3xl border border-border bg-card p-5 transition-colors focus-within:border-primary-strong hover:border-primary-strong"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="flex size-11 items-center justify-center rounded-2xl bg-secondary text-primary-strong">
+                  <Icon aria-hidden="true" className="size-5" />
+                </span>
+                {!available ? <Badge variant="outline">{t("comingSoon")}</Badge> : null}
+              </div>
+              <h3 className="font-heading text-xl">
+                {target ? (
+                  <Link
+                    href={target}
+                    className="outline-none after:absolute after:inset-0 after:rounded-3xl focus-visible:after:ring-3 focus-visible:after:ring-ring/50"
+                  >
+                    {t(`features.${key}.title`)}
+                  </Link>
+                ) : (
+                  t(`features.${key}.title`)
+                )}
+              </h3>
+              <p className="text-sm text-pretty text-muted-foreground">{t(`features.${key}.body`)}</p>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
+/** A row of Discover dishes to try, with a way into the full catalog. */
+export function DiscoverPreview({ dishes }: { dishes: CatalogCardDto[] }) {
+  const t = useTranslations("home");
+  if (dishes.length === 0) return null;
+  return (
+    <section aria-labelledby="discover-preview-heading" className="space-y-4 border-t border-border py-12 sm:py-16">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <h2 id="discover-preview-heading" className="font-heading text-3xl">
+          {t("discoverHeading")}
+        </h2>
+        <Button asChild variant="outline">
+          <Link href="/discover">
+            {t("discoverAll")}
+            <ArrowRightIcon aria-hidden="true" data-icon="inline-end" className="rtl:-scale-x-100" />
+          </Link>
+        </Button>
+      </div>
+      {/* Swipe on phones; nothing moves on its own. */}
+      <ul className="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
+        {dishes.map((dish) => (
+          <CatalogCard key={dish.slug} dish={dish} className="w-72 shrink-0 snap-start" />
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/** Plans and prices, the same component as the Pricing page. */
+export function PricingSection({ pricing }: { pricing: PricingDto }) {
+  const t = useTranslations("home");
+  return (
+    <section aria-labelledby="home-pricing-heading" className="space-y-8 border-t border-border py-12 sm:py-16">
+      <div className="mx-auto max-w-2xl space-y-2 text-center">
+        <h2 id="home-pricing-heading" className="font-heading text-3xl">
+          {t("pricingHeading")}
+        </h2>
+        <p className="text-pretty text-muted-foreground">{t("pricingBody")}</p>
+      </div>
+      <PricingPlans pricing={pricing} />
+      <p className="text-center">
+        <Link href="/pricing" className="font-medium text-primary-strong underline-offset-4 hover:underline">
+          {t("seePricing")}
+        </Link>
+      </p>
+    </section>
+  );
+}

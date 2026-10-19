@@ -260,7 +260,7 @@ describe("deleteDish and restoreDish (Undo)", () => {
       .set({ deletedAt: new Date(Date.now() - 25 * 60 * 60 * 1000) })
       .where(eq(schema.dishes.id, old));
 
-    expect(await purgeDeleted()).toEqual({ dishes: 1, collections: 0, imports: 0 });
+    expect(await purgeDeleted()).toEqual({ dishes: 1, collections: 0, imports: 0, messages: 0 });
     expect(await db().select({ id: schema.dishes.id }).from(schema.dishes)).toEqual([{ id: recent }]);
     expect(await db().select().from(schema.dishIngredients).where(eq(schema.dishIngredients.dishId, old))).toEqual([]);
     expect(await db().select().from(schema.favorites)).toEqual([]);

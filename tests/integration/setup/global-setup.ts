@@ -52,5 +52,67 @@ export default async function setup() {
       [s.slug, s.nameEn, s.nameFr, s.nameAr, s.variants, s.aisle, s.defaultUnit, s.isCommonStaple, searchTextFor(s)],
     );
   }
+
+  // The Discover catalog, from the same list pnpm db:seed:catalog uses.
+  const { CATALOG } = await import("../../../scripts/seed-catalog");
+  const staples = new Map(
+    (
+      await pool.query<{ id: string; slug: string; name_en: string; name_fr: string; name_ar: string }>(
+        "select id, slug, name_en, name_fr, name_ar from ingredients",
+      )
+    ).rows.map((r) => [r.slug, r]),
+  );
+  for (const e of CATALOG) {
+    const { rows } = await pool.query<{ id: string }>(
+      `insert into catalog_dishes (id, slug, country, course, difficulty, servings, seasons, dietary_tags, collections, featured,
+        name_en, name_fr, name_ar, description_en, description_fr, description_ar)
+       values (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning id`,
+      [
+        e.slug,
+        e.country,
+        e.course,
+        e.difficulty,
+        e.servings,
+        e.seasons,
+        e.dietaryTags,
+        e.collections,
+        e.featured ?? false,
+        e.name.en,
+        e.name.fr,
+        e.name.ar,
+        e.description.en,
+        e.description.fr,
+        e.description.ar,
+      ],
+    );
+    const dishId = rows[0]!.id;
+    for (const [position, ing] of e.ingredients.entries()) {
+      const staple = ing.staple ? staples.get(ing.staple) : undefined;
+      const names = staple ? { en: staple.name_en, fr: staple.name_fr, ar: staple.name_ar } : ing.names!;
+      await pool.query(
+        `insert into catalog_ingredients (id, catalog_dish_id, position, amount, unit, ingredient_id, name_en, name_fr, name_ar, note_en, note_fr, note_ar)
+         values (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        [
+          dishId,
+          position,
+          ing.amount,
+          ing.unit,
+          staple?.id ?? null,
+          names.en,
+          names.fr,
+          names.ar,
+          ing.note?.en ?? null,
+          ing.note?.fr ?? null,
+          ing.note?.ar ?? null,
+        ],
+      );
+    }
+    for (const [position, step] of e.steps.entries()) {
+      await pool.query(
+        "insert into catalog_steps (id, catalog_dish_id, position, text_en, text_fr, text_ar, timer_seconds) values (gen_random_uuid(), $1, $2, $3, $4, $5, $6)",
+        [dishId, position, step.text.en, step.text.fr, step.text.ar, step.minutes ? step.minutes * 60 : null],
+      );
+    }
+  }
   await pool.end();
 }

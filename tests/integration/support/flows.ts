@@ -31,5 +31,5 @@ export async function expectRedirect(promise: Promise<unknown>, to: string) {
 
 /** Logs in through the real action (expects success, i.e. a redirect). */
 export async function logIn(email = "amina@example.com", password = PASSWORD) {
-  await expectRedirect(actions.signIn({ email, password, locale: "en" }), "/en/settings");
+  await expectRedirect(actions.signIn({ email, password, locale: "en" }), "/en/dishes");
 }

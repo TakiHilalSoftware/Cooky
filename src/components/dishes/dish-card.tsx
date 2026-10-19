@@ -17,6 +17,18 @@ export function DishCard({ dish }: { dish: DishCardDto }) {
 
   return (
     <li className="group relative flex flex-col gap-3 rounded-3xl border border-border bg-card p-5 transition-colors focus-within:border-primary-strong hover:border-primary-strong">
+      {dish.photoUrl ? (
+        // Decorative here: the dish name is the link. A plain <img> because signed URLs change on every render.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={dish.photoUrl}
+          alt=""
+          width={480}
+          height={360}
+          loading="lazy"
+          className="-mx-1 -mt-1 aspect-[4/3] w-[calc(100%+0.5rem)] max-w-none rounded-2xl bg-muted object-cover"
+        />
+      ) : null}
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 space-y-1">
           <p className="text-xs font-medium tracking-wide text-primary-strong">

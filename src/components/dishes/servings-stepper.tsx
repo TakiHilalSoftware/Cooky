@@ -13,12 +13,12 @@ import { DISH_BOUNDS } from "@/lib/dishes";
  * catches up); the amounts are scaled by the server. Plain links underneath,
  * so it works before JavaScript loads too.
  */
-export function ServingsStepper({ dishId, servings }: { dishId: string; servings: number }) {
+export function ServingsStepper({ basePath, servings }: { basePath: string; servings: number }) {
   const t = useTranslations("dishes");
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [shown, setShown] = useOptimistic(servings);
-  const href = (n: number) => `/dishes/${dishId}?servings=${n}`;
+  const href = (n: number) => `${basePath}?servings=${n}`;
 
   const go = (n: number) => (event: MouseEvent) => {
     event.preventDefault();

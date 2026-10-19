@@ -58,16 +58,18 @@ export type IngredientFilter<T> = { mode: "all" | "any" | "none"; items: T[] };
 /**
  * Items (dishes) whose ingredients cover the wanted list: all of them first;
  * if nothing has them all, any of them, and the mode says so ("No dish uses
- * all of these…").
+ * all of these…"). Lines are plain names by default; pass `lineMatches` to
+ * match richer lines (e.g. by dictionary id).
  */
-export function filterByIngredients<T>(
+export function filterByIngredients<T, L = string>(
   items: T[],
-  ingredientsOf: (item: T) => string[],
+  linesOf: (item: T) => L[],
   wanted: string[],
+  lineMatches: (line: L, want: string) => boolean = (line, want) => matches(String(line), want),
 ): IngredientFilter<T> {
   const wants = wanted.filter((w) => words(w).length > 0);
   if (wants.length === 0) return { mode: "all", items };
-  const has = (item: T, want: string) => ingredientsOf(item).some((line) => matches(line, want));
+  const has = (item: T, want: string) => linesOf(item).some((line) => lineMatches(line, want));
   const all = items.filter((item) => wants.every((want) => has(item, want)));
   if (all.length > 0) return { mode: "all", items: all };
   const any = items.filter((item) => wants.some((want) => has(item, want)));

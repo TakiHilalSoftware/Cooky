@@ -5,6 +5,7 @@ import { AuthCard } from "@/components/auth/auth-card";
 import { RequestLinkForm } from "@/components/auth/request-link-form";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { ONBOARDING_PATH } from "@/lib/routes";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("auth.verified");
@@ -25,7 +26,7 @@ export default async function VerifyEmailDonePage({ searchParams }: PageProps<"/
   return (
     <AuthCard title={t("title")} subtitle={t("body")}>
       <Button asChild size="lg" className="w-full">
-        <Link href="/settings">{t("continue")}</Link>
+        <Link href={ONBOARDING_PATH}>{t("continue")}</Link>
       </Button>
     </AuthCard>
   );

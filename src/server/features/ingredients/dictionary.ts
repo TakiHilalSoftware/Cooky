@@ -6,7 +6,7 @@ import { getDb } from "@/server/db/client";
 import { dishes, dishIngredients, ingredients } from "@/server/db/schema";
 
 import type { IngredientSuggestionDto } from "./dto";
-import { allNames, normalize } from "./service";
+import { allNames, matches, normalize } from "./service";
 
 type Locale = "en" | "fr" | "ar";
 
@@ -42,6 +42,25 @@ async function nameLookup(): Promise<Map<string, string>> {
 export async function resolveIngredientIds(names: string[]): Promise<(string | null)[]> {
   const byName = await nameLookup();
   return names.map((name) => byName.get(normalize(name)) ?? null);
+}
+
+/** An ingredient line as the matcher sees it: its names (any language) and dictionary entry, if linked. */
+export type MatchableLine = { names: string[]; ingredientId: string | null };
+
+/**
+ * Matches lines against what's wanted, using the dictionary first: when a
+ * wanted word is a known entry ("طحينة" is tahini), it matches lines linked
+ * to exactly that entry, so prefix look-alikes ("طحين", flour) don't. Lines
+ * the dictionary doesn't know fall back to the text rules.
+ */
+export async function dictionaryMatcher(wanted: string[]) {
+  const ids = await resolveIngredientIds(wanted);
+  const idOf = new Map(wanted.map((want, i) => [want, ids[i] ?? null]));
+  return (line: MatchableLine, want: string) => {
+    const wantedId = idOf.get(want) ?? null;
+    if (wantedId && line.ingredientId) return line.ingredientId === wantedId;
+    return line.names.some((name) => matches(name, want));
+  };
 }
 
 /** For tests: forget the cached lookup after the dictionary changes. */

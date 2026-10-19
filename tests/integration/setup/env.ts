@@ -34,3 +34,14 @@ process.env.GOOGLE_CLIENT_SECRET = "test-google-client-secret";
 process.env.STRIPE_SECRET_KEY = "sk_test_integration";
 process.env.STRIPE_WEBHOOK_SECRET = "whsec_integration";
 process.env.CRON_SECRET = "integration-cron-secret-0123456789abcdef";
+
+// AI runs for real through the AI SDK against mocked provider endpoints
+// (tests/integration/support/ai.ts). OpenAI stays off unless a test turns it on.
+process.env.GROQ_API_KEY = "gsk_integration";
+delete process.env.OPENAI_API_KEY;
+
+// Photos go to an in-memory R2 bucket (tests/integration/support/r2.ts).
+process.env.R2_ACCOUNT_ID = "0123456789abcdef0123456789abcdef";
+process.env.R2_ACCESS_KEY_ID = "r2-integration";
+process.env.R2_SECRET_ACCESS_KEY = "r2-integration-secret";
+process.env.R2_BUCKET = "cooky-test";

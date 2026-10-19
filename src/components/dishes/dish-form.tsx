@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import { IconButton } from "@/components/feedback/icon-button";
 import { focusFirstInvalid } from "@/components/forms/focus-first-invalid";
+import { ChipGroup } from "@/components/forms/chip-group";
 import { FormAlert } from "@/components/forms/form-alert";
 import { TextField } from "@/components/forms/text-field";
 import { useFormMessages } from "@/components/forms/use-form-messages";
@@ -29,7 +30,6 @@ import { Input } from "@/components/ui/input";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useRouter } from "@/i18n/navigation";
 import {
   COURSES,
@@ -47,10 +47,12 @@ import {
 import { checkFields, type FieldErrorKeys } from "@/lib/forms";
 import { cn } from "@/lib/utils";
 import { createDish, updateDish } from "@/server/actions/dishes";
-import type { DishFormDto } from "@/server/features/dishes/dto";
+import type { UsageDto } from "@/server/features/billing/dto";
+import type { DishDraftDto, DishFormDto, IngredientDto } from "@/server/features/dishes/dto";
 import { dishInputSchema } from "@/server/features/dishes/schema";
 
 import { IngredientNameField } from "./ingredient-name-field";
+import { VoiceDictation } from "./voice-dictation";
 
 type IngredientRow = { key: number; amount: string; unit: Unit | ""; name: string; note: string };
 type StepRow = { key: number; text: string; timerMinutes: string; prepDayBefore: boolean };
@@ -73,7 +75,7 @@ const text = (value: number | null) => (value === null ? "" : String(value));
 /** "" → null; "1,5" and "1.5" → 1.5; anything else → NaN, which the schema reports. */
 const parseNumber = (value: string) => (value.trim() === "" ? null : Number(value.trim().replace(",", ".")));
 
-function initialState(dish: DishFormDto | undefined, nextKey: () => number): FormState {
+function initialState(dish: Omit<DishFormDto, "id"> | undefined, nextKey: () => number): FormState {
   return {
     name: dish?.name ?? "",
     course: dish?.course ?? "main",
@@ -135,7 +137,16 @@ function move<T>(list: T[], from: number, to: number): T[] {
 }
 
 /** Add or edit a dish. The schema hints as you go; the server's answer wins. */
-export function DishForm({ dish }: { dish?: DishFormDto }) {
+export function DishForm({
+  dish,
+  draft,
+  voiceUsage,
+}: {
+  dish?: DishFormDto;
+  draft?: DishDraftDto;
+  /** Voice tries left, for the dictation button. */
+  voiceUsage?: UsageDto | null;
+}) {
   const t = useTranslations("dishes");
   const tf = useTranslations("dishes.form");
   const messages = useFormMessages();
@@ -147,7 +158,7 @@ export function DishForm({ dish }: { dish?: DishFormDto }) {
     let n = 0;
     return () => ++n;
   });
-  const [initial] = useState(() => initialState(dish, nextKey));
+  const [initial] = useState(() => initialState(dish ?? draft, nextKey));
   const [state, setState] = useState(initial);
   const [errors, setErrors] = useState<FieldErrorKeys>({});
   const [submitted, setSubmitted] = useState(false);
@@ -157,7 +168,8 @@ export function DishForm({ dish }: { dish?: DishFormDto }) {
   const update = useAction(updateDish);
   const pending = create.isPending || update.isPending;
   const saved = useRef(false);
-  const dirty = JSON.stringify(state) !== JSON.stringify(initial);
+  // An imported draft isn't saved yet: leaving it should ask, like any change.
+  const dirty = Boolean(draft) || JSON.stringify(state) !== JSON.stringify(initial);
 
   // Leaving with unsaved changes (closing the tab, reloading) asks first.
   useEffect(() => {
@@ -196,6 +208,19 @@ export function DishForm({ dish }: { dish?: DishFormDto }) {
       state.steps.map((row, i) => (i === index ? { ...row, ...patch } : row)),
     );
 
+  /** Dictated rows go after what's there (replacing the blank starter row, if that's all there is). */
+  function appendIngredients(rows: IngredientDto[]) {
+    const kept = state.ingredients.filter((row) => row.name.trim() || row.amount.trim() || row.note.trim());
+    const added = rows.map((row) => ({
+      key: nextKey(),
+      amount: row.amount === null ? "" : String(row.amount),
+      unit: row.unit ?? ("" as const),
+      name: row.name,
+      note: row.note ?? "",
+    }));
+    setField("ingredients", [...kept, ...added].slice(0, DISH_BOUNDS.ingredientsMax));
+  }
+
   function addIngredient() {
     const key = nextKey();
     setField("ingredients", [...state.ingredients, { key, amount: "", unit: "", name: "", note: "" }]);
@@ -227,7 +252,7 @@ export function DishForm({ dish }: { dish?: DishFormDto }) {
     setErrors({});
     const result = dish
       ? await update.executeAsync({ ...check.data, id: dish.id })
-      : await create.executeAsync(check.data);
+      : await create.executeAsync({ ...check.data, source: draft?.source ?? undefined });
     if (result.data) {
       saved.current = true;
       toast.success(dish ? tf("saved") : tf("created", { name: check.data.name }));
@@ -323,6 +348,9 @@ export function DishForm({ dish }: { dish?: DishFormDto }) {
       </Section>
 
       <Section title={tf("ingredients")} hint={tf("ingredientsHint")} error={err("ingredients")}>
+        <div className="mb-4">
+          <VoiceDictation usage={voiceUsage} onIngredients={appendIngredients} />
+        </div>
         <div
           aria-hidden="true"
           className="mb-2 hidden gap-2 px-3 text-xs font-medium text-muted-foreground sm:grid sm:grid-cols-[5.5rem_8.5rem_minmax(0,1fr)_minmax(0,1fr)_auto]"
@@ -773,63 +801,6 @@ function ServingsField({
         </div>
       )}
     </RowField>
-  );
-}
-
-/** Chips for one choice (difficulty) or several (seasons, diet), announced as a labelled group. */
-function ChipGroup({
-  label,
-  hint,
-  type,
-  value,
-  onChange,
-  options,
-}: {
-  label: string;
-  hint?: string;
-  type: "single" | "multiple";
-  value: string[];
-  onChange: (values: string[]) => void;
-  options: { value: string; label: string }[];
-}) {
-  const id = useId();
-  const items = options.map((o) => (
-    <ToggleGroupItem
-      key={o.value}
-      value={o.value}
-      className="h-10 rounded-full! border-border px-4 data-[state=on]:border-primary-strong data-[state=on]:bg-primary data-[state=on]:text-primary-foreground pointer-coarse:h-11"
-    >
-      {o.label}
-    </ToggleGroupItem>
-  ));
-  const common = {
-    "aria-labelledby": id,
-    "aria-describedby": hint ? `${id}-hint` : undefined,
-    variant: "outline" as const,
-    spacing: 2,
-    className: "flex-wrap",
-  };
-  return (
-    <div className="space-y-2">
-      <p id={id} className="text-sm font-medium">
-        {label}
-      </p>
-      {type === "single" ? (
-        // Radix sends "" when the active chip is clicked again; a single choice stays chosen.
-        <ToggleGroup {...common} type="single" value={value[0] ?? ""} onValueChange={(v) => v && onChange([v])}>
-          {items}
-        </ToggleGroup>
-      ) : (
-        <ToggleGroup {...common} type="multiple" value={value} onValueChange={onChange}>
-          {items}
-        </ToggleGroup>
-      )}
-      {hint ? (
-        <p id={`${id}-hint`} className="text-sm text-muted-foreground">
-          {hint}
-        </p>
-      ) : null}
-    </div>
   );
 }
 

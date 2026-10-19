@@ -6,13 +6,14 @@ import { revalidatePath } from "next/cache";
 
 import type { ActionErrorCode } from "@/lib/errors";
 import { getDb } from "@/server/db/client";
-import { dishes, dishNotes, favorites } from "@/server/db/schema";
+import { dishes, dishNotes, dishSources, favorites } from "@/server/db/schema";
 import { findOwnDish } from "@/server/features/dishes/policy";
+import { copyImportedPhoto } from "@/server/features/dishes/photo-copy";
 import { dishValues, lockDishCount, writeContents } from "@/server/features/dishes/write";
 import { loadDishAllowance } from "@/server/features/dishes/queries";
 import {
+  createDishSchema,
   dishIdSchema,
-  dishInputSchema,
   dishNoteSchema,
   favoriteSchema,
   updateDishSchema,
@@ -28,8 +29,8 @@ function refreshDishes() {
 /** Adds a dish if the plan has room (`plan_limits.dishes`); otherwise the upgrade sheet opens. */
 export const createDish = userAction
   .metadata({ actionName: "createDish" })
-  .inputSchema(dishInputSchema)
-  .action(async ({ parsedInput: input, ctx }) => {
+  .inputSchema(createDishSchema)
+  .action(async ({ parsedInput: { source, ...input }, ctx }) => {
     const id = await getDb().transaction(async (tx) => {
       await lockDishCount(tx, ctx.user.id);
       if (!(await loadDishAllowance(ctx.user.id, tx)).canAdd) returnServerError<ActionErrorCode>("quota_exceeded");
@@ -38,8 +39,11 @@ export const createDish = userAction
         .values({ userId: ctx.user.id, ...dishValues(input) })
         .returning({ id: dishes.id });
       await writeContents(tx, dish!.id, input);
+      if (source) await tx.insert(dishSources).values({ dishId: dish!.id, url: source.url, siteName: source.siteName });
       return dish!.id;
     });
+    // Best effort: a photo that can't be fetched never stops the dish from saving.
+    if (source?.imageUrl) await copyImportedPhoto(ctx.user.id, id, source.imageUrl);
     refreshDishes();
     return { id };
   });
@@ -53,7 +57,11 @@ export const updateDish = userAction
       const dish = await findOwnDish(ctx.user.id, id, tx);
       if (!dish) returnServerError<ActionErrorCode>("not_found");
       if ((await loadDishAllowance(ctx.user.id, tx)).readOnly) returnServerError<ActionErrorCode>("quota_exceeded");
-      await tx.update(dishes).set(dishValues(input)).where(eq(dishes.id, dish.id));
+      // Edited: it's the person's own text now, no longer following the catalog's translations.
+      await tx
+        .update(dishes)
+        .set({ ...dishValues(input), followsCatalog: false })
+        .where(eq(dishes.id, dish.id));
       await writeContents(tx, dish.id, input);
     });
     refreshDishes();

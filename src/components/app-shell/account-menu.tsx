@@ -1,10 +1,11 @@
 "use client";
 
-import { BookOpenIcon, CreditCardIcon, LogOutIcon, SettingsIcon } from "lucide-react";
+import { BookOpenIcon, RefrigeratorIcon, CreditCardIcon, LogOutIcon, SettingsIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useAction } from "next-safe-action/hooks";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { wipeOffline } from "@/components/offline/store";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -41,6 +42,7 @@ export function AccountMenu({ account }: { account: AccountSummaryDto }) {
                   aria-label that doesn't contain them fails WCAG 2.5.3 (label in name). */}
               <span className="sr-only">{label}</span>
               <Avatar aria-hidden="true" className="size-8">
+                {account.avatarUrl ? <AvatarImage src={account.avatarUrl} alt="" /> : null}
                 <AvatarFallback className="bg-primary font-medium text-primary-foreground">
                   {account.initials}
                 </AvatarFallback>
@@ -65,6 +67,12 @@ export function AccountMenu({ account }: { account: AccountSummaryDto }) {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild className="min-h-10">
+          <Link href="/kitchen">
+            <RefrigeratorIcon aria-hidden="true" />
+            {t("kitchen")}
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild className="min-h-10">
           <Link href="/settings">
             <SettingsIcon aria-hidden="true" />
             {t("settings")}
@@ -82,7 +90,8 @@ export function AccountMenu({ account }: { account: AccountSummaryDto }) {
           onSelect={(event) => {
             // Keep the menu open so "Logging out…" stays visible until we navigate.
             event.preventDefault();
-            logOut.execute();
+            // Logging out wipes this device's offline copy (PRD §4) before the session ends.
+            void wipeOffline().finally(() => logOut.execute());
           }}
         >
           <LogOutIcon aria-hidden="true" className="rtl:-scale-x-100" />

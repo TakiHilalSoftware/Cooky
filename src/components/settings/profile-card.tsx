@@ -9,10 +9,11 @@ import { FormAlert } from "@/components/forms/form-alert";
 import { SubmitButton } from "@/components/forms/submit-button";
 import { TextField } from "@/components/forms/text-field";
 import { useFormMessages } from "@/components/forms/use-form-messages";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { checkFields } from "@/lib/forms";
-import { updateDisplayName } from "@/server/actions/settings";
 import { initialsOf } from "@/lib/initials";
+import { PhotoPicker } from "@/components/photos/photo-picker";
+import { removeAvatar, uploadAvatar } from "@/server/actions/photos";
+import { updateDisplayName } from "@/server/actions/settings";
 import type { ProfileSettingsDto } from "@/server/features/profile/dto";
 import { displayNameSchema } from "@/server/features/profile/schema";
 
@@ -41,12 +42,29 @@ export function ProfileCard({ profile }: { profile: ProfileSettingsDto }) {
   return (
     <SettingsSection title={t("heading")} description={t("description")}>
       <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-        {/* Live preview: the avatar updates as the name is typed. */}
-        <Avatar className="size-16 shrink-0 text-xl" aria-hidden="true">
-          <AvatarFallback className="bg-primary font-heading text-primary-foreground">
-            {initialsOf(name || profile.displayName)}
-          </AvatarFallback>
-        </Avatar>
+        <div className="shrink-0 sm:w-52">
+          <PhotoPicker
+            photo={profile.avatar.photo}
+            enabled={profile.avatar.enabled}
+            shape="round"
+            alt={t("photoAlt")}
+            upload={(file) => {
+              const form = new FormData();
+              form.append("photo", file);
+              return uploadAvatar(form);
+            }}
+            remove={() => removeAvatar({})}
+            fallback={
+              // Live preview: the initials update as the name is typed.
+              <span
+                aria-hidden="true"
+                className="grid size-full place-items-center bg-primary font-heading text-2xl text-primary-foreground"
+              >
+                {initialsOf(name || profile.displayName)}
+              </span>
+            }
+          />
+        </div>
         <form noValidate onSubmit={onSubmit} className="w-full max-w-md space-y-5">
           {save.result.serverError ? (
             <FormAlert tone="error">{messages.action(save.result.serverError)}</FormAlert>

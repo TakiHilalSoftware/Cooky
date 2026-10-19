@@ -8,8 +8,10 @@ import { getSession } from "@/server/auth/session";
 import { getDb } from "@/server/db/client";
 import { profiles } from "@/server/db/schema";
 import { initialsOf } from "@/lib/initials";
+import { photoUrls } from "@/server/storage/photos";
+import { storageConfigured } from "@/server/storage/r2";
 
-import type { ProfileSettingsDto } from "./dto";
+import type { KitchenDto, ProfileSettingsDto } from "./dto";
 
 /** The profile row, once per request. */
 export const loadProfile = cache(async (userId: string) => {
@@ -41,5 +43,20 @@ export const getProfileSettings = cache(async (): Promise<ProfileSettingsDto | n
     accent: profile?.accent ?? DEFAULT_APPEARANCE.accent,
     theme: profile?.theme ?? DEFAULT_APPEARANCE.theme,
     textSize: profile?.textSize ?? DEFAULT_APPEARANCE.textSize,
+    avatar: { photo: await photoUrls(profile?.avatarKey ?? null), enabled: storageConfigured() },
+  };
+});
+
+/** The kitchen settings (city, rough location, diet) and whether the starter pack is done. */
+export const getKitchen = cache(async (): Promise<KitchenDto | null> => {
+  const session = await getSession();
+  if (!session) return null;
+  const profile = await loadProfile(session.user.id);
+  return {
+    city: profile?.city ?? null,
+    latitude: profile?.latitude ?? null,
+    longitude: profile?.longitude ?? null,
+    dietaryPrefs: profile?.dietaryPrefs ?? [],
+    onboarded: Boolean(profile?.onboardedAt),
   };
 });

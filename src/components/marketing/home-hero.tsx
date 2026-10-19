@@ -1,14 +1,12 @@
 import { useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 
-import { ZelligeStar } from "@/components/brand/zellige-star";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 
 import { TilePanel } from "./tile-panel";
 
-const PILLARS = ["decide", "plan", "share"] as const;
-
-export function HomeHero({ signedIn }: { signedIn: boolean }) {
+export function HomeHero({ signedIn, children }: { signedIn: boolean; children?: ReactNode }) {
   const t = useTranslations("home");
   return (
     <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
@@ -43,23 +41,7 @@ export function HomeHero({ signedIn }: { signedIn: boolean }) {
         </div>
         <TilePanel className="aspect-[5/2] w-full sm:aspect-[3/1] lg:aspect-square lg:max-w-md lg:justify-self-end" />
       </section>
-
-      <section aria-labelledby="pillars-heading" className="border-t border-border py-12 sm:py-16">
-        <h2 id="pillars-heading" className="sr-only">
-          {t("pillarsLabel")}
-        </h2>
-        <dl className="grid gap-10 sm:grid-cols-3 sm:gap-8">
-          {PILLARS.map((key) => (
-            <div key={key} className="space-y-2">
-              <dt className="flex items-center gap-2.5 font-heading text-xl">
-                <ZelligeStar className="size-5" />
-                {t(`pillars.${key}.title`)}
-              </dt>
-              <dd className="text-pretty text-muted-foreground">{t(`pillars.${key}.body`)}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
+      {children}
     </div>
   );
 }

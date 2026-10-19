@@ -65,8 +65,8 @@ test("add, scale, star, find, delete and undo a dish", async ({ page, baseURL },
 
   // Find it again: a typo and favorites-only both work.
   await page.goto("/en/dishes?favorites=1");
-  await page.getByLabel("Search your dishes").fill("tajin");
-  await page.getByRole("button", { name: "Search" }).click();
+  await page.getByLabel("Search your dishes").fill("chiken");
+  await page.getByRole("main").getByRole("button", { name: "Search", exact: true }).click();
   await expect(page.getByRole("link", { name: "Chicken tagine with olives" })).toBeVisible();
   await expect(page.getByText("1 dish", { exact: true })).toBeVisible();
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
+import { HOME_AFTER_SIGN_IN } from "@/lib/routes";
 import { cookies } from "next/headers";
 
 import { AuthCard } from "@/components/auth/auth-card";
@@ -16,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 /** Second sign-in step; reached from the log-in form when the account has 2FA. */
 export default async function TwoFactorPage({ searchParams }: PageProps<"/[locale]/two-factor">) {
   const next = safeNextPath.parse((await searchParams).next);
-  if (await getAccountSummary()) return redirect({ href: next ?? "/settings", locale: await getLocale() });
+  if (await getAccountSummary()) return redirect({ href: next ?? HOME_AFTER_SIGN_IN, locale: await getLocale() });
 
   // Better Auth keeps the pending sign-in in a 10-minute cookie ("cooky.two_factor",
   // "__Secure-" prefixed over HTTPS). Without it, the code can't be checked.

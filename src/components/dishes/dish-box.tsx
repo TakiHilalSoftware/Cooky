@@ -1,9 +1,11 @@
 import { CompassIcon, XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 
 import { EmptyState } from "@/components/feedback/empty-state";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { ONBOARDING_PATH } from "@/lib/routes";
 import type { DishListDto } from "@/server/features/dishes/dto";
 import type { Course } from "@/lib/dishes";
 
@@ -19,10 +21,14 @@ type DishBoxProps = {
   filters: { q?: string; course?: Course; favorites: boolean; collection?: string };
   /** Just deleted from its page: offer Undo. */
   deleted: { id: string; name: string } | null;
+  /** The starter pack isn't done yet: invite them to it. */
+  showSetup?: boolean;
+  /** The first-week checklist, while it's still useful. */
+  checklist?: ReactNode;
 };
 
 /** My Dishes: header, how full the box is, filters, and the dishes (or the right empty state). */
-export function DishBox({ list, filters, deleted }: DishBoxProps) {
+export function DishBox({ list, filters, deleted, showSetup = false, checklist }: DishBoxProps) {
   const t = useTranslations("dishes.list");
   const tc = useTranslations("collections");
   const active = list.activeCollection;
@@ -39,6 +45,18 @@ export function DishBox({ list, filters, deleted }: DishBoxProps) {
       </header>
 
       {deleted ? <DeletedDishUndo dish={deleted} /> : null}
+      {showSetup ? (
+        <section className="flex flex-col items-start gap-3 rounded-3xl border border-primary-strong/40 bg-secondary/60 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-1">
+            <h2 className="font-heading text-xl">{t("setupTitle")}</h2>
+            <p className="text-sm text-pretty text-muted-foreground">{t("setupBody")}</p>
+          </div>
+          <Button asChild>
+            <Link href={ONBOARDING_PATH}>{t("setupCta")}</Link>
+          </Button>
+        </section>
+      ) : null}
+      {showSetup ? null : checklist}
       <DishAllowanceNotice allowance={list.allowance} />
 
       {list.total === 0 ? (

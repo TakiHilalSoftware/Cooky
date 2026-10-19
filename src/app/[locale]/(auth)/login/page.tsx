@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
+import { HOME_AFTER_SIGN_IN } from "@/lib/routes";
 
 import { AuthCard } from "@/components/auth/auth-card";
 import { LogInForm } from "@/components/auth/log-in-form";
@@ -26,7 +27,7 @@ function socialError(code: unknown): SocialSignInError | null {
 export default async function LogInPage({ searchParams }: PageProps<"/[locale]/login">) {
   const params = await searchParams;
   const next = safeNextPath.parse(params.next);
-  if (await getAccountSummary()) return redirect({ href: next ?? "/settings", locale: await getLocale() });
+  if (await getAccountSummary()) return redirect({ href: next ?? HOME_AFTER_SIGN_IN, locale: await getLocale() });
   const t = await getTranslations("auth.logIn");
   return (
     <AuthCard

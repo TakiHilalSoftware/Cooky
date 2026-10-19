@@ -134,7 +134,7 @@ describe("renaming, deleting and Undo", () => {
       .update(schema.collections)
       .set({ deletedAt: new Date(Date.now() - 25 * 60 * 60 * 1000) })
       .where(eq(schema.collections.id, id));
-    expect(await purgeDeleted()).toEqual({ dishes: 0, collections: 1, imports: 0 });
+    expect(await purgeDeleted()).toEqual({ dishes: 0, collections: 1, imports: 0, messages: 0 });
     expect(await db().select().from(schema.collectionDishes)).toEqual([]);
     expect(await getDish(dish)).not.toBeNull();
   });

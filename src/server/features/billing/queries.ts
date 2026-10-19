@@ -126,3 +126,10 @@ export async function getUpgradeOffer(userId: string, feature: PlanFeature): Pro
     subscribed: records.subscribed,
   };
 }
+
+/** One metered feature's tries left, for a meter next to that feature (e.g. "Import from a link"). */
+export const getFeatureUsage = cache(async (feature: (typeof METERED_FEATURES)[number]): Promise<UsageDto | null> => {
+  const session = await getSession();
+  if (!session) return null;
+  return toUsageDto({ ...(await usageFor(session.user.id, feature)), feature });
+});

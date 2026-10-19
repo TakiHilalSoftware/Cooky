@@ -110,7 +110,7 @@ describe("two-step verification", () => {
     });
     await expectRedirect(
       authActions.verifyTwoFactorCode({ code: currentCode(setup.secret), trustDevice: false, locale: "en" }),
-      "/en/settings",
+      "/en/dishes",
     );
     expect((await getSession())?.user.email).toBe("amina@example.com");
   });
@@ -127,7 +127,7 @@ describe("two-step verification", () => {
         "/two-factor",
       );
       const result = authActions.verifyBackupCode({ code: code!, locale: "en" });
-      if (attempt === "first") await expectRedirect(result, "/en/settings");
+      if (attempt === "first") await expectRedirect(result, "/en/dishes");
       else await expect(result).resolves.toEqual({ data: { status: "invalid_code" } });
     }
   });

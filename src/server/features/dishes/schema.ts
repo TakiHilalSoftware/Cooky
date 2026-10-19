@@ -1,6 +1,7 @@
 // Shared by Server Actions (authoritative) and the dish form (instant hints).
 import { z } from "zod";
 
+import { routing } from "@/i18n/routing";
 import { COURSES, DIETARY_TAGS, DIFFICULTIES, DISH_BOUNDS as B, SEASONS, UNITS } from "@/lib/dishes";
 
 /** Empty inputs arrive as "" or null; both mean "not given". */
@@ -59,7 +60,23 @@ export const dishInputSchema = z.object({
 
 export type DishInput = z.infer<typeof dishInputSchema>;
 
+/** Where an imported dish came from, credited on its page. */
+export const dishSourceSchema = z.object({
+  url: z.url({ protocol: /^https?$/ }).max(2000),
+  siteName: z.string().trim().min(1).max(80),
+  imageUrl: z
+    .url({ protocol: /^https?$/ })
+    .max(2000)
+    .nullish(),
+});
+
+export const createDishSchema = dishInputSchema.extend({ source: dishSourceSchema.optional() });
 export const updateDishSchema = dishInputSchema.extend({ id: z.uuid() });
+
+export const importFromUrlSchema = z.object({
+  url: z.string().trim().min(1).max(2000),
+  locale: z.enum(routing.locales),
+});
 export const dishIdSchema = z.object({ id: z.uuid() });
 export const favoriteSchema = z.object({ dishId: z.uuid(), favorite: z.boolean() });
 export const dishNoteSchema = z.object({ dishId: z.uuid(), text: z.string().trim().max(B.noteMax, "noteTooLong") });

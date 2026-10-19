@@ -41,12 +41,12 @@ test("sign up, confirm, log in, 2FA, revoke a device, log out", async ({ page, b
   await page.goto(await confirmationLink(baseURL!, email));
   await expect(page.getByRole("heading", { name: "Email confirmed" })).toBeVisible();
   await page.getByRole("link", { name: "Continue" }).click();
-  await expect(page).toHaveURL(/\/en\/settings$/);
+  await expect(page).toHaveURL(/\/en\/onboarding$/);
 
   // Log out, log back in with the password.
   await logOut(page);
   await logIn(page, email);
-  await expect(page).toHaveURL(/\/en\/settings$/);
+  await expect(page).toHaveURL(/\/en\/dishes$/);
 
   // Turn on 2FA.
   await page.goto("/en/settings/security");
@@ -69,7 +69,7 @@ test("sign up, confirm, log in, 2FA, revoke a device, log out", async ({ page, b
   await expect(other).toHaveURL(/\/en\/two-factor/);
   await other.locator("input").first().click();
   await other.keyboard.type(code());
-  await expect(other).toHaveURL(/\/en\/settings$/);
+  await expect(other).toHaveURL(/\/en\/dishes$/);
 
   // Sign the second device out from the first.
   await page.reload();

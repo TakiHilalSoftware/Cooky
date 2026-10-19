@@ -2,6 +2,7 @@
 
 import { returnServerError } from "next-safe-action";
 import { authRequestHeaders } from "@/server/auth/request-headers";
+import { HOME_AFTER_SIGN_IN } from "@/lib/routes";
 
 import { redirect } from "@/i18n/navigation";
 import type { ActionErrorCode } from "@/lib/errors";
@@ -90,7 +91,7 @@ export const signIn = publicAction
       return redirect({ href: `/two-factor${query}`, locale: input.locale });
     }
     // `next` is validated as an internal path by the schema.
-    return redirect({ href: input.next ?? "/settings", locale: input.locale });
+    return redirect({ href: input.next ?? HOME_AFTER_SIGN_IN, locale: input.locale });
   });
 
 export const signOut = userAction.metadata({ actionName: "signOut" }).action(async () => {
@@ -167,7 +168,7 @@ export const verifyTwoFactorCode = publicAction
     } catch (error) {
       return twoFactorFailure(error);
     }
-    return redirect({ href: input.next ?? "/settings", locale: input.locale });
+    return redirect({ href: input.next ?? HOME_AFTER_SIGN_IN, locale: input.locale });
   });
 
 /** Second step of signing in when the phone isn't at hand: a one-time backup code. */
@@ -181,7 +182,7 @@ export const verifyBackupCode = publicAction
     } catch (error) {
       return twoFactorFailure(error);
     }
-    return redirect({ href: input.next ?? "/settings", locale: input.locale });
+    return redirect({ href: input.next ?? HOME_AFTER_SIGN_IN, locale: input.locale });
   });
 
 /** Step 1 of passkey sign-in: options for the browser's passkey prompt. */
@@ -207,7 +208,7 @@ export const passkeyLogin = publicAction
       if (authErrorCode(error) !== null) return { status: "not_recognised" };
       throw error;
     }
-    return redirect({ href: input.next ?? "/settings", locale: input.locale });
+    return redirect({ href: input.next ?? HOME_AFTER_SIGN_IN, locale: input.locale });
   });
 
 /**
@@ -226,7 +227,7 @@ export const startSocialSignIn = publicAction
     const result = await auth.api.signInSocial({
       body: {
         provider: input.provider,
-        callbackURL: `/${input.locale}${input.next ?? "/settings"}`,
+        callbackURL: `/${input.locale}${input.next ?? HOME_AFTER_SIGN_IN}`,
         errorCallbackURL: `/${input.locale}/login`,
         disableRedirect: true,
       },
