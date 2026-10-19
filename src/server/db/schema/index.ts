@@ -5,3 +5,6 @@ export * from "./accounts";
 export * from "./operations";
 export * from "./billing";
 export * from "./recipes";
+export * from "./cooking";
+export * from "./assistant";
+export * from "./social";

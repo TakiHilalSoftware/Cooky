@@ -74,3 +74,19 @@ export const AISLES = [
   "other",
 ] as const;
 export type Aisle = (typeof AISLES)[number];
+
+/** Discover's seasonal and holiday collections (PRD §3.3). */
+export const CATALOG_COLLECTIONS = ["ramadan_iftar", "eid_sweets", "summer_salads", "winter_comfort", "quick"] as const;
+export type CatalogCollection = (typeof CATALOG_COLLECTIONS)[number];
+
+/** Meal slots for the cook log, the planner and the calendar. */
+export const MEAL_SLOTS = ["breakfast", "lunch", "dinner", "snack"] as const;
+export type MealSlot = (typeof MEAL_SLOTS)[number];
+
+/** Where a cook was logged from. */
+export const COOK_SOURCES = ["cook", "spin", "planner", "assistant"] as const;
+export type CookSource = (typeof COOK_SOURCES)[number];
+
+/** Spin: any dish, or one that uses the ingredients you name. */
+export const SPIN_MODES = ["random", "ingredients"] as const;
+export type SpinMode = (typeof SPIN_MODES)[number];

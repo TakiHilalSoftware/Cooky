@@ -1,10 +1,20 @@
 import { index, integer, jsonb, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
+import { DATA_EXPORT_STATUSES, FEEDBACK_KINDS, FEEDBACK_STATUSES } from "@/lib/admin";
+
 import { id, timestamps } from "./_columns";
 import { user } from "./auth";
 
 // Kinds are added by the phase that introduces them (ARCHITECTURE §4.6).
-export const outboxKindEnum = pgEnum("outbox_kind", ["email", "backup_import"]);
+export const outboxKindEnum = pgEnum("outbox_kind", [
+  "email",
+  "backup_import",
+  "push",
+  "pusher",
+  "data_export",
+  "stripe_cancel",
+  "account_purge",
+]);
 export const outboxStatusEnum = pgEnum("outbox_status", ["pending", "done", "dead"]);
 
 /**
@@ -45,3 +55,49 @@ export const auditLog = pgTable(
 );
 
 export type OutboxRow = typeof outbox.$inferSelect;
+
+export const feedbackKindEnum = pgEnum("feedback_kind", FEEDBACK_KINDS);
+export const feedbackStatusEnum = pgEnum("feedback_status", FEEDBACK_STATUSES);
+
+/** Settings → Help & feedback (PRD §3.8), worked through in the admin panel. */
+export const feedback = pgTable(
+  "feedback",
+  {
+    id: id(),
+    // Kept (as null) when the account is purged: the message may still matter.
+    userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
+    kind: feedbackKindEnum("kind").notNull(),
+    message: text("message").notNull(),
+    locale: text("locale").notNull(),
+    userAgent: text("user_agent"),
+    status: feedbackStatusEnum("status").notNull().default("open"),
+    resolvedAt: timestamp("resolved_at", { withTimezone: true }),
+    ...timestamps,
+  },
+  (t) => [index("feedback_status_idx").on(t.status, t.createdAt), index("feedback_user_idx").on(t.userId, t.createdAt)],
+);
+
+export const dataExportStatusEnum = pgEnum("data_export_status", DATA_EXPORT_STATUSES);
+
+/**
+ * A full data export (PRD §3.1), built by an outbox job and downloadable for
+ * a day through a signed link. The file lives in R2 under the owner's prefix;
+ * `content` holds it only when storage isn't set up (local development).
+ */
+export const dataExports = pgTable(
+  "data_exports",
+  {
+    id: id(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    status: dataExportStatusEnum("status").notNull().default("queued"),
+    objectKey: text("object_key"),
+    content: text("content"),
+    sizeBytes: integer("size_bytes"),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    ...timestamps,
+  },
+  (t) => [index("data_exports_user_idx").on(t.userId, t.createdAt), index("data_exports_expires_idx").on(t.expiresAt)],
+);

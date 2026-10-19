@@ -1,9 +1,12 @@
-import { index, integer, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
+import { index, integer, numeric, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 import { ACCENTS, TEXT_SIZES, THEMES } from "@/lib/appearance";
+import { NOTIFICATION_KINDS } from "@/lib/social";
 
 import { id, timestamps } from "./_columns";
 import { user } from "./auth";
+import { dietaryTagEnum } from "./recipes";
 
 export const localeEnum = pgEnum("locale", ["en", "fr", "ar"]);
 export const accentEnum = pgEnum("accent", ACCENTS);
@@ -12,17 +15,44 @@ export const textSizeEnum = pgEnum("text_size", TEXT_SIZES);
 export const consentDocumentEnum = pgEnum("consent_document", ["terms", "privacy"]);
 
 /** One row per user. Columns arrive with the phase that uses them. */
-export const profiles = pgTable("profiles", {
-  userId: text("user_id")
-    .primaryKey()
-    .references(() => user.id, { onDelete: "cascade" }),
-  displayName: text("display_name").notNull(),
-  locale: localeEnum("locale").notNull().default("en"),
-  accent: accentEnum("accent").notNull().default("default"),
-  theme: themeEnum("theme").notNull().default("system"),
-  textSize: textSizeEnum("text_size").notNull().default("m"),
-  ...timestamps,
-});
+export const profiles = pgTable(
+  "profiles",
+  {
+    userId: text("user_id")
+      .primaryKey()
+      .references(() => user.id, { onDelete: "cascade" }),
+    displayName: text("display_name").notNull(),
+    /** Profile photo in R2, square. DTOs carry a signed URL, never the key. */
+    avatarKey: text("avatar_key"),
+    locale: localeEnum("locale").notNull().default("en"),
+    accent: accentEnum("accent").notNull().default("default"),
+    theme: themeEnum("theme").notNull().default("system"),
+    textSize: textSizeEnum("text_size").notNull().default("m"),
+    /** Where they cook, for the weather and seasons (Phase 4). */
+    city: text("city"),
+    /** Rounded to ~1 km (2 decimals): enough for the weather, not a home address. */
+    latitude: numeric("latitude", { precision: 5, scale: 2, mode: "number" }),
+    longitude: numeric("longitude", { precision: 5, scale: 2, mode: "number" }),
+    dietaryPrefs: dietaryTagEnum("dietary_prefs")
+      .array()
+      .notNull()
+      .default(sql`'{}'`),
+    /** Set when the starter pack is finished or skipped. */
+    onboardedAt: timestamp("onboarded_at", { withTimezone: true }),
+    /** Notification types switched off (PRD §3.6); empty = everything on. */
+    notificationsOff: text("notifications_off", { enum: NOTIFICATION_KINDS })
+      .array()
+      .notNull()
+      .default(sql`'{}'`),
+    /** The first-week checklist was hidden by the person (PRD §3.1). */
+    checklistDismissedAt: timestamp("checklist_dismissed_at", { withTimezone: true }),
+    /** Last visit to Friends: newer incoming requests show the badge. */
+    friendsSeenAt: timestamp("friends_seen_at", { withTimezone: true }),
+    ...timestamps,
+  },
+  // Friends search matches display names, typo-tolerant.
+  (t) => [index("profiles_display_name_trgm_idx").using("gin", sql`${t.displayName} gin_trgm_ops`)],
+);
 
 /** Which version of the terms/privacy policy a user accepted, and when (PRD §3.1). */
 export const consents = pgTable(

@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  type AnyPgColumn,
   boolean,
   index,
   integer,
@@ -14,7 +15,9 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-import { AISLES, COURSES, DIETARY_TAGS, DIFFICULTIES, SEASONS, UNITS } from "@/lib/dishes";
+import { AISLES, CATALOG_COLLECTIONS, COURSES, DIETARY_TAGS, DIFFICULTIES, SEASONS, UNITS } from "@/lib/dishes";
+
+import { DISH_VISIBILITIES } from "@/lib/social";
 
 import { id, timestamps } from "./_columns";
 import { user } from "./auth";
@@ -25,6 +28,7 @@ export const seasonEnum = pgEnum("season", SEASONS);
 export const dietaryTagEnum = pgEnum("dietary_tag", DIETARY_TAGS);
 export const unitEnum = pgEnum("unit", UNITS);
 export const aisleEnum = pgEnum("aisle", AISLES);
+export const dishVisibilityEnum = pgEnum("dish_visibility", DISH_VISIBILITIES);
 
 /**
  * The ingredient dictionary (ARCHITECTURE §4.3): everyday staples in EN/FR/AR
@@ -55,9 +59,91 @@ export const ingredients = pgTable(
   (t) => [index("ingredients_search_trgm_idx").using("gin", sql`${t.search} gin_trgm_ops`)],
 );
 
+export const catalogCollectionEnum = pgEnum("catalog_collection", CATALOG_COLLECTIONS);
+
 /**
- * A dish in someone's recipe box (ARCHITECTURE §4.3). Columns for photos,
- * visibility and catalog copies arrive with the slices that use them.
+ * The Discover catalog (PRD §3.3): curated dishes, fully translated. English
+ * is required; French and Arabic fall back to English when missing.
+ * Seeded by scripts/seed-catalog.ts.
+ */
+export const catalogDishes = pgTable(
+  "catalog_dishes",
+  {
+    id: id(),
+    slug: text("slug").notNull().unique(),
+    /** ISO 3166-1 alpha-2, named in the viewer's language with Intl.DisplayNames. */
+    country: text("country").notNull(),
+    course: courseEnum("course").notNull(),
+    difficulty: difficultyEnum("difficulty").notNull(),
+    servings: integer("servings").notNull(),
+    seasons: seasonEnum("seasons")
+      .array()
+      .notNull()
+      .default(sql`'{}'`),
+    dietaryTags: dietaryTagEnum("dietary_tags")
+      .array()
+      .notNull()
+      .default(sql`'{}'`),
+    collections: catalogCollectionEnum("collections")
+      .array()
+      .notNull()
+      .default(sql`'{}'`),
+    featured: boolean("featured").notNull().default(false),
+    nameEn: text("name_en").notNull(),
+    nameFr: text("name_fr"),
+    nameAr: text("name_ar"),
+    descriptionEn: text("description_en").notNull(),
+    descriptionFr: text("description_fr"),
+    descriptionAr: text("description_ar"),
+    ...timestamps,
+  },
+  (t) => [index("catalog_dishes_country_idx").on(t.country), index("catalog_dishes_course_idx").on(t.course)],
+);
+
+export const catalogIngredients = pgTable(
+  "catalog_ingredients",
+  {
+    id: id(),
+    catalogDishId: uuid("catalog_dish_id")
+      .notNull()
+      .references(() => catalogDishes.id, { onDelete: "cascade" }),
+    position: integer("position").notNull(),
+    amount: numeric("amount", { precision: 10, scale: 3, mode: "number" }),
+    unit: unitEnum("unit"),
+    ingredientId: uuid("ingredient_id").references(() => ingredients.id, { onDelete: "set null" }),
+    nameEn: text("name_en").notNull(),
+    nameFr: text("name_fr"),
+    nameAr: text("name_ar"),
+    noteEn: text("note_en"),
+    noteFr: text("note_fr"),
+    noteAr: text("note_ar"),
+    ...timestamps,
+  },
+  (t) => [
+    index("catalog_ingredients_dish_idx").on(t.catalogDishId, t.position),
+    index("catalog_ingredients_ingredient_idx").on(t.ingredientId),
+  ],
+);
+
+export const catalogSteps = pgTable(
+  "catalog_steps",
+  {
+    id: id(),
+    catalogDishId: uuid("catalog_dish_id")
+      .notNull()
+      .references(() => catalogDishes.id, { onDelete: "cascade" }),
+    position: integer("position").notNull(),
+    textEn: text("text_en").notNull(),
+    textFr: text("text_fr"),
+    textAr: text("text_ar"),
+    timerSeconds: integer("timer_seconds"),
+    ...timestamps,
+  },
+  (t) => [index("catalog_steps_dish_idx").on(t.catalogDishId, t.position)],
+);
+
+/**
+ * A dish in someone's recipe box (ARCHITECTURE §4.3).
  */
 export const dishes = pgTable(
   "dishes",
@@ -83,12 +169,29 @@ export const dishes = pgTable(
     proteinG: numeric("protein_g", { precision: 6, scale: 1, mode: "number" }),
     carbsG: numeric("carbs_g", { precision: 6, scale: 1, mode: "number" }),
     fatG: numeric("fat_g", { precision: 6, scale: 1, mode: "number" }),
+    /** Saved from Discover: the catalog entry it came from. */
+    catalogDishId: uuid("catalog_dish_id").references(() => catalogDishes.id, { onDelete: "set null" }),
+    /**
+     * Until the person edits their copy, a saved Discover dish shows the
+     * catalog's text in whatever language they're using (PRD §3.3).
+     */
+    followsCatalog: boolean("follows_catalog").notNull().default(false),
+    /** Who can see it (PRD §3.2). "groups" shares with the groups in dish_groups. */
+    visibility: dishVisibilityEnum("visibility").notNull().default("private"),
+    /** Copied from a friend's dish: rating the copy rates the original (PRD §3.2). */
+    copiedFromDishId: uuid("copied_from_dish_id").references((): AnyPgColumn => dishes.id, { onDelete: "set null" }),
+    /** The photo in R2 (`u/{userId}/{uuid}.webp`, plus a `-sm` copy). Never sent to the browser: DTOs carry signed URLs. */
+    imageKey: text("image_key"),
     /** Set on delete so Undo can bring the dish back; purged a day later by a job. */
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
     ...timestamps,
   },
   (t) => [
     index("dishes_user_id_idx").on(t.userId, t.deletedAt),
+    index("dishes_catalog_dish_id_idx").on(t.catalogDishId),
+    index("dishes_copied_from_idx").on(t.copiedFromDishId),
+    // A friend's profile lists their shared dishes.
+    index("dishes_user_visibility_idx").on(t.userId, t.visibility),
     // Typo-tolerant "search my dishes".
     index("dishes_name_trgm_idx").using("gin", sql`${t.name} gin_trgm_ops`),
   ],
@@ -225,3 +328,14 @@ export const backupImports = pgTable(
   },
   (t) => [index("backup_imports_user_id_idx").on(t.userId, t.createdAt)],
 );
+
+/** Where an imported dish came from (PRD §3.2: "the source is credited"). */
+export const dishSources = pgTable("dish_sources", {
+  dishId: uuid("dish_id")
+    .primaryKey()
+    .references(() => dishes.id, { onDelete: "cascade" }),
+  url: text("url").notNull(),
+  siteName: text("site_name").notNull(),
+  importedAt: timestamp("imported_at", { withTimezone: true }).notNull().defaultNow(),
+  ...timestamps,
+});
