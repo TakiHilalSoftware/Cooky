@@ -16,7 +16,11 @@ export const fakeStripe = {
   customersCreated: 0,
   checkouts: [] as URLSearchParams[],
   portals: [] as URLSearchParams[],
+  customersDeleted: [] as string[],
+  subscriptionsCancelled: [] as string[],
   reset() {
+    this.customersDeleted = [];
+    this.subscriptionsCancelled = [];
     this.subscriptions.clear();
     this.prices = new Set(["cooky_plus_month", "cooky_plus_year", "cooky_pro_month", "cooky_pro_year"]);
     this.customersCreated = 0;
@@ -47,6 +51,15 @@ export const stripeHandlers = [
       ? [{ id: `price_${lookupKey}`, object: "price", lookup_key: lookupKey }]
       : [];
     return HttpResponse.json({ object: "list", data, has_more: false, url: "/v1/prices" });
+  }),
+  http.delete(`${API}/customers/:id`, ({ params }) => {
+    fakeStripe.customersDeleted.push(String(params.id));
+    return HttpResponse.json({ id: params.id, object: "customer", deleted: true });
+  }),
+  http.delete(`${API}/subscriptions/:id`, ({ params }) => {
+    fakeStripe.subscriptionsCancelled.push(String(params.id));
+    const sub = fakeStripe.subscriptions.get(String(params.id)) ?? { id: params.id, object: "subscription" };
+    return HttpResponse.json({ ...sub, status: "canceled" });
   }),
   http.post(`${API}/checkout/sessions`, async ({ request }) => {
     fakeStripe.checkouts.push(await form(request));
