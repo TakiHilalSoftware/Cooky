@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { KitchenView } from "@/components/kitchen/kitchen-view";
 import { asAppLocale } from "@/i18n/routing";
+import { getReadyToCook } from "@/server/features/cook/queries";
 import { getPantry } from "@/server/features/kitchen/queries";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -12,16 +13,20 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function KitchenPage({ params }: PageProps<"/[locale]/kitchen">) {
-  const { locale } = await params;
-  const [pantry, t] = await Promise.all([getPantry(asAppLocale(locale)), getTranslations("kitchen")]);
-  if (!pantry) notFound();
+  const appLocale = asAppLocale((await params).locale);
+  const [pantry, ready, t] = await Promise.all([
+    getPantry(appLocale),
+    getReadyToCook(appLocale),
+    getTranslations("kitchen"),
+  ]);
+  if (!pantry || !ready) notFound();
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-6 px-4 py-8 sm:px-6 sm:py-10">
+    <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-8 sm:px-6 sm:py-10">
       <div className="space-y-2">
         <h1 className="font-heading text-4xl text-balance">{t("title")}</h1>
         <p className="text-pretty text-muted-foreground">{t("description")}</p>
       </div>
-      <KitchenView pantry={pantry} />
+      <KitchenView pantry={pantry} ready={ready} />
     </div>
   );
 }
