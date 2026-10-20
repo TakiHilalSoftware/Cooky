@@ -8,6 +8,8 @@
     "homeLink": "Accueil Cooky",
     "skipToContent": "Aller au contenu principal",
     "loading": "Chargement…",
+    "refreshing": "Actualisation…",
+    "updatingResults": "Mise à jour des résultats…",
     "tryAgain": "Réessayer",
     "backToHome": "Retour à l'accueil",
     "undo": "Annuler",
@@ -90,7 +92,9 @@
   },
   "errorPage": {
     "title": "Un problème est survenu de notre côté",
-    "description": "Vous n'y êtes pour rien et vos données sont en sécurité. Réessayez ou revenez à l'accueil."
+    "description": "Vous n'y êtes pour rien et vos données sont en sécurité. Réessayez ou revenez à l'accueil.",
+    "inAppDescription": "Vous n'y êtes pour rien et vos données sont en sécurité. Réessayez, ou choisissez une autre page dans le menu.",
+    "toDishes": "Aller à Mes plats"
   },
   "errors": {
     "unauthorized": "Connectez-vous pour continuer.",
@@ -1476,7 +1480,36 @@
     "makeStaple": "Marquer {name} comme toujours disponible",
     "unmakeStaple": "{name} : ne plus marquer comme toujours disponible",
     "full": "Ma cuisine contient au plus {limit} éléments. Retirez-en quelques-uns pour en ajouter.",
-    "offline": "Vous êtes hors ligne. Les changements de Ma cuisine ont besoin d'une connexion."
+    "offline": "Vous êtes hors ligne. Les changements de Ma cuisine ont besoin d'une connexion.",
+    "saving": "Enregistrement de « {name} »…",
+    "readyPanel": {
+      "heading": "Prêt à cuisiner",
+      "hint": "Vos plats, comparés à ce qu'il y a dans votre cuisine. La liste se met à jour quand vous ajoutez ou retirez quelque chose.",
+      "howItWorks": "Comment ça marche ?",
+      "howItWorksBody": "Cooky compare les ingrédients de chaque plat avec Ma cuisine. Les basiques comptent toujours comme présents. Les plats auxquels il manque une ou deux choses sont listés plus bas : cochez-les ou ajoutez-les à votre liste de courses.",
+      "readyNow": "{count, plural, one {# plat à cuisiner maintenant} other {# plats à cuisiner maintenant}}",
+      "almost": "{count, plural, one {# plat presque prêt} other {# plats presque prêts}}",
+      "almostHint": "Il manque un ou deux ingrédients.",
+      "missing": "Manque : {items}",
+      "iHaveIt": "J'ai {name}",
+      "iHaveItHint": "Ajouter {name} à Ma cuisine",
+      "addToList": "À la liste",
+      "addToListHint": "Ajouter {items} à votre liste de courses",
+      "addedToList": "{count, plural, one {Ajouté à votre liste de courses} other {# articles ajoutés à votre liste de courses}}",
+      "viewList": "Voir la liste",
+      "cook": "Cuisiner",
+      "cookHint": "Commencer à cuisiner {name}",
+      "more": "{count, plural, one {+# autre dans Cuisiner} other {+# autres dans Cuisiner}}",
+      "seeAll": "Tout voir dans Cuisiner",
+      "updating": "Mise à jour…",
+      "updateFailed": "Cette liste n'a pas pu se mettre à jour. Elle n'est peut-être plus exacte.",
+      "emptyBoxTitle": "Ajoutez un plat pour voir ce que vous pouvez cuisiner",
+      "emptyBoxBody": "Cooky compare vos recettes avec votre cuisine. Commencez par un plat à vous, ou enregistrez-en un depuis Découvrir.",
+      "addDish": "Ajouter un plat",
+      "browseDiscover": "Parcourir Découvrir",
+      "nothingTitle": "Rien de prêt pour l'instant",
+      "nothingBody": "Ajoutez ci-dessus ce qu'il y a dans votre frigo et vos placards. Les plats que vous pouvez faire apparaîtront ici tout de suite."
+    }
   },
   "cook": {
     "title": "Cuisiner",
@@ -1516,7 +1549,12 @@
     "neverCookedLong": "Vous ne l'avez pas encore cuisiné.",
     "addToShopping": "Ajouter à la liste de courses",
     "addedToShopping": "{count, plural, =0 {Tout est déjà sur votre liste} one {# article ajouté à votre liste} other {# articles ajoutés à votre liste}}",
-    "openList": "Ouvrir la liste"
+    "openList": "Ouvrir la liste",
+    "collectionsLabel": "Choisir dans une collection",
+    "emptyCollectionTitle": "Cette collection est vide",
+    "emptyCollectionBody": "Ajoutez-y des plats depuis Mes plats, ou classez plutôt tous vos plats.",
+    "showAllDishes": "Voir tous les plats",
+    "openCollection": "Ouvrir la collection"
   },
   "cooking": {
     "title": "En cuisine : {name}",
@@ -1919,7 +1957,9 @@
       "billing": "Offre et facturation",
       "friends": "Amis",
       "messages": "Messages"
-    }
+    },
+    "searching": "Recherche…",
+    "unavailable": "La recherche n'est pas disponible pour le moment. Vérifiez votre connexion et réessayez."
   },
   "friends": {
     "title": "Amis",

@@ -8,6 +8,8 @@
     "homeLink": "Cooky home",
     "skipToContent": "Skip to main content",
     "loading": "Loading…",
+    "refreshing": "Refreshing…",
+    "updatingResults": "Updating results…",
     "tryAgain": "Try again",
     "backToHome": "Back to home",
     "undo": "Undo",
@@ -90,7 +92,9 @@
   },
   "errorPage": {
     "title": "Something went wrong on our side",
-    "description": "Nothing you did caused this, and your data is safe. Try again, or go back home."
+    "description": "Nothing you did caused this, and your data is safe. Try again, or go back home.",
+    "inAppDescription": "Nothing you did caused this, and your data is safe. Try again, or pick another page from the menu.",
+    "toDishes": "Go to My dishes"
   },
   "errors": {
     "unauthorized": "Log in to continue.",
@@ -1476,7 +1480,36 @@
     "makeStaple": "Mark {name} as always have",
     "unmakeStaple": "{name}: stop marking as always have",
     "full": "My kitchen holds up to {limit} items. Remove a few to add more.",
-    "offline": "You're offline. Changes to My kitchen need a connection."
+    "offline": "You're offline. Changes to My kitchen need a connection.",
+    "saving": "Saving “{name}”…",
+    "readyPanel": {
+      "heading": "Ready to cook",
+      "hint": "Your dishes, checked against what's in your kitchen. This updates as you add or remove things.",
+      "howItWorks": "How does this work?",
+      "howItWorksBody": "Cooky compares each dish's ingredients with My kitchen. Staples always count as there. Dishes with one or two things missing are listed below, so you can tick them off or add them to your shopping list.",
+      "readyNow": "{count, plural, one {# dish you can cook now} other {# dishes you can cook now}}",
+      "almost": "{count, plural, one {# dish almost there} other {# dishes almost there}}",
+      "almostHint": "One or two ingredients short.",
+      "missing": "Missing: {items}",
+      "iHaveIt": "I have {name}",
+      "iHaveItHint": "Add {name} to My kitchen",
+      "addToList": "Add to list",
+      "addToListHint": "Add {items} to your shopping list",
+      "addedToList": "{count, plural, one {Added to your shopping list} other {# items added to your shopping list}}",
+      "viewList": "View list",
+      "cook": "Cook",
+      "cookHint": "Start cooking {name}",
+      "more": "{count, plural, one {+# more in Cook} other {+# more in Cook}}",
+      "seeAll": "See all in Cook",
+      "updating": "Updating…",
+      "updateFailed": "This list couldn't update. It may be out of date.",
+      "emptyBoxTitle": "Add a dish to see what you can cook",
+      "emptyBoxBody": "Cooky matches your recipes with your kitchen. Start with a dish of your own, or save one from Discover.",
+      "addDish": "Add a dish",
+      "browseDiscover": "Browse Discover",
+      "nothingTitle": "Nothing ready yet",
+      "nothingBody": "Add what's in your fridge and cupboards above. Dishes you can make will show up here straight away."
+    }
   },
   "cook": {
     "title": "Cook",
@@ -1516,7 +1549,12 @@
     "neverCookedLong": "You haven't cooked this yet.",
     "addToShopping": "Add to shopping list",
     "addedToShopping": "{count, plural, =0 {It's all on your list already} one {# item added to your list} other {# items added to your list}}",
-    "openList": "Open list"
+    "openList": "Open list",
+    "collectionsLabel": "Choose from a collection",
+    "emptyCollectionTitle": "This collection is empty",
+    "emptyCollectionBody": "Add dishes to it from My dishes, or rank all your dishes instead.",
+    "showAllDishes": "Show all dishes",
+    "openCollection": "Open the collection"
   },
   "cooking": {
     "title": "Cooking {name}",
@@ -1919,7 +1957,9 @@
       "billing": "Plan & billing",
       "friends": "Friends",
       "messages": "Messages"
-    }
+    },
+    "searching": "Searching…",
+    "unavailable": "Search isn't available right now. Check your connection and try again."
   },
   "friends": {
     "title": "Friends",
