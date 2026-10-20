@@ -1,5 +1,6 @@
 "use client";
 
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   BookOpenIcon,
   CompassIcon,
@@ -11,10 +12,14 @@ import {
   UtensilsIcon,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useId, useState, type KeyboardEvent } from "react";
 
+import { unwrap } from "@/components/query/action-query";
+import { queryKeys } from "@/components/query/keys";
+import { useDebouncedValue } from "@/components/query/use-debounced-value";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "@/i18n/navigation";
 import type { AppLocale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
@@ -60,10 +65,19 @@ export function SearchPalette() {
   const listId = useId();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [remote, setRemote] = useState<SearchResultsDto | null>(null);
   const [active, setActive] = useState(0);
-  const request = useRef(0);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const typed = query.trim();
+  const term = useDebouncedValue(typed, DEBOUNCE_MS);
+  const lookup = useQuery({
+    queryKey: queryKeys.search(locale, term),
+    queryFn: async () => unwrap(await search({ q: term, locale })),
+    enabled: open && term.length >= 2,
+    // Results stay on screen while the next word is looked up, so the list doesn't flicker.
+    placeholderData: keepPreviousData,
+  });
+  const remote: SearchResultsDto | null = typed.length >= 2 ? (lookup.data ?? null) : null;
+  // Still typing, or the server hasn't answered for this word yet.
+  const searching = typed.length >= 2 && (typed !== term || lookup.isFetching);
 
   useEffect(() => {
     const onKey = (event: globalThis.KeyboardEvent) => {
@@ -78,22 +92,9 @@ export function SearchPalette() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  useEffect(() => () => clearTimeout(timer.current), []);
-
   function change(value: string) {
     setQuery(value);
     setActive(0);
-    clearTimeout(timer.current);
-    if (value.trim().length < 2) {
-      request.current++;
-      setRemote(null);
-      return;
-    }
-    timer.current = setTimeout(async () => {
-      const id = ++request.current;
-      const result = await search({ q: value.trim(), locale });
-      if (id === request.current) setRemote(result?.data ?? null);
-    }, DEBOUNCE_MS);
   }
 
   const folded = fold(query.trim());
@@ -140,7 +141,6 @@ export function SearchPalette() {
     if (!result) return;
     setOpen(false);
     setQuery("");
-    setRemote(null);
     router.push(result.href);
   }
 
@@ -195,11 +195,23 @@ export function SearchPalette() {
             />
           </div>
           <div className="max-h-[60dvh] overflow-y-auto p-2">
-            {query.trim().length < 2 ? (
+            {typed.length < 2 ? (
               <p className="px-3 py-6 text-center text-sm text-muted-foreground">{t("hint")}</p>
             ) : results.length === 0 ? (
-              <p className="px-3 py-6 text-center text-sm text-muted-foreground">
-                {t("noResults", { query: query.trim() })}
+              <p
+                role="status"
+                className="flex items-center justify-center gap-2 px-3 py-6 text-sm text-muted-foreground"
+              >
+                {searching ? (
+                  <>
+                    <Spinner aria-hidden="true" />
+                    {t("searching")}
+                  </>
+                ) : lookup.isError ? (
+                  t("unavailable")
+                ) : (
+                  t("noResults", { query: typed })
+                )}
               </p>
             ) : (
               <ul id={listId} role="listbox" aria-label={t("title")}>

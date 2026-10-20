@@ -1,9 +1,14 @@
 "use client";
 
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useId, useRef, useState, type ComponentProps, type KeyboardEvent } from "react";
+import { useId, useState, type ComponentProps, type KeyboardEvent } from "react";
 
+import { unwrap } from "@/components/query/action-query";
+import { queryKeys } from "@/components/query/keys";
+import { useDebouncedValue } from "@/components/query/use-debounced-value";
 import { Input } from "@/components/ui/input";
+import type { AppLocale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { suggestIngredients } from "@/server/actions/ingredients";
 import type { IngredientSuggestionDto } from "@/server/features/ingredients/dto";
@@ -29,39 +34,34 @@ type IngredientNameFieldProps = Omit<ComponentProps<typeof Input>, "value" | "on
  */
 export function IngredientNameField({ value, onChange, onPick, className, ...inputProps }: IngredientNameFieldProps) {
   const t = useTranslations("dishes.form");
-  const locale = useLocale();
+  const locale = useLocale() as AppLocale;
   const listId = useId();
-  const [suggestions, setSuggestions] = useState<IngredientSuggestionDto[]>([]);
+  // What the person typed (not what a pick filled in), so choosing a suggestion doesn't look it up again.
+  const [typed, setTyped] = useState("");
   const [open, setOpen] = useState(false);
+  const query = useDebouncedValue(typed.trim(), DEBOUNCE_MS);
+  const { data } = useQuery({
+    queryKey: queryKeys.ingredients(locale, query),
+    queryFn: async () => unwrap(await suggestIngredients({ query, locale })),
+    enabled: query.length > 0,
+    // The dictionary barely changes: typing a word again answers from memory.
+    staleTime: 5 * 60_000,
+    // The last list stays up while the next word is looked up, so it doesn't flicker.
+    placeholderData: keepPreviousData,
+  });
+  const suggestions = query && typed.trim() ? (data ?? []) : [];
+  const shown = open && suggestions.length > 0;
+
+  // A new list highlights its first entry only when it starts with what was typed.
   const [active, setActive] = useState(-1);
-  const request = useRef(0);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  useEffect(() => () => clearTimeout(timer.current), []);
-
-  function lookUp(text: string) {
-    clearTimeout(timer.current);
-    const query = text.trim();
-    if (!query) {
-      request.current++;
-      setSuggestions([]);
-      setOpen(false);
-      return;
-    }
-    timer.current = setTimeout(async () => {
-      const id = ++request.current;
-      const result = await suggestIngredients({ query, locale });
-      // A slower, older answer must not replace a newer one.
-      if (id !== request.current) return;
-      const found = result?.data ?? [];
-      setSuggestions(found);
-      setOpen(found.length > 0);
-      setActive(found[0] && fold(found[0].name).startsWith(fold(query)) ? 0 : -1);
-    }, DEBOUNCE_MS);
+  const [activeFor, setActiveFor] = useState(data);
+  if (activeFor !== data) {
+    setActiveFor(data);
+    setActive(data?.[0] && fold(data[0].name).startsWith(fold(query)) ? 0 : -1);
   }
 
   function pick(suggestion: IngredientSuggestionDto) {
-    request.current++;
+    setTyped("");
     onChange(suggestion.name);
     onPick?.(suggestion);
     setOpen(false);
@@ -69,7 +69,7 @@ export function IngredientNameField({ value, onChange, onPick, className, ...inp
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLInputElement>) {
-    if (!open || suggestions.length === 0) return;
+    if (!shown) return;
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
       const step = event.key === "ArrowDown" ? 1 : -1;
@@ -84,7 +84,7 @@ export function IngredientNameField({ value, onChange, onPick, className, ...inp
     }
   }
 
-  const activeId = open && active >= 0 ? `${listId}-${active}` : undefined;
+  const activeId = shown && active >= 0 ? `${listId}-${active}` : undefined;
 
   return (
     <div className="relative">
@@ -92,7 +92,7 @@ export function IngredientNameField({ value, onChange, onPick, className, ...inp
         {...inputProps}
         role="combobox"
         aria-autocomplete="list"
-        aria-expanded={open}
+        aria-expanded={shown}
         aria-controls={listId}
         aria-activedescendant={activeId}
         autoComplete="off"
@@ -100,7 +100,8 @@ export function IngredientNameField({ value, onChange, onPick, className, ...inp
         value={value}
         onChange={(e) => {
           onChange(e.target.value);
-          lookUp(e.target.value);
+          setTyped(e.target.value);
+          setOpen(true);
         }}
         onKeyDown={onKeyDown}
         onBlur={() => setOpen(false)}
@@ -109,7 +110,7 @@ export function IngredientNameField({ value, onChange, onPick, className, ...inp
         id={listId}
         role="listbox"
         aria-label={t("suggestionsLabel")}
-        hidden={!open}
+        hidden={!shown}
         className="absolute inset-x-0 top-full z-20 mt-1 max-h-64 overflow-y-auto rounded-xl border border-border bg-popover p-1 text-popover-foreground shadow-lg"
       >
         {suggestions.map((suggestion, index) => (
@@ -134,7 +135,7 @@ export function IngredientNameField({ value, onChange, onPick, className, ...inp
         ))}
       </ul>
       <p aria-live="polite" className="sr-only">
-        {open ? t("suggestionsCount", { count: suggestions.length }) : ""}
+        {shown ? t("suggestionsCount", { count: suggestions.length }) : ""}
       </p>
     </div>
   );
