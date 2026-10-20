@@ -2,6 +2,7 @@ import { CompassIcon, InfoIcon, XIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { EmptyState } from "@/components/feedback/empty-state";
+import { PendingResults, PendingScope } from "@/components/feedback/pending-results";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
@@ -45,7 +46,7 @@ export function DiscoverView({ data, filters }: { data: DiscoverDto; filters: Fi
     );
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-8 px-4 py-8 sm:px-6 sm:py-10">
+    <PendingScope className="mx-auto w-full max-w-6xl space-y-8 px-4 py-8 sm:px-6 sm:py-10">
       <header className="space-y-1">
         <h1 className="font-heading text-4xl">{t("title")}</h1>
         <p className="text-muted-foreground">{t("subtitle", { count: data.countries.length })}</p>
@@ -97,39 +98,41 @@ export function DiscoverView({ data, filters }: { data: DiscoverDto; filters: Fi
 
       <DiscoverFilters filters={filters} countries={countries} />
 
-      {data.matchMode === "any" ? (
-        <Alert role="status">
-          <InfoIcon aria-hidden="true" />
-          <AlertDescription>{t("matchAny")}</AlertDescription>
-        </Alert>
-      ) : null}
+      <PendingResults className="space-y-8">
+        {data.matchMode === "any" ? (
+          <Alert role="status">
+            <InfoIcon aria-hidden="true" />
+            <AlertDescription>{t("matchAny")}</AlertDescription>
+          </Alert>
+        ) : null}
 
-      <p aria-live="polite" className="text-sm text-muted-foreground">
-        {t("results", { count: data.dishes.length })}
-      </p>
+        <p aria-live="polite" className="text-sm text-muted-foreground">
+          {t("results", { count: data.dishes.length })}
+        </p>
 
-      {data.dishes.length === 0 ? (
-        <EmptyState
-          headingLevel={2}
-          illustration={<CompassIcon aria-hidden="true" className="size-14 text-primary-strong" />}
-          title={t("noResultsTitle")}
-          description={data.matchMode === "none" ? t("matchNone") : t("noResultsBody")}
-          action={
-            <Button asChild variant="outline" size="lg">
-              <Link href="/discover" replace>
-                <XIcon aria-hidden="true" data-icon="inline-start" />
-                {t("clear")}
-              </Link>
-            </Button>
-          }
-        />
-      ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {data.dishes.map((dish) => (
-            <CatalogCard key={dish.slug} dish={dish} />
-          ))}
-        </ul>
-      )}
+        {data.dishes.length === 0 ? (
+          <EmptyState
+            headingLevel={2}
+            illustration={<CompassIcon aria-hidden="true" className="size-14 text-primary-strong" />}
+            title={t("noResultsTitle")}
+            description={data.matchMode === "none" ? t("matchNone") : t("noResultsBody")}
+            action={
+              <Button asChild variant="outline" size="lg">
+                <Link href="/discover" replace>
+                  <XIcon aria-hidden="true" data-icon="inline-start" />
+                  {t("clear")}
+                </Link>
+              </Button>
+            }
+          />
+        ) : (
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {data.dishes.map((dish) => (
+              <CatalogCard key={dish.slug} dish={dish} />
+            ))}
+          </ul>
+        )}
+      </PendingResults>
 
       {!data.signedIn ? (
         <section className="flex flex-col items-start gap-3 rounded-3xl bg-secondary/60 p-6 sm:flex-row sm:items-center sm:justify-between">
@@ -139,6 +142,6 @@ export function DiscoverView({ data, filters }: { data: DiscoverDto; filters: Fi
           </Button>
         </section>
       ) : null}
-    </div>
+    </PendingScope>
   );
 }
