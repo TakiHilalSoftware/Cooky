@@ -221,6 +221,26 @@ html[data-text-size="xl"] {
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ring;
   }
+  /* The parts the browser draws carry the palette too: saffron selection, caret and scrollbars. */
+  ::selection {
+    background-color: color-mix(in oklab, var(--primary) 35%, transparent);
+    color: var(--foreground);
+  }
+  input,
+  textarea,
+  [contenteditable="true"] {
+    caret-color: var(--primary-strong);
+  }
+  html {
+    scrollbar-color: color-mix(in oklab, var(--muted-foreground) 45%, transparent) transparent;
+  }
+  a {
+    text-underline-offset: 0.2em;
+  }
+  /* Dates and times line up in lists. */
+  time {
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

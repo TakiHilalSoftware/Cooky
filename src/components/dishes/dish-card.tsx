@@ -1,6 +1,7 @@
 import { ListChecksIcon, TimerIcon, UsersIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { DishCover } from "@/components/brand/dish-cover";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/navigation";
 import type { DishCardDto } from "@/server/features/dishes/dto";
@@ -17,18 +18,13 @@ export function DishCard({ dish }: { dish: DishCardDto }) {
 
   return (
     <li className="group relative flex flex-col gap-3 rounded-3xl border border-border bg-card p-5 transition-colors focus-within:border-primary-strong hover:border-primary-strong">
-      {dish.photoUrl ? (
-        // Decorative here: the dish name is the link. A plain <img> because signed URLs change on every render.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={dish.photoUrl}
-          alt=""
-          width={480}
-          height={360}
-          loading="lazy"
-          className="-mx-1 -mt-1 aspect-[4/3] w-[calc(100%+0.5rem)] max-w-none rounded-2xl bg-muted object-cover"
-        />
-      ) : null}
+      {/* Decorative here: the dish name is the link. */}
+      <DishCover
+        photoUrl={dish.photoUrl}
+        course={dish.course}
+        seed={dish.id}
+        className="-mx-1 -mt-1 w-[calc(100%+0.5rem)] max-w-none"
+      />
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 space-y-1">
           <p className="text-xs font-medium tracking-wide text-primary-strong">

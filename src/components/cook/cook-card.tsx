@@ -3,6 +3,7 @@
 import { CheckCircle2Icon, ChefHatIcon, CloudSunIcon, LeafIcon, NotebookPenIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { DishCover } from "@/components/brand/dish-cover";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -32,17 +33,13 @@ export function CookCard({
 
   return (
     <Item className="flex flex-col overflow-hidden rounded-3xl border border-border bg-card">
-      {dish.photoUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={dish.photoUrl}
-          alt=""
-          width={480}
-          height={360}
-          loading={rank < 3 ? "eager" : "lazy"}
-          className="aspect-[4/3] w-full bg-muted object-cover"
-        />
-      ) : null}
+      <DishCover
+        photoUrl={dish.photoUrl}
+        course={dish.course}
+        seed={dish.id}
+        eager={rank < 3}
+        className="rounded-none"
+      />
       <div className="flex flex-1 flex-col gap-3 p-5">
         <div className="space-y-1">
           <p className="text-xs font-medium tracking-wide text-primary-strong">{tDishes(`course.${dish.course}`)}</p>

@@ -1,6 +1,7 @@
 import { BookmarkCheckIcon, TimerIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { DishCover } from "@/components/brand/dish-cover";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -19,6 +20,12 @@ export function CatalogCard({ dish, className }: { dish: CatalogCardDto; classNa
         className,
       )}
     >
+      <DishCover
+        photoUrl={null}
+        course={dish.course}
+        seed={dish.slug}
+        className="-mx-1 -mt-1 w-[calc(100%+0.5rem)] max-w-none"
+      />
       <p className="text-xs font-medium text-primary-strong">
         {country.name(dish.country)} · {t(`dishes.course.${dish.course}`)}
       </p>
