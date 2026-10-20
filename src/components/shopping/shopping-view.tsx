@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { useOnline } from "@/components/app-shell/use-online";
 import { useDishCopy } from "@/components/dishes/use-dish-copy";
 import { EmptyState } from "@/components/feedback/empty-state";
+import { haptic } from "@/components/feedback/haptics";
 import { IconButton } from "@/components/feedback/icon-button";
 import { toastUndo } from "@/components/feedback/toast-undo";
 import { useFormMessages } from "@/components/forms/use-form-messages";
@@ -124,6 +125,7 @@ export function ShoppingView({ list }: { list: ShoppingListDto }) {
 
   async function toggle(item: ShoppingItemDto) {
     const checked = !item.checked;
+    haptic();
     setItems((list) => list.map((i) => (i.id === item.id ? { ...i, checked } : i)));
     // PRD §4: the one write that works offline. Queued here, replayed on reconnect (newest change wins).
     if (!online) return void queueTick({ itemId: item.id, checked, at: tickedAt() });

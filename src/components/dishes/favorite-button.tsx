@@ -6,6 +6,7 @@ import { useAction } from "next-safe-action/hooks";
 import { startTransition, useOptimistic } from "react";
 import { toast } from "sonner";
 
+import { haptic } from "@/components/feedback/haptics";
 import { IconButton } from "@/components/feedback/icon-button";
 import { useFormMessages } from "@/components/forms/use-form-messages";
 import { cn } from "@/lib/utils";
@@ -22,6 +23,7 @@ export function FavoriteButton({ dishId, name, favorite, className }: FavoriteBu
 
   function toggle() {
     const next = !shown;
+    haptic();
     startTransition(async () => {
       setShown(next);
       const result = await save.executeAsync({ dishId, favorite: next });

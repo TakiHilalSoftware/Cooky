@@ -7,6 +7,7 @@ import { useRef, useState, type FormEvent } from "react";
 import { useOnline } from "@/components/app-shell/use-online";
 import { ZelligeStar } from "@/components/brand/zellige-star";
 import { CookCard } from "@/components/cook/cook-card";
+import { haptic } from "@/components/feedback/haptics";
 import { TriesMeter } from "@/components/paywall/tries-meter";
 import { useActionErrorHandler } from "@/components/paywall/upgrade-sheet-provider";
 import { Button } from "@/components/ui/button";
@@ -60,6 +61,7 @@ export function SpinView({ page }: { page: SpinPageDto }) {
     setSpinning(false);
     if (result?.data) {
       setOutcome({ kind: "result", result: result.data });
+      haptic("success");
       // The meter and "picked today" come from the server.
       router.refresh();
       requestAnimationFrame(() => resultRef.current?.focus());
