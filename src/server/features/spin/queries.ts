@@ -7,9 +7,9 @@ import type { z } from "zod";
 import type { AppLocale } from "@/i18n/routing";
 import { getSession } from "@/server/auth/session";
 import { getDb } from "@/server/db/client";
-import { collectionDishes, collections, dishes, spinSessions } from "@/server/db/schema";
+import { dishes, spinSessions } from "@/server/db/schema";
 import { getFeatureUsage } from "@/server/features/billing/queries";
-import { loadCollections } from "@/server/features/collections/queries";
+import { loadCollectionDishIds, loadCollections } from "@/server/features/collections/queries";
 import { extraHave, loadHave, loadRankableDishes } from "@/server/features/cook/queries";
 import { rankDishes } from "@/server/features/cook/service";
 import { dictionaryMatcher } from "@/server/features/ingredients/dictionary";
@@ -56,14 +56,7 @@ export async function drawSpin(
 
   let pool = rankable;
   if (input.collectionId) {
-    const inCollection = await getDb()
-      .select({ dishId: collectionDishes.dishId })
-      .from(collectionDishes)
-      .innerJoin(collections, eq(collections.id, collectionDishes.collectionId))
-      .where(
-        and(eq(collections.id, input.collectionId), eq(collections.userId, userId), isNull(collections.deletedAt)),
-      );
-    const ids = new Set(inCollection.map((r) => r.dishId));
+    const ids = await loadCollectionDishIds(userId, input.collectionId);
     pool = pool.filter((d) => ids.has(d.id));
   }
 

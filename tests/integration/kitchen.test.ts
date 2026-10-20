@@ -11,6 +11,7 @@ vi.mock("@/server/notify/email/send", () => ({ sendEmail }));
 const schema = await import("@/server/db/schema");
 const kitchen = await import("@/server/actions/kitchen");
 const settings = await import("@/server/actions/settings");
+const dishes = await import("@/server/actions/dishes");
 const { getPantry, loadPantryLines } = await import("@/server/features/kitchen/queries");
 const { PANTRY_LIMIT } = await import("@/server/features/kitchen/service");
 
@@ -63,7 +64,7 @@ describe("My kitchen", () => {
     expect((await getPantry("en"))!.suggestedStaples).not.toContain(before[0]);
   });
 
-  it("removes an item and returns what Undo needs; someone else's item looks missing", async () => {
+  it("removes an item and returns the updated kitchen; someone else's item looks missing", async () => {
     await signedIn("amina@example.com");
     await kitchen.addPantryItems({ names: ["Olive oil"], staple: true });
     const [item] = (await getPantry("en"))!.items;
@@ -71,7 +72,9 @@ describe("My kitchen", () => {
     expect(await kitchen.removePantryItem({ id: item!.id })).toEqual({ serverError: "not_found" });
     expect(await kitchen.setPantryStaple({ id: item!.id, staple: false })).toEqual({ serverError: "not_found" });
     await logIn("amina@example.com");
-    expect((await kitchen.removePantryItem({ id: item!.id })).data).toEqual({ name: "Olive oil", isStaple: true });
+    const removed = (await kitchen.removePantryItem({ id: item!.id })).data;
+    expect(removed?.items).toEqual([]);
+    expect(removed?.suggestedStaples).toContain("Olive oil");
     expect(await names()).toEqual([]);
   });
 
@@ -90,12 +93,66 @@ describe("My kitchen", () => {
     expect((await kitchen.addPantryItems({ names: ["item 3"] })).data).toBeDefined();
   });
 
+  it("returns the updated kitchen from every write, named in the page's language", async () => {
+    await signedIn();
+    const added = (await kitchen.addPantryItems({ names: ["Tomatoes"], locale: "fr" })).data;
+    expect(added?.items).toEqual([{ id: expect.any(String), name: "Tomate", isStaple: false }]);
+    expect(added?.limit).toBe(PANTRY_LIMIT);
+    const toggled = (await kitchen.setPantryStaple({ id: added!.items[0]!.id, staple: true, locale: "ar" })).data;
+    expect(toggled?.items[0]).toMatchObject({ name: "طماطم", isStaple: true });
+    expect(await kitchen.addPantryItems({ names: ["x"], locale: "de" as "en" })).toMatchObject({
+      validationErrors: expect.anything(),
+    });
+  });
+
   it("gives the matcher every language's name for dictionary items", async () => {
     const userId = await signedIn();
     await kitchen.addPantryItems({ names: ["chickpeas"] });
     const [line] = await loadPantryLines(userId);
     expect(line?.ingredientId).not.toBeNull();
     expect(line?.names).toEqual(expect.arrayContaining(["chickpeas", "Pois chiches"]));
+  });
+});
+
+describe("Ready to cook", () => {
+  const dish = (name: string, ingredients: string[]) => ({
+    name,
+    difficulty: "easy" as const,
+    course: "main" as const,
+    servings: 2,
+    seasons: [],
+    dietaryTags: [],
+    ingredients: ingredients.map((n) => ({ name: n, amount: null, unit: null, note: null })),
+    steps: [],
+    caloriesKcal: null,
+    proteinG: null,
+    carbsG: null,
+    fatG: null,
+  });
+
+  it("requires a session", async () => {
+    expect(await kitchen.getReadyToCook({ locale: "en" })).toEqual({ serverError: "unauthorized" });
+  });
+
+  it("splits the box into ready now and one or two short, and follows the kitchen as it changes", async () => {
+    await signedIn();
+    for (const d of [
+      dish("Omelette", ["eggs", "salt"]),
+      dish("Shakshuka", ["eggs", "tomatoes", "onion"]),
+      dish("Couscous royal", ["semolina", "lamb", "chickpeas", "carrots"]),
+    ])
+      expect((await dishes.createDish(d)).data).toBeDefined();
+
+    let ready = (await kitchen.getReadyToCook({ locale: "en" })).data!;
+    expect(ready.total).toBe(3);
+    expect(ready.readyCount).toBe(0);
+
+    await kitchen.addPantryItems({ names: ["eggs", "salt", "tomatoes"] });
+    ready = (await kitchen.getReadyToCook({ locale: "en" })).data!;
+    expect(ready.ready.map((d) => d.name)).toEqual(["Omelette"]);
+    expect(ready.almost).toEqual([expect.objectContaining({ name: "Shakshuka", missing: ["Onion"] })]);
+    // Four missing isn't "almost".
+    expect(ready.readyCount + ready.almostCount).toBe(2);
   });
 });
 

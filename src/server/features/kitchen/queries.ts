@@ -18,7 +18,11 @@ const localName = (locale: AppLocale) =>
 /** The kitchen page: staples and what's in now, named in the viewer's language. */
 export const getPantry = cache(async (locale: AppLocale): Promise<PantryDto | null> => {
   const session = await getSession();
-  if (!session) return null;
+  return session ? loadPantry(session.user.id, locale) : null;
+});
+
+/** One person's kitchen as the page shows it; kitchen actions return it so the page updates without a refetch. */
+export async function loadPantry(userId: string, locale: AppLocale): Promise<PantryDto> {
   const db = getDb();
   const rows = await db
     .select({
@@ -29,7 +33,7 @@ export const getPantry = cache(async (locale: AppLocale): Promise<PantryDto | nu
     })
     .from(pantryItems)
     .leftJoin(ingredients, eq(ingredients.id, pantryItems.ingredientId))
-    .where(eq(pantryItems.userId, session.user.id))
+    .where(eq(pantryItems.userId, userId))
     .orderBy(asc(pantryItems.createdAt));
 
   const linked = rows.flatMap((r) => (r.ingredientId ? [r.ingredientId] : []));
@@ -47,7 +51,7 @@ export const getPantry = cache(async (locale: AppLocale): Promise<PantryDto | nu
     suggestedStaples: staples.map((s) => s.name),
     limit: PANTRY_LIMIT,
   };
-});
+}
 
 /** What the person has, as the matcher sees it (every language's name), for Cook, Spin and the Assistant. */
 export type PantryLine = { names: string[]; ingredientId: string | null; isStaple: boolean };

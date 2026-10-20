@@ -49,6 +49,16 @@ export async function loadCollections(userId: string): Promise<CollectionDto[]> 
     .orderBy(asc(collections.position), asc(collections.createdAt));
 }
 
+/** The dishes in one of the caller's collections (empty for someone else's or a deleted one). Cook and Spin filter by it. */
+export async function loadCollectionDishIds(userId: string, collectionId: string): Promise<Set<string>> {
+  const rows = await getDb()
+    .select({ dishId: collectionDishes.dishId })
+    .from(collectionDishes)
+    .innerJoin(collections, eq(collections.id, collectionDishes.collectionId))
+    .where(and(eq(collections.id, collectionId), eq(collections.userId, userId), isNull(collections.deletedAt)));
+  return new Set(rows.map((r) => r.dishId));
+}
+
 /** Which of the caller's collections a dish is in. */
 export async function loadDishCollectionIds(userId: string, dishId: string): Promise<string[]> {
   const rows = await getDb()

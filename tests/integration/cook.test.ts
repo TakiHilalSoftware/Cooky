@@ -58,7 +58,7 @@ async function addDish(name: string, ingredientNames: string[], extra: Partial<t
   return data!.id;
 }
 
-const NO_FILTERS = { with: [] as string[], without: [] as string[] };
+const NO_FILTERS = { with: [] as string[], without: [] as string[], collection: null as string | null };
 const ranked = async (filters = NO_FILTERS) => (await getCook(filters, "en"))!.dishes.map((d) => d.name);
 
 describe("Cook", () => {
@@ -85,8 +85,29 @@ describe("Cook", () => {
     const eggs = (await getPantry("en"))!.items.find((i) => i.name === "Eggs")!;
 
     expect(await ranked()).toEqual(["Omelette", "Lemonade"]);
-    expect(await ranked({ with: ["lemons"], without: [eggs.id] })).toEqual(["Lemonade", "Omelette"]);
+    expect(await ranked({ ...NO_FILTERS, with: ["lemons"], without: [eggs.id] })).toEqual(["Lemonade", "Omelette"]);
     expect((await getPantry("en"))!.items).toHaveLength(2);
+  });
+
+  it("narrows to one of the person's collections, and ignores anyone else's", async () => {
+    await signedIn("amina@example.com");
+    const soup = await addDish("Lentil soup", ["Lentils"]);
+    await addDish("Omelette", ["Eggs"]);
+    const winter = (await collections.createCollection({ name: "Winter" })).data!;
+    expect((await collections.setDishCollections({ dishId: soup, collectionIds: [winter.id] })).data).toBeDefined();
+
+    const narrowed = (await getCook({ ...NO_FILTERS, collection: winter.id }, "en"))!;
+    expect(narrowed.dishes.map((d) => d.name)).toEqual(["Lentil soup"]);
+    expect(narrowed.collection).toBe(winter.id);
+    expect(narrowed.collections).toEqual([{ id: winter.id, name: "Winter", dishCount: 1 }]);
+    // The box total stays the whole box, so "no dishes yet" never shows for a small collection.
+    expect(narrowed.total).toBe(2);
+
+    await signedIn("karim@example.com");
+    await addDish("Karim's couscous", ["Semolina"]);
+    const theirs = (await getCook({ ...NO_FILTERS, collection: winter.id }, "en"))!;
+    expect(theirs.collection).toBeNull();
+    expect(theirs.dishes.map((d) => d.name)).toEqual(["Karim's couscous"]);
   });
 
   it("only ever shows the person's own dishes", async () => {

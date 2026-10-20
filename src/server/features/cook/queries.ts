@@ -7,6 +7,7 @@ import type { AppLocale } from "@/i18n/routing";
 import { getSession } from "@/server/auth/session";
 import { getDb } from "@/server/db/client";
 import { cookLog, dishes, dishIngredients, ingredients, pantryItems } from "@/server/db/schema";
+import { loadCollectionDishIds, loadCollections } from "@/server/features/collections/queries";
 import { catalogNamesFor } from "@/server/features/dishes/queries";
 import { resolveIngredientIds } from "@/server/features/ingredients/dictionary";
 import { allNames } from "@/server/features/ingredients/service";
@@ -16,12 +17,14 @@ import { requestToday } from "@/server/time";
 import { loadWeatherContext } from "@/server/weather/queries";
 import { favouredSeasons } from "@/server/weather/service";
 
-import type { CookDto, CookHaveDto } from "./dto";
+import type { CookDto, CookHaveDto, ReadyDishDto, ReadyToCookDto } from "./dto";
 import type { CookFilters } from "./schema";
-import { isHad, rankDishes, type HaveItem, type RankableDish, type RankLine } from "./service";
+import { isHad, rankDishes, splitReady, type HaveItem, type RankableDish, type RankLine } from "./service";
 
 /** Enough for a long scroll; the rest are further down anyway. */
 const SHOWN = 60;
+/** Per list on My kitchen's "Ready to cook" panel; Cook has the full ranking. */
+const READY_SHOWN = 6;
 
 const localName = (locale: AppLocale) =>
   locale === "fr" ? ingredients.nameFr : locale === "ar" ? ingredients.nameAr : ingredients.nameEn;
@@ -133,14 +136,19 @@ export const getCook = cache(async (filters: CookFilters, locale: AppLocale): Pr
   const session = await getSession();
   if (!session) return null;
   const userId = session.user.id;
-  const [rankable, have, extras, weather, profile, today] = await Promise.all([
+  const [all, have, extras, weather, profile, today, userCollections, inCollection] = await Promise.all([
     loadRankableDishes(userId, locale),
     loadHave(userId, locale),
     extraHave(filters.with),
     loadWeatherContext(userId),
     loadProfile(userId),
     requestToday(),
+    loadCollections(userId),
+    filters.collection ? loadCollectionDishIds(userId, filters.collection) : null,
   ]);
+  // Someone else's (or a deleted) collection is ignored rather than showing nothing.
+  const collection = userCollections.some((c) => c.id === filters.collection) ? filters.collection : null;
+  const rankable = collection && inCollection ? all.filter((d) => inCollection.has(d.id)) : all;
   const left = new Set(filters.without);
   const ranked = rankDishes(rankable, {
     have: [...have.filter((h) => !left.has(h.id)).map((h) => h.item), ...extras],
@@ -167,9 +175,11 @@ export const getCook = cache(async (filters: CookFilters, locale: AppLocale): Pr
   );
   return {
     dishes: cards,
-    total: rankable.length,
+    total: all.length,
     have: have.map((h) => ({ id: h.id, name: h.display, isStaple: h.isStaple, active: !left.has(h.id) })),
     extras: filters.with,
+    collections: userCollections,
+    collection,
     weather: weather.weather,
     season: weather.season,
   };
@@ -191,4 +201,52 @@ export const getKitchenUsedBy = cache(async (dishId: string, locale: AppLocale):
   return have
     .filter((h) => !h.isStaple && rankLines.some((line) => isHad(line, [h.item])))
     .map((h) => ({ id: h.id, name: h.display, isStaple: false, active: true }));
+});
+
+/**
+ * My kitchen's "Ready to cook" panel: which dishes the kitchen covers right
+ * now, and which are one or two ingredients short. Ranked like Cook (minus
+ * weather and diet, which don't change as the kitchen does).
+ */
+export async function loadReadyToCook(userId: string, locale: AppLocale): Promise<ReadyToCookDto> {
+  const [rankable, have, today] = await Promise.all([
+    loadRankableDishes(userId, locale),
+    loadHave(userId, locale),
+    requestToday(),
+  ]);
+  // A dish without ingredients isn't "ready": there's nothing to check it against.
+  const ranked = rankDishes(
+    rankable.filter((d) => d.lines.length > 0),
+    {
+      have: have.map((h) => h.item),
+      favoured: [],
+      dietaryPrefs: [],
+      today,
+    },
+  );
+  const { ready, almost, readyCount, almostCount } = splitReady(ranked, READY_SHOWN);
+  const byId = new Map(rankable.map((d) => [d.id, d]));
+  const card = async (r: { id: string; missing: string[] }): Promise<ReadyDishDto> => {
+    const dish = byId.get(r.id)!;
+    return {
+      id: dish.id,
+      name: dish.name,
+      course: dish.course,
+      photoUrl: await smallPhotoUrl(dish.imageKey),
+      missing: r.missing,
+    };
+  };
+  return {
+    ready: await Promise.all(ready.map(card)),
+    almost: await Promise.all(almost.map(card)),
+    readyCount,
+    almostCount,
+    total: rankable.length,
+  };
+}
+
+/** The kitchen page's first render of the panel. */
+export const getReadyToCook = cache(async (locale: AppLocale): Promise<ReadyToCookDto | null> => {
+  const session = await getSession();
+  return session ? loadReadyToCook(session.user.id, locale) : null;
 });

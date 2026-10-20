@@ -100,3 +100,22 @@ export function rankDishes(dishes: RankableDish[], context: RankContext): Ranked
   );
   return ranked.map(({ index: _index, ...rest }) => rest);
 }
+
+/** "Almost": missing at most this many ingredients, one shopping trip (or one "I have it") away. */
+export const ALMOST_MAX_MISSING = 2;
+
+/**
+ * My kitchen's "Ready to cook" panel: ranked dishes split into what can be
+ * made now and what's nearly there, each capped at `shown`. Counts are over
+ * every dish, so "and 4 more" stays honest when the lists are cut.
+ */
+export function splitReady<T extends Pick<RankedDish, "missing">>(ranked: T[], shown: number) {
+  const ready = ranked.filter((d) => d.missing.length === 0);
+  const almost = ranked.filter((d) => d.missing.length > 0 && d.missing.length <= ALMOST_MAX_MISSING);
+  return {
+    ready: ready.slice(0, shown),
+    almost: almost.slice(0, shown),
+    readyCount: ready.length,
+    almostCount: almost.length,
+  };
+}

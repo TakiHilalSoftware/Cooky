@@ -1,6 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { isHad, rankDishes, type HaveItem, type RankableDish, type RankLine } from "./service";
+import {
+  ALMOST_MAX_MISSING,
+  isHad,
+  rankDishes,
+  splitReady,
+  type HaveItem,
+  type RankableDish,
+  type RankLine,
+} from "./service";
 
 const line = (name: string, ingredientId: string | null = null): RankLine => ({
   name,
@@ -98,5 +106,36 @@ describe("rankDishes", () => {
   it("counts a repeated ingredient once", () => {
     const [ranked] = rankDishes([dish("tagine", [line("Onion"), line("onion"), line("Saffron")])], context);
     expect(ranked?.missing).toEqual(["Onion", "Saffron"]);
+  });
+});
+
+describe("splitReady", () => {
+  const ranked = (missing: number[]) => missing.map((n, i) => ({ id: `d${i}`, missing: Array(n).fill("x") }));
+
+  it("puts what's makeable now apart from what's one or two short, and drops the rest", () => {
+    const split = splitReady(ranked([0, 0, 1, 2, 3, 5]), 10);
+    expect(ids(split.ready)).toEqual(["d0", "d1"]);
+    expect(ids(split.almost)).toEqual(["d2", "d3"]);
+    expect(ALMOST_MAX_MISSING).toBe(2);
+  });
+
+  it("caps each list but counts every dish, so “+n more” stays honest", () => {
+    const split = splitReady(ranked([0, 0, 0, 1, 1, 1, 1]), 2);
+    expect(split.ready).toHaveLength(2);
+    expect(split.almost).toHaveLength(2);
+    expect(split.readyCount).toBe(3);
+    expect(split.almostCount).toBe(4);
+  });
+
+  it("keeps the ranking order", () => {
+    const split = splitReady(
+      [
+        { id: "b", missing: ["x"] },
+        { id: "a", missing: [] },
+        { id: "c", missing: ["y"] },
+      ],
+      5,
+    );
+    expect(ids(split.almost)).toEqual(["b", "c"]);
   });
 });
