@@ -16,11 +16,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link, useRouter } from "@/i18n/navigation";
-import { cn } from "@/lib/utils";
+import { useRouter } from "@/i18n/navigation";
 import { deleteCollection, restoreCollection } from "@/server/actions/collections";
 import type { CollectionAllowanceDto, CollectionDto } from "@/server/features/collections/dto";
 
+import { CollectionChips } from "./collection-chips";
 import { CollectionNameDialog } from "./collection-name-dialog";
 
 type CollectionBarProps = {
@@ -63,45 +63,21 @@ export function CollectionBar({ collections, allowance, active }: CollectionBarP
     });
   }
 
-  const chip = (selected: boolean) =>
-    cn(
-      "inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border px-4 text-sm font-medium whitespace-nowrap transition-colors",
-      selected
-        ? "border-primary-strong bg-primary text-primary-foreground"
-        : "border-border bg-card hover:border-primary-strong",
-    );
-
   return (
     <div className="space-y-3">
-      <nav aria-label={t("label")} className="-mx-4 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
-        <ul className="flex gap-2 sm:flex-wrap">
-          <li>
-            <Link href="/dishes" scroll={false} aria-current={active ? undefined : "page"} className={chip(!active)}>
-              {t("all")}
-            </Link>
-          </li>
-          {collections.map((c) => (
-            <li key={c.id}>
-              <Link
-                href={`/dishes?collection=${c.id}`}
-                scroll={false}
-                aria-current={active?.id === c.id ? "page" : undefined}
-                title={t("count", { count: c.dishCount })}
-                className={chip(active?.id === c.id)}
-              >
-                <span className="max-w-48 truncate">{c.name}</span>
-                <span className="text-xs tabular-nums opacity-80">{c.dishCount}</span>
-              </Link>
-            </li>
-          ))}
-          <li>
-            <Button variant="outline" className="min-h-11 rounded-full" onClick={newCollection}>
-              <PlusIcon aria-hidden="true" data-icon="inline-start" />
-              {t("new")}
-            </Button>
-          </li>
-        </ul>
-      </nav>
+      <CollectionChips
+        collections={collections}
+        activeId={active?.id ?? null}
+        hrefFor={(id) => (id ? `/dishes?collection=${id}` : "/dishes")}
+        label={t("label")}
+      >
+        <li>
+          <Button variant="outline" className="min-h-11 rounded-full" onClick={newCollection}>
+            <PlusIcon aria-hidden="true" data-icon="inline-start" />
+            {t("new")}
+          </Button>
+        </li>
+      </CollectionChips>
       {allowance.limit !== null ? (
         <p
           className="text-xs text-muted-foreground"

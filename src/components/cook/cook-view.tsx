@@ -2,7 +2,9 @@ import { DicesIcon, PlusIcon, RefrigeratorIcon, XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Form from "next/form";
 
+import { CollectionChips } from "@/components/collections/collection-chips";
 import { EmptyState } from "@/components/feedback/empty-state";
+import { PendingResults, PendingScope } from "@/components/feedback/pending-results";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/i18n/navigation";
@@ -11,9 +13,9 @@ import type { CookDto } from "@/server/features/cook/dto";
 
 import { CookCard } from "./cook-card";
 
-/** Cook's URL for a what-if: extra ingredients and kitchen items left out. */
-function cookHref(extras: string[], without: string[]) {
-  return { pathname: "/cook" as const, query: { with: extras, without } };
+/** Cook's URL for a what-if: extra ingredients, kitchen items left out, and the collection to choose from. */
+function cookHref(extras: string[], without: string[], collection: string | null) {
+  return { pathname: "/cook" as const, query: { with: extras, without, ...(collection ? { collection } : {}) } };
 }
 
 /**
@@ -33,7 +35,7 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
     : t("seasonNote", { season: tSeason(cook.season) });
 
   return (
-    <div className="space-y-8">
+    <PendingScope className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="space-y-2">
           <h1 className="font-heading text-4xl text-balance">{t("title")}</h1>
@@ -77,7 +79,7 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
               return (
                 <li key={item.id}>
                   <Link
-                    href={cookHref(cook.extras, next)}
+                    href={cookHref(cook.extras, next, cook.collection)}
                     scroll={false}
                     aria-pressed={item.active}
                     role="button"
@@ -100,6 +102,7 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
                   href={cookHref(
                     cook.extras.filter((e) => e !== extra),
                     without,
+                    cook.collection,
                   )}
                   scroll={false}
                   className="inline-flex min-h-10 items-center gap-1 rounded-full border border-primary-strong bg-primary/15 ps-3.5 pe-2.5 text-sm font-medium pointer-coarse:min-h-11"
@@ -120,6 +123,7 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
             {without.map((id) => (
               <input key={id} type="hidden" name="without" value={id} />
             ))}
+            {cook.collection ? <input type="hidden" name="collection" value={cook.collection} /> : null}
             <label htmlFor="cook-extra" className="sr-only">
               {t("addExtraLabel")}
             </label>
@@ -155,14 +159,47 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
           }
         />
       ) : (
-        <section aria-label={t("resultsLabel")}>
-          <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {cook.dishes.map((dish, index) => (
-              <CookCard key={dish.id} dish={dish} rank={index} />
-            ))}
-          </ol>
+        <section aria-label={t("resultsLabel")} className="space-y-4">
+          {cook.collections.length > 0 ? (
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">{t("collectionsLabel")}</p>
+              <CollectionChips
+                collections={cook.collections}
+                activeId={cook.collection}
+                hrefFor={(id) => cookHref(cook.extras, without, id)}
+                label={t("collectionsLabel")}
+              />
+            </div>
+          ) : null}
+          <PendingResults>
+            {cook.dishes.length === 0 ? (
+              <EmptyState
+                headingLevel={2}
+                title={t("emptyCollectionTitle")}
+                description={t("emptyCollectionBody")}
+                action={
+                  <>
+                    <Button asChild>
+                      <Link href={cookHref(cook.extras, without, null)} scroll={false}>
+                        {t("showAllDishes")}
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                      <Link href={`/dishes?collection=${cook.collection ?? ""}`}>{t("openCollection")}</Link>
+                    </Button>
+                  </>
+                }
+              />
+            ) : (
+              <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {cook.dishes.map((dish, index) => (
+                  <CookCard key={dish.id} dish={dish} rank={index} />
+                ))}
+              </ol>
+            )}
+          </PendingResults>
         </section>
       )}
-    </div>
+    </PendingScope>
   );
 }
