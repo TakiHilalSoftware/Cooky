@@ -141,8 +141,9 @@ Every feature below is computed on the server. The UI only renders what the serv
   - **Staples** (salt, oil, spices…) are marked "always have", so they're never counted as missing or added to shopping.
   - **Done shopping** offers to add the bought items to the kitchen.
   - Logging a cook can optionally mark used items as finished.
+  - **Ready to cook** sits beside the kitchen and follows every change without a reload: the dishes it covers now, and those one or two ingredients short, each with **I have it** (adds that ingredient) and **Add to list** (puts what's missing on the shopping list).
 - **Cook:**
-  - Starts from My kitchen, and the user can add or remove ingredients.
+  - Starts from My kitchen, and the user can add or remove ingredients, and narrow it to one collection.
   - Ranking: fewest missing ingredients first, then weather fit, dietary fit, and how recently the dish was cooked.
   - Each card shows "Ready to cook" or "2 missing: …".
   - Actions: Start cooking (cooking mode), Log it for today, Rate it, Spin instead.

@@ -88,7 +88,8 @@ cooky/
 │   ├── components/                 # UI ONLY: render props, call server/actions, no business rules
 │   │   ├── ui/                     # shadcn/ui primitives (button, dialog, sheet, drawer, input, toast, skeleton…)
 │   │   ├── brand/                  # Logo + zellige star geometry (decorative, aria-hidden)
-│   │   ├── feedback/               # Shared states: EmptyState, ErrorState, PageSkeleton, IconButton
+│   │   ├── feedback/               # Shared states: EmptyState, ErrorState, RouteError (in-shell error.tsx),
+│   │   │                           # PageSkeleton, haptic(), IconButton
 │   │   │                           # (label required → tooltip + accessible name), toastUndo (6 s)
 │   │   ├── marketing/              # Landing: hero, feature grid (features.ts: availability per page), Discover preview,
 │   │   │                           # pricing section
@@ -104,6 +105,8 @@ cooky/
 │   │   │                           # weather chip (condition → icon/animation only), unread dot
 │   │   ├── paywall/                # Upgrade sheet + provider (useUpgradeSheet, useActionErrorHandler), tries-left meter
 │   │   │                           # (values from props)
+│   │   ├── query/                  # TanStack Query over Server Actions: QueryProvider (per account), unwrap/ActionError,
+│   │   │                           # query/mutation keys, useServerSeed, useDebouncedValue (ARCHITECTURE §3)
 │   │   ├── offline/                # THE IndexedDB exception: list + recipe snapshot, replay queue, wipe on logout
 │   │   ├── onboarding/             # Starter-pack grid, first-week checklist
 │   │   ├── collections/            # Collection chips + filter, new/rename dialog, "Collections" on the dish page
@@ -112,7 +115,8 @@ cooky/
 │   │   │                           # via ?servings=), favorites, notes, delete with Undo on the box, allowance notices
 │   │   ├── photos/                 # PhotoPicker: add/replace/remove one photo (saves at once; disabled note without R2)
 │   │   ├── weather/                # Weather chip + popover (condition → icon/motion only)
-│   │   ├── kitchen/                # My kitchen: add (autocomplete), staples, remove with Undo
+│   │   ├── kitchen/                # My kitchen: add (autocomplete), staples, remove with Undo, all optimistic
+│   │   │                           # (use-kitchen.ts); Ready to cook panel (makeable now / one or two short)
 │   │   ├── cook/                   # Cook view + cards, what-if bar, cooking mode, step timers, rating form, useLogCook
 │   │   ├── spin/                   # Spin options, wheel, result
 │   │   ├── assistant/              # Chat, quick starts, thread list, pick cards

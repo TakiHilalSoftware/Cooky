@@ -16,6 +16,7 @@ Pin exact versions when the project is created, using the latest stable releases
 | Framework | **Next.js** (App Router), **React 19**, **TypeScript strict** | Server Components, Server Actions, `after()`, typed routes. The request interceptor is `proxy.ts` (called `middleware.ts` in older majors); use whichever the installed version documents |
 | Package manager | **pnpm** | Fast, strict dependency tree |
 | Server Actions | **next-safe-action** + **Zod** | Typed action clients with middleware (auth, plan/tries, rate limit), schema validation, typed results, `useAction` / `useOptimisticAction` hooks |
+| Client cache | **TanStack Query** (`@tanstack/react-query`) | For screens with rapid writes or live lookups (My kitchen + Ready to cook, global search, ingredient autocomplete): optimistic mutations with rollback, the action's returned DTO written straight into the cache (no route re-render), per-key caching of lookups. Queries and mutations call **Server Actions only**, never `fetch`; see §3 |
 | Env validation | **@t3-oss/env-nextjs** + Zod | Separate server/client schemas, fails the build/boot on missing vars, blocks server vars from client code |
 | Auth | **Better Auth** (Drizzle adapter) | DB sessions, email/password, verification, reset, Google/Apple, 2FA (TOTP), passkeys, admin plugin (roles, ban = suspend), built-in rate limiting. A breached-password check is added (HIBP k-anonymity) |
 | Database | **PostgreSQL** on **Neon** | Branch per preview deployment, point-in-time recovery |
@@ -130,6 +131,17 @@ The CSP `connect-src` allows only `'self'` and Pusher. `img-src` allows `'self'`
 - Better Auth is called with `authRequestHeaders()`: the request headers with the Cookie header rebuilt from the live `cookies()` store, so a session replaced inside an action (2FA, password change) is seen immediately.
 - Expected action failures use next-safe-action's built-in `returnServerError(code)`. Anything thrown is logged and becomes `unavailable` in `handleServerError` (`src/server/actions/_clients.ts`).
 - Data only reaches the client through Server Component props or Server Action return values. **No client `fetch` for data.**
+- **TanStack Query** is a cache over those two sources, not a third one (`src/components/query/`):
+  - `queryFn`/`mutationFn` call a Server Action and pass its result through `unwrap()`, which returns `data` or throws an `ActionError` carrying only the typed code. `errorCode(error)` turns any failure into a code for `useFormMessages().action()`; raw messages never render.
+  - A query starts from the page's own render (`initialData` from Server Component props), so nothing is fetched twice. The cache outlives navigation, so `useServerSeed` writes each new render into it before paint (unless writes are in flight, or the render is one it already took in): returning to a page never shows an older cached copy. Defaults: 30 s `staleTime`; reads retry twice on outages but never on a final code (`unauthorized`, `not_found`, `rate_limited`…); writes never retry.
+  - Mutations that change data shown elsewhere return the updated DTO, and `onSuccess` writes it into the cache; the action still revalidates, so other pages kept by the page cache (below) are dropped. With several writes in flight (Server Actions run one at a time), only the last to settle writes its answer, so an earlier answer never undoes a later tap; follow-up queries are invalidated once, when the last write settles.
+  - The `QueryProvider` is mounted by `PublicShell` for signed-in pages only, keyed by the account's `deviceKey`: signing out or switching accounts starts with an empty cache, so keys never carry a user id. Keys live in `components/query/keys.ts`.
+  - Use it where it earns its ~13 KB: rapid optimistic writes and typed lookups. Plain forms and one-shot actions keep `useAction` / `useOptimistic`.
+- **Page cache (no skeleton on return).** `staleTimes.dynamic` (`src/lib/page-cache.ts`, 5 min) keeps pages already shown in this tab, so switching back is instant. It stays correct because:
+  - every action that changes what a page shows calls `revalidatePath`/`revalidateTag`, which empties the whole cache. A write that skips it leaves other pages stale for up to 5 min;
+  - Back/Forward reuse kept pages however old they are, so `RouteFreshness` (in `PublicShell`) refreshes one older than a minute in the background, under a small "Refreshing…" pill. It doesn't refresh on every return: any `router.refresh()` empties the whole cache;
+  - a first visit, a full reload and the next day still show the route's `loading.tsx` skeleton: the cache is memory only, and user data is never kept in browser storage (AGENT_RULES §2).
+- **Filters in the URL** (links and GET forms) wrap the page in `PendingScope` and the results in `PendingResults` (`components/feedback/pending-results.tsx`): while new results load, the old ones stay, dimmed, `aria-busy`, with "Updating results…".
 
 ---
 
