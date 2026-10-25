@@ -625,7 +625,7 @@
         },
         "retention": {
           "title": "Durée de conservation",
-          "body": "Les données de votre compte sont conservées tant que vous avez un compte. Les plats et collections supprimés peuvent être restaurés pendant une journée, puis sont effacés. Le texte des messages supprimés est effacé après une journée. Les conversations avec l'Assistant inutilisées depuis 90 jours sont supprimées. Les exports de données sont téléchargeables pendant 24 heures, puis le fichier est supprimé.\n\nQuand vous supprimez votre compte, tout est effacé 7 jours plus tard (vous pouvez annuler en vous reconnectant pendant ce délai), y compris vos photos et votre client de facturation. Les prestataires de paiement conservent les factures exigées par la loi."
+          "body": "Les données de votre compte sont conservées tant que vous avez un compte. Les plats et collections supprimés peuvent être restaurés pendant une journée, puis sont effacés. Le texte des messages supprimés est effacé après une journée. Les conversations avec l'Assistant inutilisées depuis 90 jours sont supprimées. Les exports de données sont téléchargeables pendant 24 heures, puis le fichier est supprimé.\n\nQuand vous supprimez votre compte, tout est effacé 7 jours plus tard (vous pouvez annuler en vous reconnectant pendant ce délai), y compris vos photos et votre client de facturation. Les prestataires de paiement conservent les factures exigées par la loi. Nous gardons seulement un code à sens unique tiré de votre adresse e-mail, impossible à reconvertir en adresse, pour savoir que son essai gratuit a déjà été utilisé."
         },
         "rights": {
           "title": "Vos droits",

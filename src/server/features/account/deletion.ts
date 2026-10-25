@@ -5,6 +5,7 @@ import { and, eq, inArray, lt } from "drizzle-orm";
 import { DELETION_GRACE_DAYS } from "@/lib/admin";
 import { audit } from "@/server/audit/audit";
 import { getStripe } from "@/server/billing/stripe";
+import { keepTrialAfterPurge } from "@/server/billing/trial";
 import { getDb, type Executor } from "@/server/db/client";
 import { billingCustomers, session, subscriptions, user } from "@/server/db/schema";
 import { env } from "@/server/env";
@@ -71,6 +72,7 @@ export async function purgeAccount(userId: string, actorId: string | null = null
     await deleteObjects(keys);
   }
   await db.transaction(async (tx) => {
+    await keepTrialAfterPurge(userId, tx);
     await tx.delete(user).where(eq(user.id, userId));
     await audit(tx, { actorId, action: "account.purged", targetType: "user", targetId: userId });
   });

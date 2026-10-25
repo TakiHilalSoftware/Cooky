@@ -3,10 +3,11 @@ import "server-only";
 import { eq } from "drizzle-orm";
 
 import type { Executor } from "@/server/db/client";
-import { billingCustomers, subscriptionStatusEnum, subscriptions, trialRedemptions } from "@/server/db/schema";
+import { billingCustomers, subscriptionStatusEnum, subscriptions } from "@/server/db/schema";
 
 import { planFromLookupKey } from "./plans";
 import type { Stripe } from "./stripe";
+import { recordTrial } from "./trial";
 
 type SubscriptionRow = typeof subscriptions.$inferSelect;
 
@@ -64,9 +65,6 @@ export async function syncSubscription(
     .onConflictDoUpdate({ target: subscriptions.id, set: values })
     .returning();
 
-  if (sub.trial_end) {
-    // One trial per account, ever (PRD §3.7).
-    await tx.insert(trialRedemptions).values({ userId, plan: mapped.plan }).onConflictDoNothing();
-  }
+  if (sub.trial_end) await recordTrial(userId, mapped.plan, tx);
   return { userId, before: before ?? null, after: after! };
 }

@@ -160,6 +160,7 @@ Drizzle schema in `src/server/db/schema/`. Ownership and sharing rules live in `
 - **`subscriptions`**: `id` (Stripe sub id), `user_id`, `plan` (plus|pro), `interval` (month|year), `status` (trialing|active|past_due|canceled|incomplete), `current_period_start/end`, `cancel_at_period_end`, `trial_end`
 - **`entitlements`**: `user_id` PK, `plan` (free|plus|pro), `source` (stripe|comp|trial), `period_start`, `period_end`. Recomputed by webhook, reconcile job and admin comps.
 - **`trial_redemptions`**: `user_id` PK, `plan`, `redeemed_at` (one trial per account)
+- **`trial_email_redemptions`**: `email_key` PK (HMAC of the normalised inbox: lowercase, `+tag` dropped, Gmail dots ignored; never the address), `redeemed_at`. No user FK on purpose: it survives account purge so the same inbox never gets a second trial (`server/billing/trial.ts`)
 - **`plan_limits`** (seeded): `plan`, `feature`, `limit` (null = unlimited), `period` (day|month|none)
 - **`usage_counters`**: (`user_id`, `feature`, `period_start`) PK, `used`, `reserved`
 - **`usage_events`**: `user_id`, `feature`, `status` (reserved|committed|refunded), `ref`, `at` (ledger)
@@ -226,7 +227,7 @@ Every social read and write goes through `features/social/policy.ts` (`areFriend
    - Features come in three kinds (`src/lib/plan-features.ts`): metered (a counter per period), counted (a cap on how many exist, e.g. dishes) and gated (limit 0 = not on this plan, null = unlimited). `meteredAction(feature)` reserves, then commits on success or refunds on failure; counted and gated checks are `canAddAnother()` / `hasFeature()`.
    - A paid entitlement more than a day past its period end counts as Free until a webhook or the reconcile job rewrites it.
 3. **Subscription Pipeline:**
-   - `startCheckout(plan, interval)` gets or creates the Stripe Customer, creates a Checkout Session (with a trial only if there's no `trial_redemptions` row) and returns the redirect URL.
+   - `startCheckout(plan, interval)` gets or creates the Stripe Customer, first mirrors that customer's subscriptions from Stripe (a subscription whose webhooks haven't landed still blocks a second one), then creates a Checkout Session (with a trial only if neither the account nor its inbox had one: `trialUsed()`) and returns the redirect URL.
    - Stripe → `/api/webhooks/stripe`: verify the signature on the raw body → fetch the subscription fresh from Stripe (events can arrive out of order) → in one transaction: dedupe on `stripe_events`, upsert `subscriptions`, recompute `entitlements`, audit plan changes, queue lifecycle emails (trial ending, payment failed, cancellation, receipt) in the outbox. A failure returns 500 and keeps nothing, so Stripe's retry starts clean.
    - **Grace:** the first `invoice.payment_failed` stamps `payment_failed_at` (retries don't move it); `past_due` keeps the plan for 7 days from then; `invoice.paid` clears it. A running admin comp is never downgraded by billing.
    - The success page reads entitlements from the DB, never from the query string. `openBillingPortal()` works the same way.

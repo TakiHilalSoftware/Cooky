@@ -11,8 +11,9 @@ import { routing } from "@/i18n/routing";
 import type { ActionErrorCode } from "@/lib/errors";
 import { reconcileCustomer } from "@/server/billing/reconcile";
 import { getStripe } from "@/server/billing/stripe";
+import { trialUsed } from "@/server/billing/trial";
 import { getDb } from "@/server/db/client";
-import { billingCustomers, subscriptions, trialRedemptions } from "@/server/db/schema";
+import { billingCustomers, subscriptions } from "@/server/db/schema";
 import { env } from "@/server/env";
 import type { CheckoutResult, PortalResult, UpgradeOfferDto } from "@/server/features/billing/dto";
 import { getUpgradeOffer as loadUpgradeOffer } from "@/server/features/billing/queries";
@@ -89,11 +90,7 @@ export const startCheckout = userAction
       return { status: "already_subscribed" };
     }
 
-    const [trialSpent] = await db
-      .select({ userId: trialRedemptions.userId })
-      .from(trialRedemptions)
-      .where(eq(trialRedemptions.userId, ctx.user.id))
-      .limit(1);
+    const trialSpent = await trialUsed(ctx.user.id, ctx.user.email, db);
     const tax = env.STRIPE_AUTOMATIC_TAX === "on";
     const base = `${env.NEXT_PUBLIC_APP_URL}/${input.locale}`;
 
@@ -146,6 +143,4 @@ const upgradeOfferSchema = z.object({ feature: z.enum(PLAN_FEATURES) });
 export const getUpgradeOffer = userAction
   .metadata({ actionName: "getUpgradeOffer" })
   .inputSchema(upgradeOfferSchema)
-  .action(async ({ parsedInput: input, ctx }): Promise<UpgradeOfferDto> =>
-    loadUpgradeOffer(ctx.user.id, input.feature),
-  );
+  .action(async ({ parsedInput: input, ctx }): Promise<UpgradeOfferDto> => loadUpgradeOffer(ctx.user, input.feature));

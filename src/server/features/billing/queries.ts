@@ -6,8 +6,9 @@ import { cache } from "react";
 import { PAID_PLANS, PLAN_RANK, PLANS, type Plan } from "@config/plans";
 import { isMeteredFeature, METERED_FEATURES, PLAN_FEATURES, type PlanFeature } from "@/lib/plan-features";
 import { getSession } from "@/server/auth/session";
+import { trialUsed } from "@/server/billing/trial";
 import { getDb } from "@/server/db/client";
-import { billingCustomers, planLimits, subscriptions, trialRedemptions } from "@/server/db/schema";
+import { billingCustomers, planLimits, subscriptions } from "@/server/db/schema";
 import { getEntitlement } from "@/server/quota/entitlement";
 import { usageFor } from "@/server/quota/tries";
 
@@ -15,22 +16,18 @@ import type { BillingStatusDto, FeatureLimitDto, PricingDto, PricingViewerDto, U
 import { describePlan, isLive, pricesOf, sourceOf, toUsageDto, yearlySavingsPercent } from "./service";
 
 /** The person's billing records: subscriptions, whether a Stripe customer exists, and whether the trial is spent. */
-async function loadBillingRecords(userId: string) {
+async function loadBillingRecords(user: { id: string; email: string }) {
   const db = getDb();
-  const [subs, [customer], [trial]] = await Promise.all([
-    db.select().from(subscriptions).where(eq(subscriptions.userId, userId)),
+  const [subs, [customer], spent] = await Promise.all([
+    db.select().from(subscriptions).where(eq(subscriptions.userId, user.id)),
     db
       .select({ id: billingCustomers.stripeCustomerId })
       .from(billingCustomers)
-      .where(eq(billingCustomers.userId, userId))
+      .where(eq(billingCustomers.userId, user.id))
       .limit(1),
-    db
-      .select({ userId: trialRedemptions.userId })
-      .from(trialRedemptions)
-      .where(eq(trialRedemptions.userId, userId))
-      .limit(1),
+    trialUsed(user.id, user.email, db),
   ]);
-  return { subs, hasCustomer: Boolean(customer), trialAvailable: !trial, subscribed: subs.some(isLive) };
+  return { subs, hasCustomer: Boolean(customer), trialAvailable: !spent, subscribed: subs.some(isLive) };
 }
 
 /** Every plan × feature allowance, from `plan_limits` only (AGENT_RULES §4). */
@@ -67,7 +64,7 @@ export const getBillingStatus = cache(async (): Promise<BillingStatusDto | null>
   const now = new Date();
   const [entitlement, records, usage] = await Promise.all([
     getEntitlement(userId, now),
-    loadBillingRecords(userId),
+    loadBillingRecords(session.user),
     loadUsage(userId, now),
   ]);
   return {
@@ -88,10 +85,7 @@ export const getPricing = cache(async (): Promise<PricingDto> => {
   });
   if (!session) return { plans, viewer: { signedIn: false } };
 
-  const [entitlement, records] = await Promise.all([
-    getEntitlement(session.user.id),
-    loadBillingRecords(session.user.id),
-  ]);
+  const [entitlement, records] = await Promise.all([getEntitlement(session.user.id), loadBillingRecords(session.user)]);
   const viewer: PricingViewerDto = {
     signedIn: true,
     plan: entitlement.plan,
@@ -103,11 +97,15 @@ export const getPricing = cache(async (): Promise<PricingDto> => {
 });
 
 /** What the upgrade sheet shows for a feature the person just ran out of (or doesn't have). */
-export async function getUpgradeOffer(userId: string, feature: PlanFeature): Promise<UpgradeOfferDto> {
+export async function getUpgradeOffer(
+  user: { id: string; email: string },
+  feature: PlanFeature,
+): Promise<UpgradeOfferDto> {
+  const userId = user.id;
   const now = new Date();
   const [entitlement, records, table] = await Promise.all([
     getEntitlement(userId, now),
-    loadBillingRecords(userId),
+    loadBillingRecords(user),
     loadLimitTable(),
   ]);
   const limitOn = (plan: Plan) => table[plan].find((l) => l.feature === feature)!;

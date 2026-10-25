@@ -89,6 +89,17 @@ export const trialRedemptions = pgTable("trial_redemptions", {
   ...timestamps,
 });
 
+/**
+ * One trial per inbox, ever (PRD §3.7). Holds a keyed hash of the address
+ * (server/billing/trial.ts), never the address itself, and has no user FK on
+ * purpose: it outlives account deletion so a new account on the same email
+ * doesn't get a second trial.
+ */
+export const trialEmailRedemptions = pgTable("trial_email_redemptions", {
+  emailKey: text("email_key").primaryKey(),
+  redeemedAt: timestamp("redeemed_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 /** Per user, feature and period: what's used and what's reserved right now. */
 export const usageCounters = pgTable(
   "usage_counters",

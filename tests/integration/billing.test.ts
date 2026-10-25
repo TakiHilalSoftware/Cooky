@@ -5,6 +5,7 @@ import { browser } from "./support/browser";
 import { auditActions, db, resetData, userByEmail } from "./support/db";
 import { logIn, signUpAndVerify } from "./support/flows";
 import { hibp } from "./support/hibp";
+import { r2Handlers } from "./support/r2";
 import { deliver, fakeStripe, invoiceFor, stripeHandlers, stripeSubscription } from "./support/stripe";
 
 const sendEmail = vi.hoisted(() => vi.fn(async () => {}));
@@ -13,6 +14,7 @@ vi.mock("@/server/notify/email/send", () => ({ sendEmail }));
 const schema = await import("@/server/db/schema");
 const { getEntitlement } = await import("@/server/quota/entitlement");
 const { reconcileBilling } = await import("@/server/billing/reconcile");
+const { purgeAccount } = await import("@/server/features/account/deletion");
 const { drainOutbox } = await import("@/server/outbox/drain");
 const billing = await import("@/server/actions/billing");
 const { POST: cron } = await import("@/app/api/cron/[job]/route");
@@ -248,6 +250,31 @@ describe("startCheckout", () => {
 
     expect((await billing.startCheckout(checkout)).data).toMatchObject({ status: "redirect", trial: false });
     expect(fakeStripe.checkouts[0]?.has("subscription_data[trial_period_days]")).toBe(false);
+  });
+
+  it("gives one trial per inbox: not again after deleting the account, nor on a +alias", async () => {
+    hibp.use(...r2Handlers);
+    const first = await newUser();
+    await deliver("customer.subscription.created", stripeSubscription({ userId: first, trialDays: 7 }));
+    await purgeAccount(first);
+    fakeStripe.subscriptions.clear();
+
+    await newUser("amina@example.com");
+    await logIn("amina@example.com");
+    expect((await billing.startCheckout(checkout)).data).toMatchObject({ trial: false });
+    expect((await billing.getUpgradeOffer({ feature: "assistant" })).data?.trialAvailable).toBe(false);
+
+    await signUpAndVerify("Amina+again@example.com");
+    await logIn("amina+again@example.com");
+    expect((await billing.startCheckout(checkout)).data).toMatchObject({ trial: false });
+
+    // Someone else entirely still gets theirs, and no address is stored in the clear.
+    await newUser("bilal@example.com");
+    await logIn("bilal@example.com");
+    expect((await billing.startCheckout(checkout)).data).toMatchObject({ trial: true });
+    const keys = await db().select().from(schema.trialEmailRedemptions);
+    expect(keys).toHaveLength(1);
+    expect(JSON.stringify(keys)).not.toContain("amina");
   });
 
   it("says plans are unavailable when Stripe has no price for them", async () => {

@@ -60,7 +60,7 @@ All variables are declared and validated in `src/server/env.ts` (`@t3-oss/env-ne
 - Resend the same event from the dashboard. Nothing changes (idempotent).
 - Cancel in the portal. The plan stays until the period ends, then Free, and dishes over 50 become read-only.
 - Card `4000 0000 0000 0341` → payment-failed email, then the grace period.
-- A second trial on the same account is refused.
+- A second trial on the same account is refused, and so is one for a new account on the same inbox (after deleting the first, or with a `+alias`).
 
 ## 5. Upstash Redis
 Create a Redis database in the same region and copy the REST URL and token.

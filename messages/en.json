@@ -625,7 +625,7 @@
         },
         "retention": {
           "title": "How long we keep data",
-          "body": "Your account data is kept while you have an account. Deleted dishes and collections can be restored for a day, then are removed. Deleted message text is wiped after a day. Assistant conversations you haven't used for 90 days are removed. Data exports can be downloaded for 24 hours, then the file is deleted.\n\nWhen you delete your account, everything is removed 7 days later (you can cancel by logging in during that time), including your photos and your billing customer. Payment providers keep the invoices the law requires."
+          "body": "Your account data is kept while you have an account. Deleted dishes and collections can be restored for a day, then are removed. Deleted message text is wiped after a day. Assistant conversations you haven't used for 90 days are removed. Data exports can be downloaded for 24 hours, then the file is deleted.\n\nWhen you delete your account, everything is removed 7 days later (you can cancel by logging in during that time), including your photos and your billing customer. Payment providers keep the invoices the law requires. We keep only a one-way code made from your email address, which can't be turned back into it, to remember that its free trial was used."
         },
         "rights": {
           "title": "Your rights",
