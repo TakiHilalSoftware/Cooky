@@ -1,6 +1,7 @@
 "use server";
 
 import { and, eq, inArray } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { returnServerError } from "next-safe-action";
 import { z } from "zod";
 
@@ -8,6 +9,7 @@ import { INTERVALS, PAID_PLANS, stripeLookupKey, TRIAL_DAYS } from "@config/plan
 import { PLAN_FEATURES } from "@/lib/plan-features";
 import { routing } from "@/i18n/routing";
 import type { ActionErrorCode } from "@/lib/errors";
+import { reconcileCustomer } from "@/server/billing/reconcile";
 import { getStripe } from "@/server/billing/stripe";
 import { getDb } from "@/server/db/client";
 import { billingCustomers, subscriptions, trialRedemptions } from "@/server/db/schema";
@@ -58,12 +60,17 @@ export const startCheckout = userAction
   .inputSchema(checkoutSchema)
   .action(async ({ parsedInput: input, ctx }): Promise<CheckoutResult> => {
     const db = getDb();
-    const [active] = await db
-      .select({ id: subscriptions.id })
-      .from(subscriptions)
-      .where(and(eq(subscriptions.userId, ctx.user.id), inArray(subscriptions.status, [...LIVE_SUBSCRIPTION_STATUSES])))
-      .limit(1);
-    if (active) return { status: "already_subscribed" };
+    const hasLiveSubscription = async () => {
+      const [active] = await db
+        .select({ id: subscriptions.id })
+        .from(subscriptions)
+        .where(
+          and(eq(subscriptions.userId, ctx.user.id), inArray(subscriptions.status, [...LIVE_SUBSCRIPTION_STATUSES])),
+        )
+        .limit(1);
+      return Boolean(active);
+    };
+    if (await hasLiveSubscription()) return { status: "already_subscribed" };
 
     const stripe = getStripe();
     const [price] = (
@@ -72,12 +79,21 @@ export const startCheckout = userAction
     // Prices come from `pnpm stripe:sync`; without them nothing can be sold.
     if (!price) returnServerError<ActionErrorCode>("unavailable");
 
-    const [trialUsed] = await db
+    const customer = await stripeCustomerFor(ctx.user);
+    // Stripe is the truth, the mirror only follows webhooks: a subscription whose
+    // events haven't landed yet must still block a second one (and its trial).
+    await reconcileCustomer(customer);
+    if (await hasLiveSubscription()) {
+      // The plan changed under the person (the mirror caught up): refresh what shows it.
+      revalidatePath("/[locale]", "layout");
+      return { status: "already_subscribed" };
+    }
+
+    const [trialSpent] = await db
       .select({ userId: trialRedemptions.userId })
       .from(trialRedemptions)
       .where(eq(trialRedemptions.userId, ctx.user.id))
       .limit(1);
-    const customer = await stripeCustomerFor(ctx.user);
     const tax = env.STRIPE_AUTOMATIC_TAX === "on";
     const base = `${env.NEXT_PUBLIC_APP_URL}/${input.locale}`;
 
@@ -88,7 +104,7 @@ export const startCheckout = userAction
       line_items: [{ price: price.id, quantity: 1 }],
       subscription_data: {
         metadata: { userId: ctx.user.id },
-        ...(trialUsed ? {} : { trial_period_days: TRIAL_DAYS }),
+        ...(trialSpent ? {} : { trial_period_days: TRIAL_DAYS }),
       },
       // The success page reads the plan from the database, never from this URL (ARCHITECTURE §5.3).
       success_url: `${base}/settings/billing?checkout=success`,
@@ -97,7 +113,7 @@ export const startCheckout = userAction
       ...(tax ? { automatic_tax: { enabled: true }, customer_update: { address: "auto" as const } } : {}),
     });
     if (!session.url) returnServerError<ActionErrorCode>("unavailable");
-    return { status: "redirect", url: session.url, trial: !trialUsed };
+    return { status: "redirect", url: session.url, trial: !trialSpent };
   });
 
 const portalSchema = z.object({ locale: z.enum(routing.locales) });

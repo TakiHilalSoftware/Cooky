@@ -121,6 +121,16 @@ describe("Stripe webhook", () => {
     await expectEmail("Your Cooky payment didn't go through", 2);
   });
 
+  it("finds a subscription nightly even when none of its webhooks arrived", async () => {
+    const userId = await newUser();
+    await db().insert(schema.billingCustomers).values({ userId, stripeCustomerId: "cus_1" });
+    stripeSubscription({ userId, status: "active", plan: "pro" });
+    expect((await getEntitlement(userId)).plan).toBe("free");
+
+    expect(await reconcileBilling()).toEqual({ synced: 1, changed: 1 });
+    expect((await getEntitlement(userId)).plan).toBe("pro");
+  });
+
   it("ends the grace period when the payment goes through, and sends a receipt", async () => {
     const userId = await newUser();
     stripeSubscription({ userId, status: "past_due" });
@@ -213,6 +223,31 @@ describe("startCheckout", () => {
     await deliver("customer.subscription.created", stripeSubscription({ userId, status: "active" }));
     expect(await billing.startCheckout(checkout)).toEqual({ data: { status: "already_subscribed" } });
     expect(fakeStripe.checkouts).toHaveLength(0);
+  });
+
+  it("asks Stripe before selling: a subscription whose webhooks never arrived blocks a second one", async () => {
+    const userId = await newUser();
+    await logIn();
+    await db().insert(schema.billingCustomers).values({ userId, stripeCustomerId: "cus_1" });
+    // Paid in Stripe, but the listener was down: the mirror still says Free.
+    stripeSubscription({ userId, trialDays: 7 });
+
+    expect(await billing.startCheckout(checkout)).toEqual({ data: { status: "already_subscribed" } });
+    expect(fakeStripe.checkouts).toHaveLength(0);
+    // The mirror caught up on the way: plan, trial and all.
+    expect((await subscriptionRow())?.status).toBe("trialing");
+    expect((await getEntitlement(userId)).plan).toBe("plus");
+    expect(await db().select().from(schema.trialRedemptions)).toHaveLength(1);
+  });
+
+  it("gives no second trial when Stripe remembers an ended one the mirror missed", async () => {
+    const userId = await newUser();
+    await logIn();
+    await db().insert(schema.billingCustomers).values({ userId, stripeCustomerId: "cus_1" });
+    stripeSubscription({ userId, trialDays: 7, status: "canceled" });
+
+    expect((await billing.startCheckout(checkout)).data).toMatchObject({ status: "redirect", trial: false });
+    expect(fakeStripe.checkouts[0]?.has("subscription_data[trial_period_days]")).toBe(false);
   });
 
   it("says plans are unavailable when Stripe has no price for them", async () => {

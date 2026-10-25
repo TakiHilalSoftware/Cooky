@@ -32,6 +32,11 @@ export const fakeStripe = {
 const form = async (request: Request) => new URLSearchParams(await request.text());
 
 export const stripeHandlers = [
+  http.get(`${API}/subscriptions`, ({ request }) => {
+    const customer = new URL(request.url).searchParams.get("customer");
+    const data = [...fakeStripe.subscriptions.values()].filter((sub) => sub.customer === customer);
+    return HttpResponse.json({ object: "list", data, has_more: false, url: "/v1/subscriptions" });
+  }),
   http.get(`${API}/subscriptions/:id`, ({ params }) => {
     const sub = fakeStripe.subscriptions.get(String(params.id));
     return sub
