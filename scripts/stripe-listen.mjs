@@ -42,9 +42,16 @@ function stripeCli() {
   process.exit(1);
 }
 
+// The same origin the app builds its Checkout return URLs from, so webhooks and redirects reach one server.
+const webhookUrl = new URL(
+  "/api/webhooks/stripe",
+  process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+).toString();
+console.log(`Forwarding Stripe webhooks to ${webhookUrl}`);
+
 const child = spawn(
   stripeCli(),
-  ["listen", "--api-key", key, "--events", EVENTS.join(","), "--forward-to", "localhost:3000/api/webhooks/stripe"],
+  ["listen", "--api-key", key, "--events", EVENTS.join(","), "--forward-to", webhookUrl],
   {
     stdio: "inherit",
     shell: true,
