@@ -2,7 +2,7 @@ import "server-only";
 
 import { z } from "zod";
 
-import { env } from "@/server/env";
+import { env, isStrictEnv } from "@/server/env";
 
 import type { Reading } from "./service";
 
@@ -19,7 +19,7 @@ function endpoint(kind: "forecast" | "geocoding"): { base: string; key: string |
       ? { base: "https://customer-api.open-meteo.com/v1/forecast", key }
       : { base: "https://customer-geocoding-api.open-meteo.com/v1/search", key };
   }
-  if (env.NODE_ENV === "production") return null;
+  if (isStrictEnv()) return null;
   return kind === "forecast"
     ? { base: "https://api.open-meteo.com/v1/forecast", key: null }
     : { base: "https://geocoding-api.open-meteo.com/v1/search", key: null };
