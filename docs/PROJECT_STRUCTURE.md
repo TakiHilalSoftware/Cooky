@@ -93,7 +93,8 @@ cooky/
 │   │   │                           # (label required → tooltip + accessible name), toastUndo (6 s)
 │   │   ├── marketing/              # Landing: hero, feature grid (features.ts: availability per page), Discover preview,
 │   │   │                           # pricing section
-│   │   ├── discover/               # Discover: filters, catalog cards, catalog dish page, "Save to my dishes"
+│   │   ├── discover/               # Discover: filters, sort, catalog cards (with "why" line), infinite-scroll feed,
+│   │   │                           # catalog dish page, "Save to my dishes"
 │   │   ├── onboarding/             # The starter pack wizard (language, city, diet, staples, favorites)
 │   │   ├── billing/                # Pricing plans + FAQ, Plan & billing cards (plan, tries, checkout return),
 │   │   │                           # useBillingRedirect (Checkout/Portal), usePlanCopy (one wording for prices and limits)

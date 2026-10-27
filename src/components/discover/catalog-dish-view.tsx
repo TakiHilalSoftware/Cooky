@@ -1,6 +1,7 @@
 import { ChevronLeftIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { DishCover } from "@/components/brand/dish-cover";
 import { IngredientsCard, RecipeTags, StepsCard } from "@/components/dishes/recipe-parts";
 import { Link } from "@/i18n/navigation";
 import type { CatalogDishDto } from "@/server/features/discover/dto";
@@ -46,6 +47,16 @@ export function CatalogDishView({ dish }: { dish: CatalogDishDto }) {
             ) : null}
           </div>
         </header>
+      </div>
+      <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
+        <DishCover
+          photoUrl={dish.photoUrl}
+          course={dish.course}
+          seed={dish.slug}
+          shape="photo"
+          eager
+          className="max-h-[420px] w-full object-cover"
+        />
       </div>
       <div className="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start">
         <div className="lg:sticky lg:top-24">

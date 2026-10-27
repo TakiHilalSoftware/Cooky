@@ -55,7 +55,7 @@ Every feature below is computed on the server. The UI only renders what the serv
   - Top bar: logo, language switcher, theme toggle, and log in/sign up or account status. When signed in, also the messages icon with its unread dot.
   - Headline and tagline ("Plan, cook, and shop without the guesswork").
   - 8 feature cards: Dishes, Cook, Spin, Calendar, Planner, Timer, Shopping, Assistant. Each goes to the page, or to signup when signed out.
-  - Carousel of Discover dishes (10 random for signed-in users, with "saved" state; a curated preview for visitors).
+  - Discover dishes: "Picked for you today" for signed-in users (dishes not yet in their box that fit their diet, ranked by their kitchen, the cuisines they saved and today's weather, mixed across countries; the same all day, a new mix tomorrow), featured dishes for visitors.
   - Pricing section, footer (explore links, account links, contact, legal).
 - **Pricing page:** Plan comparison table (§3.7), monthly/yearly toggle, FAQ, "Start free trial".
 - **Not-found page:** Any unknown URL under a locale renders a branded, translated 404 with "Back to home". Unknown locales redirect to the default one.
@@ -133,6 +133,9 @@ Every feature below is computed on the server. The UI only renders what the serv
 ### 3.3 Discover (Recipe Catalog)
 - An admin-curated catalog (12+ countries, fully translated EN/FR/AR).
 - Filters: country, course, dietary tag. Featured carousel; seasonal and holiday collections (Ramadan iftar, Eid sweets, summer salads); "Popular with your friends"; "ingredients you have" matching.
+- **Order:** "For you" by default when signed in (same ranking as the landing page's picks; dishes they saved, then ones outside their diet, go last; a card says why only when the reason is its own: "Uses chickpeas and tahini from your kitchen", "A cuisine you've saved before"), "Popular" (most saved) by default for visitors, plus "Newest" and "Name (A–Z)". The list explains the order in one line.
+- **Infinite scroll:** 24 dishes at a time, loaded before the end comes into view. The URL keeps how far the list goes (`?page=`), so refresh, Back and shared links restore it; without JavaScript a link loads the next page. The end says so and offers "Back to top".
+- **Imported recipes** (`source = mealdb`, English only) never duplicate a curated dish and are never featured. Their dietary tags only claim what the ingredient list proves: vegetarian/vegan/pescatarian, and halal only without meat or alcohol; allergen-free tags are never inferred.
 - **Save to my dishes** keeps a link to the catalog entry, so names and quantities follow the user's language until they edit the copy.
 
 ### 3.4 Deciding What to Cook

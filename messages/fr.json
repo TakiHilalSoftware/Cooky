@@ -124,7 +124,10 @@
       "scaleDesc": "Ajustez les quantités en un clic, d'un dîner à deux à un banquet de douze.",
       "ramadanTitle": "Mode Ramadan",
       "ramadanDesc": "Compte à rebours de l'Iftar, rappels pour le Suhur et collections de fête."
-    }
+    },
+    "discoverBody": "Des plats de {count} pays, prêts à cuisiner ou à enregistrer.",
+    "discoverPicksHeading": "Choisis pour vous aujourd'hui",
+    "discoverPicksBody": "Selon votre cuisine, votre régime et la météo du jour. Un nouveau mélange chaque jour."
   },
   "notFound": {
     "title": "Cette page n'est pas au menu",
@@ -1379,7 +1382,34 @@
     "fromCountry": "Origine : {country}",
     "signUpPitch": "Inscrivez-vous pour garder des plats, planifier votre semaine et préparer vos courses.",
     "signUp": "S’inscrire gratuitement",
-    "followsNote": "Les plats gardés s’affichent dans votre langue tant que vous ne les modifiez pas."
+    "followsNote": "Les plats gardés s’affichent dans votre langue tant que vous ne les modifiez pas.",
+    "featuredHint": "Sélectionnés à la main par l'équipe Cooky.",
+    "reason": {
+      "have": "Utilise {names} de votre cuisine",
+      "country": "Une cuisine que vous avez déjà enregistrée"
+    },
+    "timerHint": "Total des minuteurs des étapes de la recette",
+    "loadedMore": "{shown} plats affichés sur {total}",
+    "loadingMore": "Chargement d'autres plats…",
+    "loadMoreFailed": "Impossible de charger plus de plats.",
+    "endOfList": "{count, plural, one {C'est le seul plat} other {Vous avez vu les # plats}}",
+    "backToTop": "Revenir en haut",
+    "moreDishes": "Plus de plats",
+    "sort": {
+      "label": "Trier par",
+      "apply": "Trier",
+      "for_you": "Pour vous",
+      "popular": "Populaires",
+      "newest": "Nouveautés",
+      "name": "Nom (A–Z)"
+    },
+    "sortHint": {
+      "for_you": "Classés selon votre cuisine, votre régime et la météo du jour. Un nouveau mélange chaque jour.",
+      "popular": "Les plats les plus enregistrés par les cuisiniers Cooky d'abord.",
+      "newest": "Les derniers ajouts à Découvrir d'abord.",
+      "name": "Par ordre alphabétique, selon le nom affiché."
+    },
+    "tuneForYou": "Mettre à jour votre cuisine"
   },
   "footer": {
     "tagline": "Planifiez, cuisinez et faites vos courses sans vous prendre la tête.",

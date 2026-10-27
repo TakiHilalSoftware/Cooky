@@ -24,7 +24,9 @@ export default function proxy(request: NextRequest): NextResponse {
     nonce,
     isDev: env.NODE_ENV === "development",
     pusherCluster: env.NEXT_PUBLIC_PUSHER_CLUSTER,
-    imageHosts: [storageImageHost()].filter((host) => host !== null),
+    imageHosts: [storageImageHost(), "https://www.themealdb.com", "https://images.unsplash.com"].filter(
+      (host): host is string => host !== null,
+    ),
   });
 
   // Next reads the nonce from the request's CSP header while rendering and

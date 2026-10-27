@@ -124,7 +124,10 @@
       "scaleDesc": "Scale portions effortlessly from dinner for two to a feast of twelve.",
       "ramadanTitle": "Ramadan Mode",
       "ramadanDesc": "Iftar countdown, suhur reminders, and festive Eid collections."
-    }
+    },
+    "discoverBody": "Dishes from {count} countries, ready to cook or save to your box.",
+    "discoverPicksHeading": "Picked for you today",
+    "discoverPicksBody": "Chosen from your kitchen, your diet and today's weather. A new mix every day."
   },
   "notFound": {
     "title": "This page isn't on the menu",
@@ -1379,7 +1382,34 @@
     "fromCountry": "From {country}",
     "signUpPitch": "Sign up to save dishes, plan your week and build your shopping list.",
     "signUp": "Sign up free",
-    "followsNote": "Saved dishes show in your language until you edit them."
+    "followsNote": "Saved dishes show in your language until you edit them.",
+    "featuredHint": "Hand-picked by the Cooky team.",
+    "reason": {
+      "have": "Uses {names} from your kitchen",
+      "country": "A cuisine you've saved before"
+    },
+    "timerHint": "Total of the recipe's step timers",
+    "loadedMore": "Showing {shown} of {total} dishes",
+    "loadingMore": "Loading more dishes…",
+    "loadMoreFailed": "Couldn't load more dishes.",
+    "endOfList": "{count, plural, one {That's the only dish} other {That's all # dishes}}",
+    "backToTop": "Back to top",
+    "moreDishes": "More dishes",
+    "sort": {
+      "label": "Sort by",
+      "apply": "Sort",
+      "for_you": "For you",
+      "popular": "Popular",
+      "newest": "Newest",
+      "name": "Name (A–Z)"
+    },
+    "sortHint": {
+      "for_you": "Ranked by what's in your kitchen, your diet and today's weather. A new mix every day.",
+      "popular": "Dishes Cooky cooks save most come first.",
+      "newest": "Latest additions to Discover first.",
+      "name": "Alphabetical, by the name you see."
+    },
+    "tuneForYou": "Update your kitchen"
   },
   "footer": {
     "tagline": "Plan, cook, and shop without the guesswork.",

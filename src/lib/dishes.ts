@@ -79,6 +79,15 @@ export type Aisle = (typeof AISLES)[number];
 export const CATALOG_COLLECTIONS = ["ramadan_iftar", "eid_sweets", "summer_salads", "winter_comfort", "quick"] as const;
 export type CatalogCollection = (typeof CATALOG_COLLECTIONS)[number];
 
+/**
+ * Discover's orders. "for_you" needs an account (it reads the kitchen, diet
+ * and weather); visitors get "popular" by default.
+ */
+export const DISCOVER_SORTS = ["for_you", "popular", "newest", "name"] as const;
+export type DiscoverSort = (typeof DISCOVER_SORTS)[number];
+/** Discover shows this many more dishes per "Show more" (fills 2- and 3-column grids). */
+export const DISCOVER_PAGE_SIZE = 24;
+
 /** Meal slots for the cook log, the planner and the calendar. */
 export const MEAL_SLOTS = ["breakfast", "lunch", "dinner", "snack"] as const;
 export type MealSlot = (typeof MEAL_SLOTS)[number];

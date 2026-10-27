@@ -21,6 +21,8 @@ export const BURST_RULES = {
   userWrite: { tokens: 60, window: "1 m" },
   // Signed-in reads that fire while typing (autocomplete): roomy, but still bounded.
   userRead: { tokens: 300, window: "1 m" },
+  // Public reads that fire while scrolling (Discover's next page), per IP: a fast reader, never a scraper.
+  publicReadIp: { tokens: 120, window: "1 m" },
 } as const satisfies Record<string, { tokens: number; window: `${number} ${"s" | "m" | "h"}` }>;
 
 export type BurstRule = keyof typeof BURST_RULES;

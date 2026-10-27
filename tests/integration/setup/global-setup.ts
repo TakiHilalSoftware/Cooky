@@ -55,6 +55,7 @@ export default async function setup() {
 
   // The Discover catalog, from the same list pnpm db:seed:catalog uses.
   const { CATALOG } = await import("../../../scripts/seed-catalog");
+  const { getCuratedDishPhoto } = await import("../../../src/lib/curated-dishes");
   const staples = new Map(
     (
       await pool.query<{ id: string; slug: string; name_en: string; name_fr: string; name_ar: string }>(
@@ -65,8 +66,8 @@ export default async function setup() {
   for (const e of CATALOG) {
     const { rows } = await pool.query<{ id: string }>(
       `insert into catalog_dishes (id, slug, country, course, difficulty, servings, seasons, dietary_tags, collections, featured,
-        name_en, name_fr, name_ar, description_en, description_fr, description_ar)
-       values (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) returning id`,
+        name_en, name_fr, name_ar, description_en, description_fr, description_ar, photo_url)
+       values (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) returning id`,
       [
         e.slug,
         e.country,
@@ -83,6 +84,7 @@ export default async function setup() {
         e.description.en,
         e.description.fr,
         e.description.ar,
+        getCuratedDishPhoto(e.slug),
       ],
     );
     const dishId = rows[0]!.id;

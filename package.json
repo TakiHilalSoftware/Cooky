@@ -27,6 +27,7 @@
     "db:seed:limits": "tsx --tsconfig scripts/tsconfig.json scripts/seed-plan-limits.ts",
     "db:seed:ingredients": "tsx --tsconfig scripts/tsconfig.json scripts/seed-ingredients.ts",
     "db:seed:catalog": "tsx --tsconfig scripts/tsconfig.json scripts/seed-catalog.ts",
+    "db:seed:mealdb": "tsx --tsconfig scripts/tsconfig.json scripts/ingest-mealdb.ts",
     "jobs:schedule": "tsx --tsconfig scripts/tsconfig.json scripts/schedule-jobs.ts",
     "icons": "tsx --tsconfig scripts/tsconfig.json scripts/generate-icons.ts",
     "load:test": "tsx --tsconfig scripts/tsconfig.json scripts/load-test.ts"

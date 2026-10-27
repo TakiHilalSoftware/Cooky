@@ -148,18 +148,20 @@ export const listMyDishes = cache(
       )
       .orderBy(desc(dishes.updatedAt));
 
-    const [allowance, catalogNames, photoUrlList] = await Promise.all([
+    const catalogDishIds = rows.map((r) => r.catalogDishId).filter((id): id is string => id !== null);
+    const [allowance, catalogNames, photoUrlList, catalogPhotos] = await Promise.all([
       loadDishAllowance(userId),
       catalogNamesFor(
         rows.filter((r) => r.followsCatalog && r.catalogDishId).map((r) => r.catalogDishId!),
         locale,
       ),
       Promise.all(rows.map((r) => smallPhotoUrl(r.imageKey))),
+      catalogPhotosFor(catalogDishIds),
     ]);
     return {
       dishes: rows.map(({ timerSeconds, followsCatalog, catalogDishId, imageKey: _key, ...row }, index) => ({
         ...row,
-        photoUrl: photoUrlList[index] ?? null,
+        photoUrl: photoUrlList[index] ?? (catalogDishId ? catalogPhotos.get(catalogDishId) : null) ?? null,
         // A saved Discover dish shows its name in the viewer's language until it's edited.
         name: (followsCatalog && catalogDishId && catalogNames.get(catalogDishId)) || row.name,
         timerMinutes: timerSeconds ? Math.round(timerSeconds / 60) : null,
@@ -242,6 +244,15 @@ export async function catalogNamesFor(ids: string[], locale: AppLocale): Promise
   return new Map(rows.map((r) => [r.id, inLocale({ en: r.en, fr: r.fr, ar: r.ar }, locale)]));
 }
 
+export async function catalogPhotosFor(ids: string[]): Promise<Map<string, string>> {
+  if (ids.length === 0) return new Map();
+  const rows = await getDb()
+    .select({ id: catalogDishes.id, photoUrl: catalogDishes.photoUrl })
+    .from(catalogDishes)
+    .where(inArray(catalogDishes.id, ids));
+  return new Map(rows.filter((r) => r.photoUrl).map((r) => [r.id, r.photoUrl!]));
+}
+
 /** The dish page, with ingredients scaled to `servings` on the server. */
 export const getDish = cache(
   async (dishId: string, servings?: number, locale: AppLocale = "en"): Promise<DishDto | null> => {
@@ -263,6 +274,7 @@ export const getDish = cache(
       [source],
       photo,
       cooking,
+      [catalogDish],
     ] = await Promise.all([
       contentsFor(dish, locale),
       db
@@ -286,6 +298,13 @@ export const getDish = cache(
         .limit(1),
       photoUrls(dish.imageKey),
       loadDishCooking(userId, dish.id),
+      dish.catalogDishId
+        ? db
+            .select({ photoUrl: catalogDishes.photoUrl })
+            .from(catalogDishes)
+            .where(eq(catalogDishes.id, dish.catalogDishId))
+            .limit(1)
+        : Promise.resolve([]),
     ]);
     const [sharing, reviews] = await Promise.all([loadDishSharing(userId, dish), loadReviews(userId, dish)]);
 
@@ -315,7 +334,8 @@ export const getDish = cache(
       note: note?.text ?? null,
       readOnly: allowance.readOnly,
       source: source ?? null,
-      photo,
+      photo:
+        photo ?? (catalogDish?.photoUrl ? { url: catalogDish.photoUrl, smallUrl: catalogDish.photoUrl } : null),
       cooking,
       photosEnabled: storageConfigured(),
       collectionIds,

@@ -89,6 +89,8 @@ export const catalogDishes = pgTable(
       .notNull()
       .default(sql`'{}'`),
     featured: boolean("featured").notNull().default(false),
+    photoUrl: text("photo_url"),
+    source: text("source").notNull().default("curated"),
     nameEn: text("name_en").notNull(),
     nameFr: text("name_fr"),
     nameAr: text("name_ar"),
@@ -97,7 +99,11 @@ export const catalogDishes = pgTable(
     descriptionAr: text("description_ar"),
     ...timestamps,
   },
-  (t) => [index("catalog_dishes_country_idx").on(t.country), index("catalog_dishes_course_idx").on(t.course)],
+  (t) => [
+    index("catalog_dishes_country_idx").on(t.country),
+    index("catalog_dishes_course_idx").on(t.course),
+    index("catalog_dishes_source_idx").on(t.source),
+  ],
 );
 
 export const catalogIngredients = pgTable(
