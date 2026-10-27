@@ -17,11 +17,13 @@ import {
   UsersRoundIcon,
   ShoppingBasketIcon,
   TimerIcon,
+  DownloadIcon,
   type LucideIcon,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { useInstallPrompt } from "@/components/pwa";
 import { CookyIcon } from "@/components/brand/cooky-icon";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Link, usePathname } from "@/i18n/navigation";
@@ -172,6 +174,8 @@ export function AppSidebar({ account }: { account: Badges }) {
 /** Phones: a bottom bar with the everyday places and "More" for the rest. */
 export function BottomNav({ account }: { account: Badges }) {
   const t = useTranslations("nav");
+  const tInstall = useTranslations("install");
+  const { canInstall, isInstalled, promptToInstall } = useInstallPrompt();
   const isActive = useActive();
   const badgeFor = useBadge(account);
   const [open, setOpen] = useState(false);
@@ -225,6 +229,21 @@ export function BottomNav({ account }: { account: Badges }) {
                 <SheetTitle>{t("more")}</SheetTitle>
               </SheetHeader>
               <ul className="grid grid-cols-2 gap-2 px-4">
+                {canInstall && !isInstalled ? (
+                  <li className="col-span-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpen(false);
+                        void promptToInstall();
+                      }}
+                      className="flex min-h-14 w-full items-center gap-3 rounded-2xl border border-primary/40 bg-primary/10 px-4 font-medium text-foreground transition-colors hover:bg-primary/15"
+                    >
+                      <DownloadIcon aria-hidden="true" className="size-5 shrink-0 text-primary-strong" />
+                      <span className="min-w-0 truncate">{tInstall("button")}</span>
+                    </button>
+                  </li>
+                ) : null}
                 {more.map((entry) => (
                   <li key={entry.key}>
                     <Link

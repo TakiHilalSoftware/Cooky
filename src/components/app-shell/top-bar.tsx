@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 
 import { Logo } from "@/components/brand/logo";
+import { InstallButton } from "@/components/pwa";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -56,6 +57,7 @@ export function TopBar({ account, weather }: TopBarProps) {
           )}
           <LanguageSwitcher />
           <ThemeToggle />
+          <InstallButton variant="icon" />
           {account ? <AccountMenu account={account} /> : null}
           {account === null ? (
             <>

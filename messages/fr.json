@@ -2588,6 +2588,39 @@
       "system": "Système"
     }
   },
+  "install": {
+    "button": "Installer l'application",
+    "tooltip": "Installer Cooky sur cet appareil",
+    "installed": "Application installée",
+    "banner": {
+      "title": "Installer Cooky",
+      "description": "Ajoutez à votre écran d'accueil pour la liste de courses hors ligne et le mode cuisine rapide.",
+      "action": "Installer",
+      "dismiss": "Ignorer"
+    },
+    "iosDialog": {
+      "title": "Installer Cooky sur iPhone ou iPad",
+      "description": "Ajoutez Cooky à votre écran d'accueil pour un accès rapide, vos courses hors ligne et le partage direct de recettes.",
+      "step1Title": "Appuyez sur le bouton Partager",
+      "step1Description": "Dans la barre d'outils de Safari en bas de l'écran, appuyez sur l'icône Partager.",
+      "step2Title": "Choisissez « Sur l'écran d'accueil »",
+      "step2Description": "Faites défiler le menu et appuyez sur « Sur l'écran d'accueil ».",
+      "step3Title": "Confirmez avec « Ajouter »",
+      "step3Description": "Appuyez sur « Ajouter » en haut à droite pour installer Cooky sur votre écran.",
+      "close": "Compris"
+    },
+    "browserDialog": {
+      "title": "Comment installer Cooky",
+      "description": "Installez Cooky directement via votre navigateur pour faire vos courses hors ligne et profiter du mode plein écran.",
+      "chromeTip": "Sur Chrome ou Edge, cliquez sur l'icône d'installation à droite de la barre d'adresse, ou ouvrez le menu (⋮) et choisissez « Installer Cooky ».",
+      "safariTip": "Sur Safari, appuyez sur Partager puis sélectionnez « Sur l'écran d'accueil ».",
+      "close": "Compris"
+    },
+    "settingsLabel": "Installation de l'application",
+    "settingsInstalled": "Cooky est installée sur cet appareil en tant qu'application autonome.",
+    "settingsNotInstalled": "Installez Cooky sur cet appareil pour un accès direct depuis votre écran d'accueil et un mode cuisine plein écran.",
+    "successToast": "Cooky a été installé avec succès !"
+  },
   "og": {
     "headline": "Qu'est-ce que je cuisine aujourd'hui ?",
     "line": "Vos recettes, votre cuisine et la météo : décidez, planifiez, faites les courses et cuisinez entre amis."

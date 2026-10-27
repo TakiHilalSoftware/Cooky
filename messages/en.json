@@ -2588,6 +2588,39 @@
       "system": "System"
     }
   },
+  "install": {
+    "button": "Install app",
+    "tooltip": "Install Cooky on this device",
+    "installed": "App installed",
+    "banner": {
+      "title": "Install Cooky",
+      "description": "Add to your home screen for offline shopping and fast cooking mode.",
+      "action": "Install",
+      "dismiss": "Dismiss"
+    },
+    "iosDialog": {
+      "title": "Install Cooky on iPhone or iPad",
+      "description": "Add Cooky directly to your home screen for quick access, offline shopping, and seamless recipe sharing.",
+      "step1Title": "Tap the Share button",
+      "step1Description": "In Safari's toolbar at the bottom of your screen, tap the Share icon.",
+      "step2Title": "Choose 'Add to Home Screen'",
+      "step2Description": "Scroll down the menu and tap 'Add to Home Screen'.",
+      "step3Title": "Confirm and tap 'Add'",
+      "step3Description": "Tap 'Add' in the top-right corner to place Cooky on your home screen.",
+      "close": "Got it"
+    },
+    "browserDialog": {
+      "title": "How to install Cooky",
+      "description": "Install Cooky directly through your browser for offline shopping, full-screen mode, and home screen access.",
+      "chromeTip": "In Chrome or Edge, click the Install icon in the right side of the address bar, or open the menu (⋮) and choose 'Install Cooky'.",
+      "safariTip": "In Safari, tap Share and select 'Add to Home Screen'.",
+      "close": "Got it"
+    },
+    "settingsLabel": "Device installation",
+    "settingsInstalled": "Cooky is installed on this device as a standalone app.",
+    "settingsNotInstalled": "Install Cooky on this device for home screen launch and full-screen cooking mode.",
+    "successToast": "Cooky installed successfully!"
+  },
   "og": {
     "headline": "What do I cook today?",
     "line": "Your recipes, your kitchen and the weather: decide, plan, shop and cook with friends."

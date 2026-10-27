@@ -1,10 +1,12 @@
 "use client";
 
+import { CheckCircle2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSyncExternalStore } from "react";
 import { toast } from "sonner";
 
 import { OFFLINE_SETTING_KEY, offlineEnabled, wipeOffline } from "@/components/offline/store";
+import { InstallButton, useInstallPrompt } from "@/components/pwa";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
@@ -22,6 +24,8 @@ const subscribe = (onChange: () => void) => {
  */
 export function OfflineCard() {
   const t = useTranslations("settings.offline");
+  const tInstall = useTranslations("install");
+  const { isInstalled } = useInstallPrompt();
   const enabled = useSyncExternalStore(subscribe, offlineEnabled, () => true);
 
   async function change(on: boolean) {
@@ -37,16 +41,37 @@ export function OfflineCard() {
 
   return (
     <SettingsSection title={t("heading")} description={t("description")}>
-      <div className="flex items-start gap-3">
-        <Checkbox
-          id="offline-copy"
-          checked={enabled}
-          onCheckedChange={(v) => void change(v === true)}
-          className="mt-0.5"
-        />
-        <div className="space-y-1">
-          <Label htmlFor="offline-copy">{t("label")}</Label>
-          <p className="text-sm text-muted-foreground">{t("hint")}</p>
+      <div className="space-y-4">
+        <div className="flex items-start gap-3">
+          <Checkbox
+            id="offline-copy"
+            checked={enabled}
+            onCheckedChange={(v) => void change(v === true)}
+            className="mt-0.5"
+          />
+          <div className="space-y-1">
+            <Label htmlFor="offline-copy">{t("label")}</Label>
+            <p className="text-sm text-muted-foreground">{t("hint")}</p>
+          </div>
+        </div>
+
+        <div className="border-t border-border/60 pt-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-0.5">
+              <span className="block text-sm font-medium text-foreground">{tInstall("settingsLabel")}</span>
+              <p className="text-sm text-muted-foreground">
+                {isInstalled ? tInstall("settingsInstalled") : tInstall("settingsNotInstalled")}
+              </p>
+            </div>
+            {isInstalled ? (
+              <div className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary-strong">
+                <CheckCircle2Icon className="size-3.5" aria-hidden="true" />
+                <span>{tInstall("installed")}</span>
+              </div>
+            ) : (
+              <InstallButton variant="button" size="sm" showAlways className="shrink-0" />
+            )}
+          </div>
         </div>
       </div>
     </SettingsSection>
