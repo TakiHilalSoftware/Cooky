@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { ZelligeStar } from "@/components/brand/zellige-star";
+import { CookyIcon } from "@/components/brand/cooky-icon";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia } from "@/components/ui/empty";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +10,7 @@ type EmptyStateProps = {
   description: string;
   /** The next step. PRD §3.10: every empty state offers one. */
   action: ReactNode;
-  /** Defaults to the Cooky star. */
+  /** Defaults to the Cooky brand mark. */
   illustration?: ReactNode;
   /** Heading level, so the state fits the page outline. */
   headingLevel?: 1 | 2 | 3;
@@ -31,7 +31,7 @@ export function EmptyState({
   return (
     <Empty className={cn("gap-6", className)}>
       <EmptyHeader className="max-w-md gap-3">
-        <EmptyMedia>{illustration ?? <ZelligeStar className="size-16" />}</EmptyMedia>
+        <EmptyMedia>{illustration ?? <CookyIcon className="size-16" />}</EmptyMedia>
         <Heading data-slot="empty-title" className="font-heading text-2xl text-balance sm:text-3xl">
           {title}
         </Heading>
