@@ -3,19 +3,19 @@ import { useId } from "react";
 import type { Course } from "@/lib/dishes";
 import { cn } from "@/lib/utils";
 
-import { starPath } from "./star-path";
+import { COOKY_ICON_PATH } from "./brand-icon-path";
 
 /**
- * Each course is laid in its own colourway of the same star-and-cross
- * zellige, all from theme tokens: covers follow the person's accent and
- * theme, and a box of dishes reads like a tiled wall rather than blank cards.
+ * Each course is laid in its own colourway of the Cooky brand mark,
+ * all from theme tokens: covers follow the person's accent and
+ * theme, and a box of dishes reads with brand identity rather than blank cards.
  */
-const COLOURWAYS: Record<Course, { ground: string; star: string; heart: string }> = {
-  main: { ground: "fill-tile", star: "fill-primary", heart: "fill-tile" },
-  appetizer: { ground: "fill-primary", star: "fill-tile", heart: "fill-primary" },
-  side: { ground: "fill-secondary", star: "fill-tile", heart: "fill-primary" },
-  dessert: { ground: "fill-primary", star: "fill-card", heart: "fill-tile" },
-  drinks: { ground: "fill-tile", star: "fill-card", heart: "fill-primary" },
+const COLOURWAYS: Record<Course, { ground: string; icon: string }> = {
+  main: { ground: "fill-tile", icon: "fill-primary" },
+  appetizer: { ground: "fill-primary", icon: "fill-tile" },
+  side: { ground: "fill-secondary", icon: "fill-tile" },
+  dessert: { ground: "fill-primary", icon: "fill-card" },
+  drinks: { ground: "fill-tile", icon: "fill-card" },
 };
 
 /** Small, stable number from a name, so two dishes of one course don't lay their tiles identically. */
@@ -45,8 +45,8 @@ const SHAPES = {
 } as const;
 
 /**
- * A dish's picture: its photo when there is one, otherwise a zellige tile in
- * the colours of its course. Always decorative (the dish name carries the meaning).
+ * A dish's picture: its photo when there is one, otherwise a tiled cover with the
+ * Cooky brand mark in the colours of its course. Always decorative (the dish name carries the meaning).
  */
 export function DishCover({ photoUrl, course, seed, shape = "band", eager = false, className }: DishCoverProps) {
   const id = useId();
@@ -67,7 +67,7 @@ export function DishCover({ photoUrl, course, seed, shape = "band", eager = fals
       />
     );
 
-  // Drawn in tile units, scaled so the cover's height holds whole stars: one calm row in a band, four in a thumbnail.
+  // Drawn in tile units, scaled so the cover's height holds whole marks: one row in a band, four in a thumbnail.
   const tile = shape === "thumb" ? 32 : 64;
   const viewBox = shape === "thumb" ? "0 0 64 64" : "0 0 1280 64";
   const colours = COLOURWAYS[course];
@@ -76,14 +76,22 @@ export function DishCover({ photoUrl, course, seed, shape = "band", eager = fals
     <div aria-hidden="true" className={cn(frame, "ring-1 ring-foreground/10 ring-inset")}>
       <svg focusable="false" viewBox={viewBox} preserveAspectRatio="xMinYMid slice" className="block size-full">
         <defs>
-          <pattern id={id} width={tile} height={tile} x={offset} patternUnits="userSpaceOnUse">
-            <rect width={tile} height={tile} className={colours.ground} />
-            <path
-              d={starPath(tile / 2, tile / 2, tile / 2)}
-              className={cn(colours.star, "stroke-background opacity-90")}
-              strokeWidth={2}
-            />
-            <path d={starPath(tile / 2, tile / 2, tile / 7)} className={colours.heart} />
+          <pattern
+            id={id}
+            width={tile}
+            height={tile}
+            x={offset}
+            patternUnits="userSpaceOnUse"
+            viewBox="0 0 1024 1024"
+          >
+            <rect width={1024} height={1024} className={colours.ground} />
+            <g transform="translate(124, 64) scale(0.75)">
+              <path
+                d={COOKY_ICON_PATH}
+                fillRule="evenodd"
+                className={cn(colours.icon, "opacity-90")}
+              />
+            </g>
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill={`url(#${id})`} />
