@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { Link } from "@/i18n/navigation";
+import { hasFilters } from "@/lib/discover-url";
 import { COURSES, DIETARY_TAGS } from "@/lib/dishes";
 import type { DiscoverFilters as Filters } from "@/server/features/discover/schema";
 
@@ -32,11 +33,13 @@ export function DiscoverFilters({
   const locale = useLocale();
   const ids = { country: useId(), course: useId(), diet: useId(), have: useId(), hint: useId() };
   const submit = (element: HTMLElement) => element.closest("form")?.requestSubmit();
-  const active = Boolean(filters.country || filters.course || filters.diet || filters.have || filters.collection);
+  const active = hasFilters(filters);
 
   return (
     <Form action={`/${locale}/discover`} replace scroll={false} role="search" className="space-y-4">
       {filters.collection ? <input type="hidden" name="collection" value={filters.collection} /> : null}
+      {/* A new filter keeps the chosen order and starts the list from the top. */}
+      {filters.sort ? <input type="hidden" name="sort" value={filters.sort} /> : null}
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="flex flex-col gap-1.5">
           <label htmlFor={ids.country} className="text-sm font-medium">
