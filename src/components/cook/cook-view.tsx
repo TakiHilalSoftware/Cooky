@@ -133,7 +133,7 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
               required
               maxLength={80}
               placeholder={t("addExtraPlaceholder")}
-              className="sm:max-w-xs"
+              className="sm:max-w-xs h-9"
             />
             <Button type="submit" variant="outline">
               <PlusIcon aria-hidden="true" data-icon="inline-start" />
