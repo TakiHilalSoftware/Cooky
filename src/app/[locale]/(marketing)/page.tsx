@@ -3,7 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { HomeHero } from "@/components/marketing/home-hero";
-import { DiscoverPreview, FeatureGrid, PricingSection } from "@/components/marketing/home-sections";
+import { DiscoverPreview, KitchenStoryline, PricingSection } from "@/components/marketing/home-sections";
 import { routing } from "@/i18n/routing";
 import { getAccountSummary } from "@/server/features/account/queries";
 import { getPricing } from "@/server/features/billing/queries";
@@ -17,7 +17,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const signedIn = account !== null;
   return (
     <HomeHero signedIn={signedIn}>
-      <FeatureGrid signedIn={signedIn} />
+      <KitchenStoryline signedIn={signedIn} />
       <DiscoverPreview dishes={dishes} />
       <PricingSection pricing={pricing} />
     </HomeHero>

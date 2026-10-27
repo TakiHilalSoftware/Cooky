@@ -7,25 +7,30 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import type { CatalogCardDto } from "@/server/features/discover/dto";
 
+import { getCuratedDishPhoto } from "@/lib/curated-dishes";
 import { useCountry } from "./use-country";
 
 /** One Discover dish. The whole card opens it. */
 export function CatalogCard({ dish, className }: { dish: CatalogCardDto; className?: string }) {
   const t = useTranslations();
   const country = useCountry();
+  const photo = getCuratedDishPhoto(dish.slug);
   return (
     <li
       className={cn(
-        "group relative flex flex-col gap-3 rounded-3xl border border-border bg-card p-5 transition-colors focus-within:border-primary-strong hover:border-primary-strong",
+        "group relative flex flex-col gap-3 rounded-3xl border border-border bg-card p-5 transition-all duration-300 focus-within:border-primary-strong hover:border-primary-strong hover:shadow-md",
         className,
       )}
     >
-      <DishCover
-        photoUrl={null}
-        course={dish.course}
-        seed={dish.slug}
-        className="-mx-1 -mt-1 w-[calc(100%+0.5rem)] max-w-none"
-      />
+      <div className="-mx-1 -mt-1 overflow-hidden rounded-2xl">
+        <DishCover
+          photoUrl={photo}
+          course={dish.course}
+          seed={dish.slug}
+          shape="photo"
+          className="w-full max-w-none transition-transform duration-500 ease-out group-hover:scale-105"
+        />
+      </div>
       <p className="text-xs font-medium text-primary-strong">
         {country.name(dish.country)} · {t(`dishes.course.${dish.course}`)}
       </p>

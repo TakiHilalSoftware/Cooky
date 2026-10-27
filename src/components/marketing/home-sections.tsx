@@ -55,27 +55,34 @@ export function FeatureGrid({ signedIn }: { signedIn: boolean }) {
   );
 }
 
+export { KitchenStoryline } from "./kitchen-storyline";
+
 /** A row of Discover dishes to try, with a way into the full catalog. */
 export function DiscoverPreview({ dishes }: { dishes: CatalogCardDto[] }) {
   const t = useTranslations("home");
   if (dishes.length === 0) return null;
   return (
-    <section aria-labelledby="discover-preview-heading" className="space-y-4 border-t border-border py-12 sm:py-16">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <h2 id="discover-preview-heading" className="font-heading text-3xl">
-          {t("discoverHeading")}
-        </h2>
-        <Button asChild variant="outline">
+    <section aria-labelledby="discover-preview-heading" className="space-y-8 border-t border-border py-16 sm:py-20">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div className="space-y-1">
+          <h2 id="discover-preview-heading" className="font-heading text-3xl font-extrabold sm:text-4xl">
+            {t("discoverHeading")}
+          </h2>
+          <p className="text-base text-muted-foreground sm:text-lg">
+            Curated authentic dishes from 14 culinary traditions, tested and ready to cook.
+          </p>
+        </div>
+        <Button asChild variant="outline" className="h-11 px-5">
           <Link href="/discover">
             {t("discoverAll")}
-            <ArrowRightIcon aria-hidden="true" data-icon="inline-end" className="rtl:-scale-x-100" />
+            <ArrowRightIcon aria-hidden="true" data-icon="inline-end" className="ms-1 rtl:-scale-x-100" />
           </Link>
         </Button>
       </div>
-      {/* Swipe on phones; nothing moves on its own. */}
-      <ul className="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
-        {dishes.map((dish) => (
-          <CatalogCard key={dish.slug} dish={dish} className="w-72 shrink-0 snap-start" />
+      {/* Mobile swipe carousel / Desktop responsive grid */}
+      <ul className="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-6 overflow-x-auto px-4 pb-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-3">
+        {dishes.slice(0, 6).map((dish) => (
+          <CatalogCard key={dish.slug} dish={dish} className="w-80 shrink-0 snap-start sm:w-auto" />
         ))}
       </ul>
     </section>
