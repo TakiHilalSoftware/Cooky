@@ -169,6 +169,13 @@
       "when": 1792928722092,
       "tag": "0023_trial_email_redemptions",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1793128741943,
+      "tag": "0024_catalog_photo_and_source",
+      "breakpoints": true
     }
   ]
 }

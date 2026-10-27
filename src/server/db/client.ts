@@ -11,7 +11,7 @@ export type Database = NodePgDatabase<typeof schema>;
 /** A database handle or an open transaction: what write helpers accept. */
 export type Executor = Database | Parameters<Parameters<Database["transaction"]>[0]>[0];
 
-const globalForDb = globalThis as unknown as { cookyDb?: Database };
+const globalForDb = globalThis as unknown as { pool?: Pool; cookyDb?: Database };
 
 /**
  * Pooled Postgres client. node-postgres speaks to local Postgres in
@@ -21,11 +21,13 @@ const globalForDb = globalThis as unknown as { cookyDb?: Database };
  * lives on globalThis so dev hot reloads don't leak pools.
  */
 export function getDb(): Database {
-  if (globalForDb.cookyDb) return globalForDb.cookyDb;
+  if (globalForDb.cookyDb && env.NODE_ENV !== "development") return globalForDb.cookyDb;
   if (!env.DATABASE_URL) {
     throw new Error("DATABASE_URL is not set. Copy .env.example to .env.local and add your database URL.");
   }
-  const pool = new Pool({ connectionString: env.DATABASE_URL, max: 10, idleTimeoutMillis: 10_000 });
-  globalForDb.cookyDb = drizzle({ client: pool, schema, casing: "snake_case" });
+  if (!globalForDb.pool) {
+    globalForDb.pool = new Pool({ connectionString: env.DATABASE_URL, max: 10, idleTimeoutMillis: 10_000 });
+  }
+  globalForDb.cookyDb = drizzle({ client: globalForDb.pool, schema, casing: "snake_case" });
   return globalForDb.cookyDb;
 }
