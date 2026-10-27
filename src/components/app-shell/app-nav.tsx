@@ -22,7 +22,7 @@ import {
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { ZelligeStar } from "@/components/brand/zellige-star";
+import { CookyIcon } from "@/components/brand/cooky-icon";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -149,8 +149,8 @@ export function AppSidebar({ account }: { account: Badges }) {
             active ? "bg-secondary text-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground",
           )}
         >
-          {/* The current place is marked with the brand's star, set into the rail like a tile. */}
-          {active ? <ZelligeStar className="absolute -start-1.5 top-1/2 size-3 -translate-y-1/2" /> : null}
+          {/* The current place is marked with the brand's mark, set into the rail like a tile. */}
+          {active ? <CookyIcon className="absolute -start-1.5 top-1/2 size-3 -translate-y-1/2" /> : null}
           <entry.icon aria-hidden="true" className={cn("size-5", active && "text-primary-strong")} />
           {t(entry.key)}
           <BadgeMark badge={badgeFor(entry.key)} />
@@ -198,7 +198,7 @@ export function BottomNav({ account }: { account: Badges }) {
                 aria-current={active ? "page" : undefined}
                 className={cn(cell, "relative", active ? "text-foreground" : "text-muted-foreground")}
               >
-                {active ? <ZelligeStar className="absolute top-1 size-2" /> : null}
+                {active ? <CookyIcon className="absolute top-1 size-2" /> : null}
                 <entry.icon aria-hidden="true" className={cn("mt-1 size-5", active && "text-primary-strong")} />
                 {t(entry.key)}
               </Link>
