@@ -16,10 +16,12 @@ import { ImportLinkCard } from "./import-link-card";
 export function NewDishFlow({
   importUsage,
   voiceUsage,
+  photosEnabled,
   sharedUrl,
 }: {
   importUsage: UsageDto | null;
   voiceUsage: UsageDto | null;
+  photosEnabled: boolean;
   sharedUrl?: string;
 }) {
   const t = useTranslations("dishes.import");
@@ -69,7 +71,7 @@ export function NewDishFlow({
         />
       )}
       {/* A new key re-starts the form from the imported draft (or empty after "Start over"). */}
-      <DishForm key={version} draft={draft ?? undefined} voiceUsage={voiceUsage} />
+      <DishForm key={version} draft={draft ?? undefined} voiceUsage={voiceUsage} photosEnabled={photosEnabled} />
     </div>
   );
 }

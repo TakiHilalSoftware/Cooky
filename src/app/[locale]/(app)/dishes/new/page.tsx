@@ -7,6 +7,7 @@ import { NewDishBlocked } from "@/components/dishes/new-dish-blocked";
 import { NewDishFlow } from "@/components/dishes/new-dish-flow";
 import { getFeatureUsage } from "@/server/features/billing/queries";
 import { getMyDishAllowance } from "@/server/features/dishes/queries";
+import { storageConfigured } from "@/server/storage/r2";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("dishes.form");
@@ -33,7 +34,12 @@ export default async function NewDishPage({ searchParams }: PageProps<"/[locale]
   if (!allowance.canAdd) return <NewDishBlocked allowance={allowance} />;
   return (
     <DishFormPage>
-      <NewDishFlow importUsage={importUsage} voiceUsage={voiceUsage} sharedUrl={sharedLink(params)} />
+      <NewDishFlow
+        importUsage={importUsage}
+        voiceUsage={voiceUsage}
+        photosEnabled={storageConfigured()}
+        sharedUrl={sharedLink(params)}
+      />
     </DishFormPage>
   );
 }
