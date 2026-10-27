@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { COOKY_ICON_PATH } from "./brand-icon-path";
 import { DishCover } from "./dish-cover";
 
 describe("DishCover", () => {
@@ -13,13 +14,15 @@ describe("DishCover", () => {
     expect(container.querySelector("svg")).toBeNull();
   });
 
-  it("without a photo, lays a hidden zellige tile in the course's colours", () => {
+  it("without a photo, lays a hidden brand cover in the course's colours", () => {
     const { container } = render(<DishCover photoUrl={null} course="dessert" seed="ghriba" />);
     const tile = container.firstElementChild!;
     expect(tile).toHaveAttribute("aria-hidden", "true");
     expect(container.querySelector("img")).toBeNull();
     const ground = container.querySelector("pattern rect")!;
     expect(ground.getAttribute("class")).toContain("fill-primary");
+    const path = container.querySelector("pattern path")!;
+    expect(path.getAttribute("d")).toBe(COOKY_ICON_PATH);
   });
 
   it("offsets the tiles per dish, the same way every time", () => {
