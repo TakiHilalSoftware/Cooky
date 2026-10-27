@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 
 import { toast } from "sonner";
 
 import { useOnline } from "@/components/app-shell/use-online";
-import { ZelligeStar } from "@/components/brand/zellige-star";
+import { CookyIcon } from "@/components/brand/cooky-icon";
 import { IconButton } from "@/components/feedback/icon-button";
 import { useFormMessages } from "@/components/forms/use-form-messages";
 import { TriesMeter } from "@/components/paywall/tries-meter";
@@ -167,7 +167,7 @@ export function AssistantView({ page }: { page: AssistantPageDto }) {
         <div className="flex-1 space-y-5 overflow-y-auto p-4" aria-live="polite">
           {shown.length === 0 ? (
             <div className="mx-auto max-w-xl space-y-5 py-6 text-center">
-              <ZelligeStar className="mx-auto size-14" />
+              <CookyIcon className="mx-auto size-14" />
               <p className="text-pretty text-muted-foreground">{t("intro")}</p>
               <ul className="grid gap-2 sm:grid-cols-2">
                 {QUICK_STARTS.map((key) => (
