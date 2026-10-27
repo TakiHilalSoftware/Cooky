@@ -1,12 +1,11 @@
 "use client";
 
-import { CheckIcon, MinusIcon } from "lucide-react";
+import { CheckIcon, MinusIcon, SparklesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { PLAN_RANK, TRIAL_DAYS, type BillingInterval, type PaidPlan, type Plan } from "@config/plans";
 import { CookyIcon } from "@/components/brand/cooky-icon";
-import { TilePanel } from "@/components/marketing/tile-panel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -126,8 +125,9 @@ function PlanCard({
       )}
     >
       {plan.prices ? (
-        // Paid plans wear the zellige band (in the viewer's accent); one height keeps the cards' rows aligned.
-        <TilePanel className="h-12 rounded-none shadow-none ring-0" />
+        <div aria-hidden="true" className="flex h-12 items-center px-6 text-primary-strong">
+          <SparklesIcon className="size-5" />
+        </div>
       ) : (
         <div aria-hidden="true" className="flex h-12 items-center px-6">
           <CookyIcon className="size-6" />
