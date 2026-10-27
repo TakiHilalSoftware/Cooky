@@ -4,17 +4,13 @@ import { join } from "node:path";
 import { getTranslations } from "next-intl/server";
 import { ImageResponse } from "next/og";
 
+import { COOKY_ICON_PATH, COOKY_ICON_VIEWBOX } from "@/components/brand/brand-icon-path";
 import { asAppLocale, directionOf } from "@/i18n/routing";
 
 // The share preview for every page under a locale (PRD §3.6 "rich preview"; ROADMAP Phase 8).
 export const alt = "Cooky";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-
-const STAR =
-  "M12 0.5L15.37 3.87L20.13 3.87L20.13 8.63L23.5 12L20.13 15.37L20.13 20.13L15.37 20.13L12 23.5L8.63 20.13L3.87 20.13L3.87 15.37L0.5 12L3.87 8.63L3.87 3.87L8.63 3.87Z";
-const INNER =
-  "M12 7.6L13.29 8.89L15.11 8.89L15.11 10.71L16.4 12L15.11 13.29L15.11 15.11L13.29 15.11L12 16.4L10.71 15.11L8.89 15.11L8.89 13.29L7.6 12L8.89 10.71L8.89 8.89L10.71 8.89Z";
 
 export default async function OpenGraphImage({ params }: { params: Promise<{ locale: string }> }) {
   const locale = asAppLocale((await params).locale);
@@ -38,9 +34,8 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ loc
         fontFamily: "Readex Pro",
       }}
     >
-      <svg width="300" height="300" viewBox="0 0 24 24">
-        <path fill="#e8a317" d={STAR} />
-        <path fill="#1e7656" d={INNER} />
+      <svg width="300" height="300" viewBox={COOKY_ICON_VIEWBOX}>
+        <path fill="#1e7656" fillRule="evenodd" d={COOKY_ICON_PATH} />
       </svg>
       <div
         style={{
