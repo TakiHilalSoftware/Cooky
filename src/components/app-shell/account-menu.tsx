@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useAction } from "next-safe-action/hooks";
 
 import { wipeOffline } from "@/components/offline/store";
+import { InstallButton } from "@/components/pwa";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -84,6 +85,7 @@ export function AccountMenu({ account }: { account: AccountSummaryDto }) {
             {t("billing")}
           </Link>
         </DropdownMenuItem>
+        <InstallButton variant="menuitem" className="min-h-10" />
         <DropdownMenuItem
           className="min-h-10"
           disabled={logOut.isPending}

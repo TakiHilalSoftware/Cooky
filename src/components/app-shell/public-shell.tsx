@@ -3,6 +3,7 @@ import { Suspense, type ReactNode } from "react";
 import type { AccountSummaryDto } from "@/server/features/account/dto";
 
 import { OfflineSync } from "@/components/offline/offline-sync";
+import { InstallBanner } from "@/components/pwa";
 import { QueryProvider } from "@/components/query/query-provider";
 
 import { AppSidebar, BottomNav } from "./app-nav";
@@ -59,6 +60,7 @@ export function PublicShell({ children, account, weather }: PublicShellProps) {
           <SiteFooter account={account} />
         </>
       )}
+      <InstallBanner />
     </>
   );
   // One client cache per signed-in account: a new account (or signing out) never sees the last one's data.
