@@ -11,14 +11,14 @@ import { mkdir, readFile } from "node:fs/promises";
 
 import sharp from "sharp";
 
-const BACKGROUND = "#f7f8f3";
+const BACKGROUND = "#e2a9f0";
 const svg = await readFile("src/app/icon.svg");
 await mkdir("public/icons", { recursive: true });
 
 /** The star at `scale` of the canvas, centred on the brand background. */
 async function icon(size: number, scale: number, file: string) {
   const inner = Math.round(size * scale);
-  const star = await sharp(svg, { density: 1200 }).resize(inner, inner).png().toBuffer();
+  const star = await sharp(svg).resize(inner, inner).png().toBuffer();
   await sharp({ create: { width: size, height: size, channels: 4, background: BACKGROUND } })
     .composite([{ input: star, gravity: "center" }])
     .png({ compressionLevel: 9 })
