@@ -6,7 +6,7 @@ describe("dates", () => {
   it("reads today in the person's zone, not the server's", () => {
     const lateEvening = new Date("2026-10-19T23:30:00Z");
     expect(dayIn("UTC", lateEvening)).toBe("2026-10-19");
-    expect(dayIn("Africa/Casablanca", lateEvening)).toBe("2026-10-20");
+    expect(dayIn("Europe/Paris", lateEvening)).toBe("2026-10-20");
     expect(dayIn("America/New_York", lateEvening)).toBe("2026-10-19");
   });
 
