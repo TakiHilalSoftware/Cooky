@@ -13,8 +13,9 @@ import {
   type ReactNode,
 } from "react";
 
-import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
+
+import { BusyPill } from "./busy-pill";
 
 const PendingContext = createContext(false);
 
@@ -100,13 +101,7 @@ export function PendingResults({ children, className }: { children: ReactNode; c
       </div>
       <div className="pointer-events-none absolute inset-0">
         <div role="status" className="sticky top-20 flex justify-center pt-2">
-          {pending ? (
-            // Fades in after a beat, so a quick answer never flashes it.
-            <span className="inline-flex animate-in items-center gap-2 rounded-full border border-border bg-card px-3.5 py-2 text-sm font-medium shadow-md delay-150 duration-200 fill-mode-backwards fade-in motion-reduce:animate-none">
-              <Spinner className="text-primary-strong" />
-              {t("updatingResults")}
-            </span>
-          ) : null}
+          {pending ? <BusyPill label={t("updatingResults")} /> : null}
         </div>
       </div>
     </div>
