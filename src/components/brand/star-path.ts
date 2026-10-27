@@ -1,7 +1,7 @@
 /**
  * Path of an eight-point zellige star ({8/2}: two overlapping squares),
- * centred at (cx, cy) with outer radius r. Pure geometry, shared by the logo,
- * the hero tile panel and empty-state illustrations.
+ * centred at (cx, cy) with outer radius r.
+ * @deprecated Legacy geometric star. Replaced by `COOKY_ICON_PATH` from `@/components/brand/brand-icon-path`.
  */
 export function starPath(cx: number, cy: number, r: number): string {
   // Inner radius where the two squares' edges cross.
