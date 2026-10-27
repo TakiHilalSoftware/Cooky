@@ -18,6 +18,7 @@ import { checkFields } from "@/lib/forms";
 import { HOME_AFTER_SIGN_IN } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { completeOnboarding, skipOnboarding, updateLocale } from "@/server/actions/settings";
+import { DishCover } from "@/components/brand/dish-cover";
 import type { CatalogCardDto } from "@/server/features/discover/dto";
 import type { KitchenDto } from "@/server/features/profile/dto";
 import { kitchenSchema } from "@/server/features/profile/schema";
@@ -202,6 +203,7 @@ export function OnboardingWizard({ kitchen, dishes, staples, initialStep }: Onbo
                       >
                         {on ? <CheckIcon className="size-4" /> : null}
                       </span>
+                      <DishCover photoUrl={dish.photoUrl} course={dish.course} seed={dish.slug} shape="thumb" />
                       <span className="min-w-0">
                         <span className="block font-medium">{dish.name}</span>
                         <span className="line-clamp-1 text-xs text-muted-foreground">{dish.description}</span>

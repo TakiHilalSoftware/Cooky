@@ -3,11 +3,12 @@ import { useTranslations } from "next-intl";
 
 import { PricingPlans } from "@/components/billing/pricing-plans";
 import { CatalogCard } from "@/components/discover/catalog-card";
+import { useCountry } from "@/components/discover/use-country";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import type { PricingDto } from "@/server/features/billing/dto";
-import type { CatalogCardDto } from "@/server/features/discover/dto";
+import type { HomeDishesDto } from "@/server/features/discover/dto";
 
 import { FEATURES } from "./features";
 
@@ -57,32 +58,42 @@ export function FeatureGrid({ signedIn }: { signedIn: boolean }) {
 
 export { KitchenStoryline } from "./kitchen-storyline";
 
-/** A row of Discover dishes to try, with a way into the full catalog. */
-export function DiscoverPreview({ dishes }: { dishes: CatalogCardDto[] }) {
+/**
+ * A row of Discover dishes with a way into the full catalog: today's picks,
+ * each with its reason, for a signed-in person; featured dishes for visitors.
+ */
+export function DiscoverPreview({ data }: { data: HomeDishesDto }) {
   const t = useTranslations("home");
-  if (dishes.length === 0) return null;
+  const country = useCountry();
+  if (data.dishes.length === 0) return null;
   return (
     <section aria-labelledby="discover-preview-heading" className="space-y-8 border-t border-border py-16 sm:py-20">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="space-y-1">
           <h2 id="discover-preview-heading" className="font-heading text-3xl font-extrabold sm:text-4xl">
-            {t("discoverHeading")}
+            {data.personalized ? t("discoverPicksHeading") : t("discoverHeading")}
           </h2>
-          <p className="text-base text-muted-foreground sm:text-lg">
-            Curated authentic dishes from 14 culinary traditions, tested and ready to cook.
+          <p className="text-base text-pretty text-muted-foreground sm:text-lg">
+            {data.personalized ? t("discoverPicksBody") : t("discoverBody", { count: data.countryCount })}
           </p>
         </div>
-        <Button asChild variant="outline" className="h-11 px-5">
+        <Button asChild variant="outline" size="lg">
           <Link href="/discover">
             {t("discoverAll")}
-            <ArrowRightIcon aria-hidden="true" data-icon="inline-end" className="ms-1 rtl:-scale-x-100" />
+            <ArrowRightIcon aria-hidden="true" data-icon="inline-end" className="rtl:-scale-x-100" />
           </Link>
         </Button>
       </div>
-      {/* Mobile swipe carousel / Desktop responsive grid */}
+      {/* Phones: a swipe row. Wider screens: a grid. */}
       <ul className="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-6 overflow-x-auto px-4 pb-4 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-3">
-        {dishes.slice(0, 6).map((dish) => (
-          <CatalogCard key={dish.slug} dish={dish} className="w-80 shrink-0 snap-start sm:w-auto" />
+        {data.dishes.slice(0, 6).map((dish) => (
+          <CatalogCard
+            key={dish.slug}
+            dish={dish}
+            countryName={country.name(dish.country)}
+            reason={dish.reason}
+            className="w-80 max-w-[85vw] shrink-0 snap-start sm:w-auto sm:max-w-none"
+          />
         ))}
       </ul>
     </section>

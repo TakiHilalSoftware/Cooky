@@ -18,7 +18,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
   return (
     <HomeHero signedIn={signedIn}>
       <KitchenStoryline signedIn={signedIn} />
-      <DiscoverPreview dishes={dishes} />
+      <DiscoverPreview data={dishes} />
       <PricingSection pricing={pricing} />
     </HomeHero>
   );
