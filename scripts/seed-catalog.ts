@@ -1146,6 +1146,7 @@ if (process.argv[1]?.includes("seed-catalog")) {
   const { eq, inArray } = await import("drizzle-orm");
   const { getDb } = await import("../src/server/db/client");
   const { catalogDishes, catalogIngredients, catalogSteps, ingredients } = await import("../src/server/db/schema");
+  const { getCuratedDishPhoto } = await import("../src/lib/curated-dishes");
   const db = getDb();
   const staples = await db.select().from(ingredients);
   const bySlug = new Map(staples.map((row) => [row.slug, row]));
@@ -1162,6 +1163,8 @@ if (process.argv[1]?.includes("seed-catalog")) {
         dietaryTags: entry.dietaryTags,
         collections: entry.collections,
         featured: entry.featured ?? false,
+        photoUrl: getCuratedDishPhoto(entry.slug) ?? null,
+        source: "curated",
         nameEn: entry.name.en,
         nameFr: entry.name.fr,
         nameAr: entry.name.ar,
@@ -1212,8 +1215,8 @@ if (process.argv[1]?.includes("seed-catalog")) {
   }
   // Dishes removed from this list leave the catalog (saved copies keep their own text).
   const keep = CATALOG.map((e) => e.slug);
-  const all = await db.select({ slug: catalogDishes.slug }).from(catalogDishes);
-  const stale = all.map((r) => r.slug).filter((slug) => !keep.includes(slug));
+  const all = await db.select({ slug: catalogDishes.slug, source: catalogDishes.source }).from(catalogDishes);
+  const stale = all.filter((r) => r.source === "curated" && !keep.includes(r.slug)).map((r) => r.slug);
   if (stale.length > 0) await db.delete(catalogDishes).where(inArray(catalogDishes.slug, stale));
   console.log(`Seeded ${CATALOG.length} catalog dishes.`);
   process.exit(0);
