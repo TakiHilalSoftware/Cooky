@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { browser } from "./support/browser";
 import { db, resetData, userByEmail } from "./support/db";
@@ -10,9 +10,12 @@ const sendEmail = vi.hoisted(() => vi.fn(async () => {}));
 vi.mock("@/server/notify/email/send", () => ({ sendEmail }));
 
 const schema = await import("@/server/db/schema");
-const { saveCatalogDish } = await import("@/server/actions/discover");
+const { loadMoreDiscover, saveCatalogDish } = await import("@/server/actions/discover");
 const dishes = await import("@/server/actions/dishes");
-const { getCatalogDish, getDiscover } = await import("@/server/features/discover/queries");
+const { getCatalogDish, getDiscover, getHomeDishes, getStarterDishes } = await import(
+  "@/server/features/discover/queries"
+);
+const { DISCOVER_PAGE_SIZE } = await import("@/lib/dishes");
 const { getDish, getDishForEdit, listMyDishes } = await import("@/server/features/dishes/queries");
 
 beforeAll(() => hibp.listen({ onUnhandledFrame: "error" }));
@@ -97,7 +100,10 @@ describe("saveCatalogDish", () => {
     const [row] = await db().select().from(schema.dishes).where(eq(schema.dishes.userId, userId));
     expect(row).toMatchObject({ name: "Harira", followsCatalog: true });
     expect(row?.catalogDishId).not.toBeNull();
-    expect((await getDiscover({}, "en")).dishes.find((d) => d.slug === "harira")?.saved).toBe(true);
+    // By name, so the dish is on the first page whatever "for you" ranks first.
+    expect((await getDiscover({ sort: "name", country: "MA" }, "en")).dishes.find((d) => d.slug === "harira")?.saved).toBe(
+      true,
+    );
     expect((await getCatalogDish("harira", "en"))?.savedDishId).toBe(first.data!.dishId);
     // Its ingredients are linked to the dictionary like any dish.
     const lines = await db()
@@ -148,5 +154,127 @@ describe("saveCatalogDish", () => {
     const again = await saveCatalogDish({ slug: "hummus", locale: "en" });
     expect(again.data?.alreadySaved).toBe(false);
     expect(again.data?.dishId).not.toBe(data!.dishId);
+  });
+});
+
+/** Extra catalog rows so the list runs past one page; removed again after each test. */
+async function withExtraDishes(n: number) {
+  await db()
+    .insert(schema.catalogDishes)
+    .values(
+      Array.from({ length: n }, (_, i) => ({
+        slug: `zz-paging-${String(i).padStart(2, "0")}`,
+        country: "JP",
+        course: "main" as const,
+        difficulty: "easy" as const,
+        servings: 2,
+        source: "test",
+        nameEn: `Zz paging ${String(i).padStart(2, "0")}`,
+        descriptionEn: "A dish for paging tests.",
+      })),
+    );
+}
+
+describe("Discover paging and order", () => {
+  afterEach(async () => {
+    await db().delete(schema.catalogDishes).where(eq(schema.catalogDishes.source, "test"));
+  });
+
+  it("shows one page, counts them all, and the next page continues without repeats", async () => {
+    await withExtraDishes(30);
+    const first = await getDiscover({ sort: "name" }, "en");
+    expect(first.dishes).toHaveLength(DISCOVER_PAGE_SIZE);
+    expect(first.total).toBeGreaterThan(DISCOVER_PAGE_SIZE * 2);
+    expect(first.nextPage).toBe(2);
+
+    const second = await loadMoreDiscover({ sort: "name", page: 2, locale: "en" });
+    expect(second.data?.dishes).toHaveLength(DISCOVER_PAGE_SIZE);
+    const shown = [...first.dishes, ...second.data!.dishes].map((d) => d.slug);
+    expect(new Set(shown).size).toBe(shown.length);
+    // A refresh at ?page=2 renders exactly what scrolling had shown.
+    expect((await getDiscover({ sort: "name", page: 2 }, "en")).dishes.map((d) => d.slug)).toEqual(shown);
+  });
+
+  it("the last page says there's nothing after it", async () => {
+    await withExtraDishes(30);
+    const { total } = await getDiscover({ sort: "name" }, "en");
+    const lastPage = Math.ceil(total / DISCOVER_PAGE_SIZE);
+    const last = await loadMoreDiscover({ sort: "name", page: lastPage, locale: "en" });
+    expect(last.data?.nextPage).toBeNull();
+    expect(last.data?.dishes.length).toBe(total - (lastPage - 1) * DISCOVER_PAGE_SIZE);
+  });
+
+  it("keeps the filters when scrolling on", async () => {
+    await withExtraDishes(30);
+    const more = await loadMoreDiscover({ country: "JP", sort: "name", page: 2, locale: "en" });
+    expect(more.data?.dishes.every((d) => d.country === "JP")).toBe(true);
+  });
+
+  it("rejects a first page or an absurd one (the page itself renders those)", async () => {
+    expect((await loadMoreDiscover({ page: 1, locale: "en" })).validationErrors).toBeDefined();
+    expect((await loadMoreDiscover({ page: 5000, locale: "en" })).validationErrors).toBeDefined();
+  });
+
+  it("visitors get the popular order, even if the URL asks for one made for someone", async () => {
+    expect((await getDiscover({}, "en")).sort).toBe("popular");
+    expect((await getDiscover({ sort: "for_you" }, "en")).sort).toBe("popular");
+    expect((await getDiscover({ sort: "newest" }, "en")).sort).toBe("newest");
+  });
+
+  it("popular puts what people save first", async () => {
+    await signedIn("one@example.com");
+    await saveCatalogDish({ slug: "tabbouleh", locale: "en" });
+    browser.reset();
+    expect((await getDiscover({}, "en")).dishes[0]?.slug).toBe("tabbouleh");
+  });
+
+  it("featured dishes only on the unfiltered first screen", async () => {
+    expect((await getDiscover({}, "en")).featured.length).toBeGreaterThan(0);
+    expect((await getDiscover({ course: "main" }, "en")).featured).toEqual([]);
+  });
+});
+
+describe("for you", () => {
+  it("is the default once signed in and sinks dishes outside their diet", async () => {
+    const userId = await signedIn();
+    await db().update(schema.profiles).set({ dietaryPrefs: ["vegan"] }).where(eq(schema.profiles.userId, userId));
+    const data = await getDiscover({}, "en");
+    expect(data.sort).toBe("for_you");
+    const firstOffDiet = data.dishes.findIndex((d) => !d.dietaryTags.includes("vegan"));
+    const lastVegan = data.dishes.findLastIndex((d) => d.dietaryTags.includes("vegan"));
+    expect(firstOffDiet).toBeGreaterThan(lastVegan);
+  });
+
+  it("names the ingredients from their kitchen, never staples", async () => {
+    const userId = await signedIn();
+    await db()
+      .insert(schema.pantryItems)
+      .values([
+        { userId, name: "chickpeas", key: "chickpeas" },
+        { userId, name: "tahini", key: "tahini" },
+        { userId, name: "salt", key: "salt", isStaple: true },
+      ]);
+    const hummus = (await getDiscover({}, "en")).dishes.find((d) => d.slug === "hummus");
+    expect(hummus?.reason).toMatchObject({ kind: "have" });
+    expect(hummus?.reason?.kind === "have" && hummus.reason.names.map((n) => n.toLowerCase())).not.toContain("salt");
+  });
+
+  it("the landing page shows the same picks all day, never one already saved", async () => {
+    await signedIn();
+    await saveCatalogDish({ slug: "harira", locale: "en" });
+    const home = await getHomeDishes("en");
+    expect(home.personalized).toBe(true);
+    expect(home.dishes.map((d) => d.slug)).not.toContain("harira");
+    expect((await getHomeDishes("en")).dishes.map((d) => d.slug)).toEqual(home.dishes.map((d) => d.slug));
+  });
+
+  it("visitors see featured dishes on the landing page; the starter pack favours photos", async () => {
+    const home = await getHomeDishes("en");
+    expect(home.personalized).toBe(false);
+    expect(home.countryCount).toBeGreaterThanOrEqual(12);
+    await signedIn();
+    const starter = await getStarterDishes("en");
+    expect(starter.length).toBeGreaterThan(0);
+    expect(starter.slice(0, 6).every((d) => d.photoUrl !== null)).toBe(true);
   });
 });
