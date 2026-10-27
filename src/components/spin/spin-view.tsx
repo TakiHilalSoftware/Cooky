@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRef, useState, type FormEvent } from "react";
 
 import { useOnline } from "@/components/app-shell/use-online";
-import { ZelligeStar } from "@/components/brand/zellige-star";
+import { CookyIcon } from "@/components/brand/cooky-icon";
 import { CookCard } from "@/components/cook/cook-card";
 import { haptic } from "@/components/feedback/haptics";
 import { TriesMeter } from "@/components/paywall/tries-meter";
@@ -207,7 +207,7 @@ export function SpinView({ page }: { page: SpinPageDto }) {
       <div ref={resultRef} tabIndex={-1} aria-live="polite" className="space-y-4 outline-none">
         {spinning ? (
           <div className="grid place-items-center gap-4 rounded-3xl border border-border bg-card p-10">
-            <ZelligeStar className="size-28 motion-safe:animate-[spin_0.9s_cubic-bezier(.4,.1,.3,1)_infinite]" />
+            <CookyIcon className="size-28 motion-safe:animate-[spin_0.9s_cubic-bezier(.4,.1,.3,1)_infinite]" />
             <p className="font-medium">{t("spinning")}</p>
           </div>
         ) : outcome?.kind === "result" ? (
@@ -239,7 +239,7 @@ export function SpinView({ page }: { page: SpinPageDto }) {
               "grid place-items-center gap-4 rounded-3xl border border-dashed border-border p-10 text-center",
             )}
           >
-            <ZelligeStar className="size-24 opacity-80" />
+            <CookyIcon className="size-24 opacity-80" />
             <p className="max-w-sm text-muted-foreground">{t("idle")}</p>
           </div>
         )}
