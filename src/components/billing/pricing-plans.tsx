@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { PLAN_RANK, TRIAL_DAYS, type BillingInterval, type PaidPlan, type Plan } from "@config/plans";
-import { ZelligeStar } from "@/components/brand/zellige-star";
+import { CookyIcon } from "@/components/brand/cooky-icon";
 import { TilePanel } from "@/components/marketing/tile-panel";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -130,7 +130,7 @@ function PlanCard({
         <TilePanel className="h-12 rounded-none shadow-none ring-0" />
       ) : (
         <div aria-hidden="true" className="flex h-12 items-center px-6">
-          <ZelligeStar className="size-6" />
+          <CookyIcon className="size-6" />
         </div>
       )}
 
