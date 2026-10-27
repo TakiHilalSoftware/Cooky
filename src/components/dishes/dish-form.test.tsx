@@ -2,12 +2,14 @@ import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { DishFormDto } from "@/server/features/dishes/dto";
+import type { DishDraftDto, DishFormDto } from "@/server/features/dishes/dto";
 
 import { renderWithIntl } from "../../../tests/setup/render";
 
 const actions = vi.hoisted(() => ({ createDish: vi.fn(), updateDish: vi.fn() }));
 vi.mock("@/server/actions/dishes", () => actions);
+const photoActions = vi.hoisted(() => ({ uploadDishPhoto: vi.fn() }));
+vi.mock("@/server/actions/photos", () => photoActions);
 vi.mock("@/server/actions/ingredients", () => ({ suggestIngredients: vi.fn(async () => ({ data: [] })) }));
 vi.mock("@/server/actions/voice", () => ({ dictateIngredients: vi.fn() }));
 const router = vi.hoisted(() => ({ push: vi.fn() }));
@@ -20,7 +22,16 @@ vi.mock("sonner", () => ({ toast }));
 const { DishForm } = await import("./dish-form");
 
 beforeEach(() => {
-  for (const fn of [actions.createDish, actions.updateDish, router.push, onActionError, toast.success]) fn.mockReset();
+  for (const fn of [
+    actions.createDish,
+    actions.updateDish,
+    photoActions.uploadDishPhoto,
+    router.push,
+    onActionError,
+    toast.success,
+    toast.error,
+  ])
+    fn.mockReset();
 });
 
 const rows = () => within(screen.getByRole("region", { name: "Ingredients" })).getAllByRole("listitem");
@@ -165,5 +176,157 @@ describe("DishForm (edit)", () => {
     );
     expect(toast.success).toHaveBeenCalledWith("Changes saved");
     expect(router.push).toHaveBeenCalledWith(`/dishes/${dish.id}`);
+  });
+});
+
+describe("DishForm (new, with a photo)", () => {
+  const id = "0192f0c8-0000-7000-8000-000000000003";
+  const fileInput = () => document.querySelector<HTMLInputElement>('input[type="file"]')!;
+  const jpeg = () => new File(["jpeg bytes"], "tagine.jpg", { type: "image/jpeg" });
+
+  beforeEach(() => {
+    vi.stubGlobal(
+      "URL",
+      Object.assign(URL, { createObjectURL: vi.fn(() => "blob:preview"), revokeObjectURL: vi.fn() }),
+    );
+  });
+
+  async function fillMinimum(user: ReturnType<typeof userEvent.setup>) {
+    await user.type(screen.getByLabelText("Name"), "Tagine");
+    await user.type(within(rows()[0]!).getByRole("combobox", { name: "Ingredient" }), "Chicken");
+  }
+
+  it("shows the picked photo, then uploads it to the new dish once it's saved", async () => {
+    const user = userEvent.setup();
+    actions.createDish.mockResolvedValue({ data: { id } });
+    photoActions.uploadDishPhoto.mockResolvedValue({ data: { photo: { url: "u", smallUrl: "s" } } });
+    renderWithIntl(<DishForm photosEnabled />);
+
+    await fillMinimum(user);
+    await user.upload(fileInput(), jpeg());
+    expect(screen.getByRole("img", { name: "Tagine" })).toHaveAttribute("src", "blob:preview");
+    expect(screen.getByRole("button", { name: "Change photo" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Add dish" }));
+
+    await waitFor(() => expect(router.push).toHaveBeenCalledWith(`/dishes/${id}`));
+    const form = photoActions.uploadDishPhoto.mock.calls[0]![0] as FormData;
+    expect(form.get("dishId")).toBe(id);
+    expect((form.get("photo") as File).name).toBe("tagine.jpg");
+    expect(toast.success).toHaveBeenCalledWith("“Tagine” added");
+  });
+
+  it("keeps the dish when the photo fails, and says so honestly", async () => {
+    const user = userEvent.setup();
+    actions.createDish.mockResolvedValue({ data: { id } });
+    photoActions.uploadDishPhoto.mockResolvedValue({ serverError: "invalid" });
+    renderWithIntl(<DishForm photosEnabled />);
+
+    await fillMinimum(user);
+    await user.upload(fileInput(), jpeg());
+    await user.click(screen.getByRole("button", { name: "Add dish" }));
+
+    await waitFor(() => expect(router.push).toHaveBeenCalledWith(`/dishes/${id}`));
+    expect(toast.error).toHaveBeenCalledWith(
+      "“Tagine” added, but its photo couldn't be saved. Try again from the dish page.",
+    );
+    expect(toast.success).not.toHaveBeenCalled();
+  });
+
+  it("refuses a file that isn't a photo before anything is sent", async () => {
+    const user = userEvent.setup({ applyAccept: false });
+    actions.createDish.mockResolvedValue({ data: { id } });
+    renderWithIntl(<DishForm photosEnabled />);
+
+    await fillMinimum(user);
+    await user.upload(fileInput(), new File(["%PDF"], "menu.pdf", { type: "application/pdf" }));
+    expect(
+      screen.getByText("That file isn't a photo we can use. Pick a JPEG, PNG, WebP or AVIF image."),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Add dish" }));
+    await waitFor(() => expect(router.push).toHaveBeenCalled());
+    expect(photoActions.uploadDishPhoto).not.toHaveBeenCalled();
+  });
+
+  it("removing the picked photo saves the dish without one", async () => {
+    const user = userEvent.setup();
+    actions.createDish.mockResolvedValue({ data: { id } });
+    renderWithIntl(<DishForm photosEnabled />);
+
+    await fillMinimum(user);
+    await user.upload(fileInput(), jpeg());
+    await user.click(screen.getByRole("button", { name: "Remove photo" }));
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Add dish" }));
+    await waitFor(() => expect(router.push).toHaveBeenCalled());
+    expect(photoActions.uploadDishPhoto).not.toHaveBeenCalled();
+  });
+
+  describe("from an imported recipe", () => {
+    const draft: DishDraftDto = {
+      name: "Harira",
+      difficulty: "easy",
+      course: "main",
+      servings: 6,
+      seasons: [],
+      dietaryTags: [],
+      ingredients: [{ name: "Lentils", amount: 200, unit: "g", note: null }],
+      steps: [],
+      caloriesKcal: null,
+      proteinG: null,
+      carbsG: null,
+      fatG: null,
+      source: { url: "https://example.com/harira", siteName: "Example", imageUrl: "https://example.com/h.jpg" },
+    };
+
+    it("says the site's photo comes along, and keeps it when none is picked", async () => {
+      const user = userEvent.setup();
+      actions.createDish.mockResolvedValue({ data: { id } });
+      renderWithIntl(<DishForm draft={draft} photosEnabled />);
+      expect(screen.getByText(/The photo from Example is added when you save/)).toBeInTheDocument();
+
+      await user.click(screen.getByRole("button", { name: "Add dish" }));
+      await waitFor(() => expect(actions.createDish).toHaveBeenCalled());
+      expect(actions.createDish.mock.calls[0]![0].source).toEqual(draft.source);
+    });
+
+    it("doesn't fetch the site's photo when the person picked their own", async () => {
+      const user = userEvent.setup();
+      actions.createDish.mockResolvedValue({ data: { id } });
+      photoActions.uploadDishPhoto.mockResolvedValue({ data: { photo: { url: "u", smallUrl: "s" } } });
+      renderWithIntl(<DishForm draft={draft} photosEnabled />);
+
+      await user.upload(fileInput(), jpeg());
+      expect(screen.queryByText(/The photo from Example/)).not.toBeInTheDocument();
+      await user.click(screen.getByRole("button", { name: "Add dish" }));
+      await waitFor(() => expect(photoActions.uploadDishPhoto).toHaveBeenCalled());
+      expect(actions.createDish.mock.calls[0]![0].source).toEqual({ ...draft.source, imageUrl: null });
+    });
+  });
+
+  it("explains when photos are switched off, without blocking the dish", () => {
+    renderWithIntl(<DishForm photosEnabled={false} />);
+    expect(screen.getByText("Photo uploads aren't available yet. Everything else works as usual.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Add a photo" })).not.toBeInTheDocument();
+  });
+
+  it("isn't offered on the edit form, where the photo has its own card", () => {
+    const dish: DishFormDto = {
+      id,
+      name: "Tagine",
+      difficulty: "easy",
+      course: "main",
+      servings: 4,
+      seasons: [],
+      dietaryTags: [],
+      ingredients: [{ name: "Chicken", amount: null, unit: null, note: null }],
+      steps: [],
+      caloriesKcal: null,
+      proteinG: null,
+      carbsG: null,
+      fatG: null,
+    };
+    renderWithIntl(<DishForm dish={dish} photosEnabled />);
+    expect(screen.queryByRole("region", { name: "Photo" })).not.toBeInTheDocument();
   });
 });

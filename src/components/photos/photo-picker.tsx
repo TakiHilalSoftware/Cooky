@@ -12,13 +12,11 @@ import type { ActionErrorCode } from "@/lib/errors";
 import type { PhotoDto } from "@/server/features/photos/dto";
 import { cn } from "@/lib/utils";
 
-/** The formats sharp re-encodes. Asking for JPEG makes iPhones convert HEIC photos on the way out. */
-const ACCEPT = "image/jpeg,image/png,image/webp,image/avif,image/gif";
-/** Matches the server's cap (MAX_PHOTO_BYTES); checked here only to answer instantly. */
-const MAX_BYTES = 5 * 1024 * 1024;
+import { PHOTO_ACCEPT, photoFileProblem, type PhotoFileProblem } from "./photo-file";
+import { PhotoFrame } from "./photo-frame";
 
 type Result = { data?: { photo: PhotoDto | null }; serverError?: ActionErrorCode } | undefined;
-type Problem = "tooLarge" | "wrongType" | "unreadable" | "unavailable" | "offline";
+type Problem = PhotoFileProblem | "unreadable" | "unavailable" | "offline";
 
 /**
  * Add, replace or remove one photo. Changes save at once (they aren't part of
@@ -47,7 +45,6 @@ export function PhotoPicker({
 }) {
   const t = useTranslations("photos");
   const online = useOnline();
-  const inputId = useId();
   const hintId = useId();
   const input = useRef<HTMLInputElement>(null);
   const [current, setCurrent] = useState(photo);
@@ -73,8 +70,8 @@ export function PhotoPicker({
     if (!file) return;
     setProblem(null);
     if (!online) return setProblem("offline");
-    if (!ACCEPT.split(",").includes(file.type)) return setProblem("wrongType");
-    if (file.size > MAX_BYTES) return setProblem("tooLarge");
+    const fileProblem = photoFileProblem(file);
+    if (fileProblem) return setProblem(fileProblem);
     setPreview(URL.createObjectURL(file));
     setBusy("upload");
     const result = await upload(file);
@@ -99,20 +96,13 @@ export function PhotoPicker({
   }
 
   const shown = preview ?? current?.url ?? null;
-  const frame = shape === "round" ? "size-24 rounded-full" : "aspect-[4/3] w-full max-w-sm rounded-2xl";
-
-  const empty = fallback ?? <CameraIcon aria-hidden="true" className="size-8 text-muted-foreground" />;
   // Round (profile): the photo sits above its buttons and notes; wide (dish): the same, at full width.
   const layout = cn("flex flex-col gap-3", shape === "round" && "items-start");
-  const frameClass = cn(
-    "relative grid shrink-0 place-items-center overflow-hidden border border-border bg-muted",
-    frame,
-  );
 
   if (!enabled) {
     return (
       <div className={layout}>
-        {shape === "round" ? <div className={frameClass}>{empty}</div> : null}
+        {shape === "round" ? <PhotoFrame src={null} alt={alt} shape={shape} fallback={fallback} /> : null}
         <p className="flex items-start gap-2 text-sm text-muted-foreground">
           <ImageOffIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
           {t("disabled")}
@@ -123,33 +113,36 @@ export function PhotoPicker({
 
   return (
     <div className={layout}>
-      <div className={frameClass}>
-        {shown ? (
-          // A plain <img>: signed URLs change every render, so the image optimizer would only re-download them.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={shown} alt={alt} className="size-full object-cover" />
-        ) : (
-          empty
-        )}
-        {busy === "upload" ? (
-          <div className="absolute inset-0 grid place-items-center bg-background/60">
-            <Spinner />
-          </div>
-        ) : null}
-      </div>
+      <PhotoFrame
+        src={shown}
+        alt={alt}
+        shape={shape}
+        fallback={fallback}
+        busy={busy !== null}
+        title={t("dropHint")}
+        onFile={onPick}
+        onBrowse={() => input.current?.click()}
+      />
       <div className="space-y-2">
         <div className="flex flex-wrap gap-2">
           <input
             ref={input}
-            id={inputId}
             type="file"
-            accept={ACCEPT}
+            accept={PHOTO_ACCEPT}
+            // The button below is the labelled, keyboard path to this input.
             className="sr-only"
-            aria-describedby={hintId}
+            tabIndex={-1}
+            aria-hidden="true"
             disabled={busy !== null}
             onChange={(e) => onPick(e.target.files?.[0])}
           />
-          <Button type="button" variant="outline" disabled={busy !== null} onClick={() => input.current?.click()}>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={busy !== null}
+            aria-describedby={hintId}
+            onClick={() => input.current?.click()}
+          >
             <CameraIcon aria-hidden="true" data-icon="inline-start" />
             {busy === "upload" ? t("uploading") : current ? t("replace") : t("add")}
           </Button>

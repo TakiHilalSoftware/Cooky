@@ -47,11 +47,13 @@ import {
 import { checkFields, type FieldErrorKeys } from "@/lib/forms";
 import { cn } from "@/lib/utils";
 import { createDish, updateDish } from "@/server/actions/dishes";
+import { uploadDishPhoto } from "@/server/actions/photos";
 import type { UsageDto } from "@/server/features/billing/dto";
 import type { DishDraftDto, DishFormDto, IngredientDto } from "@/server/features/dishes/dto";
 import { dishInputSchema } from "@/server/features/dishes/schema";
 
 import { IngredientNameField } from "./ingredient-name-field";
+import { NewDishPhotoField } from "./new-dish-photo-field";
 import { VoiceDictation } from "./voice-dictation";
 
 type IngredientRow = { key: number; amount: string; unit: Unit | ""; name: string; note: string };
@@ -141,11 +143,14 @@ export function DishForm({
   dish,
   draft,
   voiceUsage,
+  photosEnabled,
 }: {
   dish?: DishFormDto;
   draft?: DishDraftDto;
   /** Voice tries left, for the dictation button. */
   voiceUsage?: UsageDto | null;
+  /** New dishes only: whether photo storage works. An existing dish's photo has its own card. */
+  photosEnabled?: boolean;
 }) {
   const t = useTranslations("dishes");
   const tf = useTranslations("dishes.form");
@@ -163,13 +168,15 @@ export function DishForm({
   const [errors, setErrors] = useState<FieldErrorKeys>({});
   const [submitted, setSubmitted] = useState(false);
   const [confirmDiscard, setConfirmDiscard] = useState(false);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const pendingFocus = useRef<string | null>(null);
   const create = useAction(createDish);
   const update = useAction(updateDish);
-  const pending = create.isPending || update.isPending;
+  const pending = create.isPending || update.isPending || uploadingPhoto;
   const saved = useRef(false);
   // An imported draft isn't saved yet: leaving it should ask, like any change.
-  const dirty = Boolean(draft) || JSON.stringify(state) !== JSON.stringify(initial);
+  const dirty = Boolean(draft) || photo !== null || JSON.stringify(state) !== JSON.stringify(initial);
 
   // Leaving with unsaved changes (closing the tab, reloading) asks first.
   useEffect(() => {
@@ -250,18 +257,39 @@ export function DishForm({
       return;
     }
     setErrors({});
+    // A photo the person picked wins over the imported one, so that one isn't fetched for nothing.
+    const source = draft?.source ? { ...draft.source, imageUrl: photo ? null : draft.source.imageUrl } : undefined;
     const result = dish
       ? await update.executeAsync({ ...check.data, id: dish.id })
-      : await create.executeAsync({ ...check.data, source: draft?.source ?? undefined });
+      : await create.executeAsync({ ...check.data, source });
     if (result.data) {
       saved.current = true;
-      toast.success(dish ? tf("saved") : tf("created", { name: check.data.name }));
+      if (!dish && photo && !(await savePhoto(result.data.id, photo))) {
+        // The dish is saved either way; its page offers "Add a photo" to try again.
+        toast.error(tf("createdWithoutPhoto", { name: check.data.name }));
+      } else {
+        toast.success(dish ? tf("saved") : tf("created", { name: check.data.name }));
+      }
       router.push(`/dishes/${result.data.id}`);
       return;
     }
     // A full box opens the upgrade sheet; other errors show above the form.
     if (result.serverError === "quota_exceeded" || result.serverError === "plan_required") {
       onActionError(result.serverError, "dishes");
+    }
+  }
+
+  async function savePhoto(dishId: string, file: File): Promise<boolean> {
+    setUploadingPhoto(true);
+    try {
+      const form = new FormData();
+      form.append("dishId", dishId);
+      form.append("photo", file);
+      return Boolean((await uploadDishPhoto(form))?.data);
+    } catch {
+      return false;
+    } finally {
+      setUploadingPhoto(false);
     }
   }
 
@@ -346,6 +374,19 @@ export function DishForm({
           />
         </div>
       </Section>
+
+      {!dish && photosEnabled !== undefined ? (
+        <Section title={tf("photo")} hint={photosEnabled ? tf("photoHint") : undefined}>
+          <NewDishPhotoField
+            file={photo}
+            onChange={setPhoto}
+            enabled={photosEnabled}
+            alt={state.name.trim() || tf("newTitle")}
+            importedFrom={draft?.source?.imageUrl ? draft.source.siteName : null}
+            disabled={pending}
+          />
+        </Section>
+      ) : null}
 
       <Section title={tf("ingredients")} hint={tf("ingredientsHint")} error={err("ingredients")}>
         <div className="mb-4">
@@ -581,7 +622,15 @@ export function DishForm({
         </Button>
         <Button type="submit" size="lg" disabled={pending} aria-busy={pending || undefined}>
           {pending ? <Spinner data-icon="inline-start" /> : null}
-          {pending ? (dish ? tf("saving") : tf("creating")) : dish ? tf("save") : tf("create")}
+          {uploadingPhoto
+            ? tf("savingPhoto")
+            : pending
+              ? dish
+                ? tf("saving")
+                : tf("creating")
+              : dish
+                ? tf("save")
+                : tf("create")}
         </Button>
       </div>
 
