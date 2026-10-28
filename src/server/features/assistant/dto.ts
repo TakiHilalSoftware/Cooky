@@ -12,7 +12,15 @@ export type AssistantPickDto =
       /** What's missing from My kitchen. */
       missing: string[];
     }
-  | { kind: "discover"; slug: string; name: string; why: string; description: string; saved: boolean };
+  | {
+      kind: "discover";
+      slug: string;
+      name: string;
+      why: string;
+      photoUrl: string | null;
+      description: string;
+      saved: boolean;
+    };
 
 export type AssistantMessageDto = {
   id: string;

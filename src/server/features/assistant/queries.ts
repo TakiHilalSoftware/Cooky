@@ -72,6 +72,7 @@ export async function hydratePicks(
             slug: card.slug,
             name: card.name,
             why: pick.why,
+            photoUrl: card.photoUrl,
             description: card.description,
             saved: card.saved,
           });
