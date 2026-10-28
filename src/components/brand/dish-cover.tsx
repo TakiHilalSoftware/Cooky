@@ -1,35 +1,36 @@
-import { useId } from "react";
+import { CakeSliceIcon, CookingPotIcon, CupSodaIcon, SaladIcon, SoupIcon, type LucideIcon } from "lucide-react";
 
 import type { Course } from "@/lib/dishes";
 import { cn } from "@/lib/utils";
 
-import { COOKY_ICON_PATH } from "./brand-icon-path";
-
 /**
- * Each course is laid in its own colourway of the Cooky brand mark,
- * all from theme tokens: covers follow the person's accent and
- * theme, and a box of dishes reads with brand identity rather than blank cards.
+ * Without a photo, a dish gets one illustration of its course in that course's
+ * colourway, all from theme tokens: covers follow the person's accent and
+ * theme, and read as "a soup", "a dessert" rather than as a photo of the dish.
  */
-const COLOURWAYS: Record<Course, { ground: string; icon: string }> = {
-  main: { ground: "fill-tile", icon: "fill-primary" },
-  appetizer: { ground: "fill-primary", icon: "fill-tile" },
-  side: { ground: "fill-secondary", icon: "fill-tile" },
-  dessert: { ground: "fill-primary", icon: "fill-card" },
-  drinks: { ground: "fill-tile", icon: "fill-card" },
+const COURSE_COVERS: Record<Course, { ground: string; ink: string; Icon: LucideIcon }> = {
+  main: { ground: "bg-tile", ink: "text-primary", Icon: CookingPotIcon },
+  appetizer: { ground: "bg-primary", ink: "text-tile", Icon: SoupIcon },
+  side: { ground: "bg-secondary", ink: "text-tile", Icon: SaladIcon },
+  dessert: { ground: "bg-primary", ink: "text-card", Icon: CakeSliceIcon },
+  drinks: { ground: "bg-tile", ink: "text-card", Icon: CupSodaIcon },
 };
 
-/** Small, stable number from a name, so two dishes of one course don't lay their tiles identically. */
-function shift(seed: string, tile: number): number {
+/** The light falls from a different corner per dish, so two covers of one course aren't identical. */
+const LIGHT = ["bg-linear-to-br", "bg-linear-to-bl", "bg-linear-to-tr", "bg-linear-to-tl"] as const;
+
+/** Small, stable number from a name. */
+function shift(seed: string, range: number): number {
   let hash = 0;
   for (const char of seed) hash = (hash * 31 + char.charCodeAt(0)) | 0;
-  return Math.abs(hash) % tile;
+  return Math.abs(hash) % range;
 }
 
 type DishCoverProps = {
-  /** A signed photo link; without one, the course's tile shows instead. */
+  /** A signed photo link; without one, the course's illustration shows instead. */
   photoUrl: string | null;
   course: Course;
-  /** Seeds the tile offset (the dish name or id). */
+  /** Varies the cover's light (the dish name or id). */
   seed: string;
   /** "band": a short strip across a card · "photo": 4:3 · "thumb": a square. */
   shape?: "band" | "photo" | "thumb";
@@ -44,13 +45,14 @@ const SHAPES = {
   thumb: "size-16 shrink-0 rounded-xl",
 } as const;
 
+const ICON_SIZES = { band: "size-8", photo: "size-16", thumb: "size-7" } as const;
+
 /**
- * A dish's picture: its photo when there is one, otherwise a tiled cover with the
- * Cooky brand mark in the colours of its course. Always decorative (the dish name carries the meaning).
+ * A dish's picture: its photo when there is one, otherwise its course's
+ * illustration. Always decorative (the dish name carries the meaning).
  */
 export function DishCover({ photoUrl, course, seed, shape = "band", eager = false, className }: DishCoverProps) {
-  const id = useId();
-  // A photo always gets room to be seen; the tile can stay a slim band.
+  // A photo always gets room to be seen; the illustration can stay a slim band.
   const frame = cn(SHAPES[photoUrl && shape === "band" ? "photo" : shape], "overflow-hidden bg-muted", className);
 
   if (photoUrl)
@@ -67,35 +69,15 @@ export function DishCover({ photoUrl, course, seed, shape = "band", eager = fals
       />
     );
 
-  // Drawn in tile units, scaled so the cover's height holds whole marks: one row in a band, four in a thumbnail.
-  const tile = shape === "thumb" ? 32 : 64;
-  const viewBox = shape === "thumb" ? "0 0 64 64" : "0 0 1280 64";
-  const colours = COLOURWAYS[course];
-  const offset = shift(seed, tile);
+  const { ground, ink, Icon } = COURSE_COVERS[course];
   return (
-    <div aria-hidden="true" className={cn(frame, "ring-1 ring-foreground/10 ring-inset")}>
-      <svg focusable="false" viewBox={viewBox} preserveAspectRatio="xMinYMid slice" className="block size-full">
-        <defs>
-          <pattern
-            id={id}
-            width={tile}
-            height={tile}
-            x={offset}
-            patternUnits="userSpaceOnUse"
-            viewBox="0 0 1024 1024"
-          >
-            <rect width={1024} height={1024} className={colours.ground} />
-            <g transform="translate(124, 64) scale(0.75)">
-              <path
-                d={COOKY_ICON_PATH}
-                fillRule="evenodd"
-                className={cn(colours.icon, "opacity-90")}
-              />
-            </g>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill={`url(#${id})`} />
-      </svg>
+    <div
+      aria-hidden="true"
+      data-cover={course}
+      className={cn(frame, ground, "relative grid place-items-center ring-1 ring-foreground/10 ring-inset")}
+    >
+      <div className={cn("absolute inset-0 from-white/20 to-black/15", LIGHT[shift(seed, LIGHT.length)])} />
+      <Icon strokeWidth={1.5} className={cn("relative", ink, ICON_SIZES[shape])} />
     </div>
   );
 }
