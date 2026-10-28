@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { reportClientError } from "@/lib/report-error";
-import { HOME_AFTER_SIGN_IN } from "@/lib/routes";
 
 import { ErrorState } from "./error-state";
 
@@ -32,7 +31,7 @@ export function RouteError({ error, retry }: { error: unknown; retry: () => void
         onRetry={retry}
         secondaryAction={
           <Button asChild size="lg" variant="outline">
-            <Link href={HOME_AFTER_SIGN_IN}>
+            <Link href="/dishes">
               <BookOpenIcon aria-hidden="true" data-icon="inline-start" />
               {t("errorPage.toDishes")}
             </Link>

@@ -127,7 +127,7 @@ describe("two-step verification", () => {
         "/two-factor",
       );
       const result = authActions.verifyBackupCode({ code: code!, locale: "en" });
-      if (attempt === "first") await expectRedirect(result, "/en/dishes");
+      if (attempt === "first") await expectRedirect(result, "/en/cook");
       else await expect(result).resolves.toEqual({ data: { status: "invalid_code" } });
     }
   });
