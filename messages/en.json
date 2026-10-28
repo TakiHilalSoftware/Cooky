@@ -656,7 +656,7 @@
         },
         "collect": {
           "title": "What we collect",
-          "body": "Account: your name, email address, password (stored only as a secure hash) or your Google/Apple sign-in, and the version of these documents you accepted.\n\nWhat you add: recipes, photos, notes, ratings and reviews, your kitchen, plans, events, shopping lists, Assistant conversations, friends, groups, messages and reports.\n\nSettings: language, appearance, units, the city you set (or rough device coordinates, rounded to about 1 km, if you choose \"use my location\"), dietary preferences and notification choices.\n\nTechnical: signed-in devices (browser and system), and an IP address stored only as a keyed hash for security. Error reports leave out personal content."
+          "body": "Account: your name, email address, password (stored only as a secure hash) or your Google/Apple sign-in, and the version of these documents you accepted.\n\nWhat you add: recipes, photos, notes, ratings and reviews, your kitchen, plans, events, shopping lists, Assistant conversations, friends, groups, messages and reports.\n\nSettings: language, appearance, units, the city you set (or rough device coordinates, rounded to about 1 km, if you choose \"use my location\"), dietary preferences and notification choices.\n\nTechnical: signed-in devices (browser and system), and an IP address stored only as a keyed hash for security. Error reports leave out personal content. Our host also tells us roughly where each request comes from (city, country and time zone, worked out from the IP address). We use it only for that request: to suggest your city, show the weather until you set one, and show your local time. It isn't stored."
         },
         "use": {
           "title": "How we use it",
@@ -1461,7 +1461,10 @@
       "clearLocation": "Forget my location",
       "denied": "Your browser didn't share your location. Type your city instead, or allow location in your browser's site settings.",
       "unavailable": "We couldn't get your location. Type your city instead.",
-      "privacy": "We keep only a rough position, never your address."
+      "privacy": "We keep only a rough position, never your address.",
+      "suggested": "Suggested from your connection. Change it if it's not right.",
+      "suggestedUse": "Use {city}",
+      "suggestedHint": "Suggested from your internet connection, so it's approximate."
     },
     "diet": {
       "heading": "Anything you don't eat?",
@@ -1541,7 +1544,11 @@
     "setCityHint": "Add your city to see the weather and get dishes that suit it.",
     "notFound": "We couldn't find “{city}”",
     "notFoundHint": "Check the spelling in Settings, or use your location instead.",
-    "openSettings": "Open Settings"
+    "openSettings": "Open Settings",
+    "approximate": "Near {city}, from your connection.",
+    "approximateUnknown": "Near you, from your connection.",
+    "approximateHint": "Set your city for the weather where you cook.",
+    "setCityExact": "Set my city"
   },
   "kitchen": {
     "title": "My kitchen",

@@ -1,6 +1,6 @@
 "use client";
 
-import { LocateFixedIcon, MapPinOffIcon } from "lucide-react";
+import { LocateFixedIcon, MapPinIcon, MapPinOffIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -33,11 +33,14 @@ export function KitchenFields({
   onChange,
   parts = ["city", "diet", "meals"],
   cityError,
+  suggestedCity = null,
 }: {
   values: KitchenValues;
   onChange: (values: KitchenValues) => void;
   parts?: Part[];
   cityError?: string | null;
+  /** The connection's approximate city, offered while no place is set (see KitchenDto). */
+  suggestedCity?: string | null;
 }) {
   const t = useTranslations("onboarding.city");
   const tDiet = useTranslations("onboarding.diet");
@@ -45,6 +48,8 @@ export function KitchenFields({
   const [locating, setLocating] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
   const hasLocation = values.latitude !== null && values.longitude !== null;
+  const typed = values.city.trim();
+  const suggestion = suggestedCity && !hasLocation ? suggestedCity : null;
 
   function locate() {
     if (!("geolocation" in navigator)) return setProblem(t("unavailable"));
@@ -80,6 +85,17 @@ export function KitchenFields({
             error={cityError}
           />
           <div className="flex flex-wrap items-center gap-2">
+            {suggestion && typed === "" ? (
+              <Button
+                type="button"
+                variant="outline"
+                title={t("suggestedHint")}
+                onClick={() => onChange({ ...values, city: suggestion, latitude: null, longitude: null })}
+              >
+                <MapPinIcon aria-hidden="true" data-icon="inline-start" />
+                {t("suggestedUse", { city: suggestion })}
+              </Button>
+            ) : null}
             <Button type="button" variant="outline" onClick={locate} disabled={locating}>
               {locating ? (
                 <Spinner data-icon="inline-start" />
@@ -104,6 +120,8 @@ export function KitchenFields({
               <span className="text-destructive">{problem}</span>
             ) : hasLocation ? (
               <span className="text-primary-strong">{t("located")}</span>
+            ) : suggestion && typed === suggestion ? (
+              <span className="text-muted-foreground">{t("suggested")}</span>
             ) : null}
           </p>
           <p className="text-xs text-muted-foreground">{t("privacy")}</p>

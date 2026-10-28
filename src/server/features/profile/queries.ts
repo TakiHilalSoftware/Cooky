@@ -7,6 +7,7 @@ import { DEFAULT_APPEARANCE, type Appearance } from "@/lib/appearance";
 import { DEFAULT_MEAL_TIMES } from "@/lib/meal-times";
 import { getSession } from "@/server/auth/session";
 import { getDb } from "@/server/db/client";
+import { requestGeo } from "@/server/geo";
 import { profiles } from "@/server/db/schema";
 import { initialsOf } from "@/lib/initials";
 import { photoUrls } from "@/server/storage/photos";
@@ -53,7 +54,9 @@ export const getKitchen = cache(async (): Promise<KitchenDto | null> => {
   const session = await getSession();
   if (!session) return null;
   const profile = await loadProfile(session.user.id);
+  const placeSet = Boolean(profile?.city) || (profile?.latitude != null && profile.longitude != null);
   return {
+    suggestedCity: placeSet ? null : (await requestGeo()).city,
     city: profile?.city ?? null,
     latitude: profile?.latitude ?? null,
     longitude: profile?.longitude ?? null,

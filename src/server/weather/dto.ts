@@ -19,6 +19,7 @@ export type WeatherDto = {
 
 /** The top-bar chip: the weather, or what's missing to show it. null = hidden (signed out or provider down). */
 export type WeatherChipDto =
-  | { status: "ok"; weather: WeatherDto; season: Season }
+  /** `approximate`: near where the connection is (its city, when known), until they set a city. */
+  | { status: "ok"; weather: WeatherDto; season: Season; approximate: { city: string | null } | null }
   | { status: "no_location" }
   | { status: "not_found"; city: string };

@@ -47,7 +47,8 @@ export function OnboardingWizard({ kitchen, dishes, staples, initialStep }: Onbo
   const pathname = usePathname();
   const [index, setIndex] = useState(Math.min(Math.max(initialStep, 0), STEPS.length - 1));
   const [values, setValues] = useState<KitchenValues>({
-    city: kitchen.city ?? "",
+    // A new account starts from the connection's city: one tap to confirm, easy to change.
+    city: kitchen.city ?? kitchen.suggestedCity ?? "",
     latitude: kitchen.latitude,
     longitude: kitchen.longitude,
     dietaryPrefs: kitchen.dietaryPrefs,
@@ -145,7 +146,13 @@ export function OnboardingWizard({ kitchen, dishes, staples, initialStep }: Onbo
         ) : null}
 
         {step === "city" ? (
-          <KitchenFields values={values} onChange={setValues} parts={["city"]} cityError={cityError} />
+          <KitchenFields
+            values={values}
+            onChange={setValues}
+            parts={["city"]}
+            cityError={cityError}
+            suggestedCity={kitchen.suggestedCity}
+          />
         ) : null}
         {step === "diet" ? <KitchenFields values={values} onChange={setValues} parts={["diet"]} /> : null}
 

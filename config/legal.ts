@@ -4,7 +4,7 @@
  */
 export const LEGAL_VERSIONS = {
   terms: "2026-10-19",
-  privacy: "2026-10-19",
+  privacy: "2026-10-28",
 } as const;
 
 /**

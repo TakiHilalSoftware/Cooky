@@ -23,5 +23,7 @@ export type KitchenDto = {
   longitude: number | null;
   dietaryPrefs: DietaryTag[];
   mealTimes: MealTimes;
+  /** The connection's city (approximate, by IP), offered while they've set no place; never saved by itself. */
+  suggestedCity: string | null;
   onboarded: boolean;
 };

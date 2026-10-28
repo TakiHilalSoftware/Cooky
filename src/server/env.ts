@@ -15,6 +15,11 @@ export function isStrictEnv(source: Record<string, string | undefined> = process
 
 const strict = isStrictEnv();
 
+/** Running on Vercel, whose edge adds the visitor's approximate location to every request (src/server/geo.ts). */
+export function isOnVercel(source: Record<string, string | undefined> = process.env): boolean {
+  return source.VERCEL === "1";
+}
+
 function required<T extends z.ZodType>(schema: T) {
   return strict ? schema : schema.optional();
 }
@@ -180,6 +185,10 @@ export const serverSchema = {
   // "1" lets a deployed build use the free endpoint too: for a non-commercial
   // deployment (a demo) only. Remove it once the app takes payments.
   OPEN_METEO_FREE_TIER: z.literal("1").optional(),
+
+  // Development only: stands in for Vercel's location headers, as
+  // "City|latitude|longitude|CC" (e.g. "Algiers|36.75|3.06|DZ").
+  GEO_DEV_OVERRIDE: z.string().max(200).optional(),
 } as const;
 
 export const env = createEnv({

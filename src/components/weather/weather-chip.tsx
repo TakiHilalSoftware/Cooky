@@ -92,9 +92,16 @@ export function WeatherChip({ chip }: { chip: WeatherChipDto }) {
     weather.accent === "hot" ? FlameIcon : weather.accent === "freezing" ? ThermometerSnowflakeIcon : null;
   const condition = t(`condition.${weather.condition}`);
   const feel = feelKey(weather);
-  const label = feel
+  const reading = feel
     ? t("labelWithFeel", { condition, temp: weather.tempC, feel: t(`feel.${feel}`) })
     : t("label", { condition, temp: weather.tempC });
+  // Read where the connection is, not at a place they set: said plainly, never passed off as theirs.
+  const near = chip.approximate
+    ? chip.approximate.city
+      ? t("approximate", { city: chip.approximate.city })
+      : t("approximateUnknown")
+    : null;
+  const label = near ? `${reading} · ${near}` : reading;
 
   return (
     <Popover>
@@ -133,6 +140,19 @@ export function WeatherChip({ chip }: { chip: WeatherChipDto }) {
         <p className="text-sm text-muted-foreground">
           {weather.mood === "neutral" ? t("mood.neutral", { season: tSeason(chip.season) }) : t(`mood.${weather.mood}`)}
         </p>
+        {near ? (
+          <div className="space-y-2 border-t border-border pt-3">
+            <p className="flex gap-1.5 text-sm text-muted-foreground">
+              <MapPinIcon aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+              <span>
+                {near} {t("approximateHint")}
+              </span>
+            </p>
+            <Button asChild size="sm" variant="outline">
+              <Link href="/settings">{t("setCityExact")}</Link>
+            </Button>
+          </div>
+        ) : null}
       </PopoverContent>
     </Popover>
   );
