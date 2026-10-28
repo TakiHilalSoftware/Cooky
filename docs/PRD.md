@@ -99,6 +99,7 @@ Every feature below is computed on the server. The UI only renders what the serv
 - **Settings:**
   - **Profile:** display name, cropped profile photo.
   - **Appearance:** accent palette (Default + peach, mint, sky, lavender, sand, rose), light/dark/system theme, text size (S/M/L/XL).
+  - **Kitchen:** city or rough location, dietary preferences, and meal times (Cook suggests for the next meal).
   - **Cooking:** units (metric/imperial), Ramadan mode.
   - **Notifications:** preferences and reminder times, push per device.
   - **App:** offline shopping list toggle, install card.
@@ -146,8 +147,10 @@ Every feature below is computed on the server. The UI only renders what the serv
   - Logging a cook can optionally mark used items as finished.
   - **Ready to cook** sits beside the kitchen and follows every change without a reload: the dishes it covers now, and those one or two ingredients short, each with **I have it** (adds that ingredient) and **Add to list** (puts what's missing on the shopping list).
 - **Cook:**
+  - It's where a signed-in user lands, and it suggests for their **next meal**. Meal times (breakfast, lunch, snack, dinner; each optional, defaults 08:00 / 12:30 / 16:30 / 19:30) are set in Settings → Kitchen. A meal stays "now" for 45 minutes after its time; after the last meal it's tomorrow's first one.
+  - A **day rail** shows the user's meals along their day, where they are now, and the meal shown. Tapping a meal shows its dishes instead (a meal already over today means tomorrow's).
   - Starts from My kitchen, and the user can add or remove ingredients, and narrow it to one collection.
-  - Ranking: fewest missing ingredients first, then weather fit, dietary fit, and how recently the dish was cooked.
+  - Ranking: dishes planned for that meal first, then fewest missing ingredients, how often the dish was logged for that meal, weather fit, dietary fit, and how recently the dish was cooked. "Log it for today" from Cook records the meal when it's today's, so the ranking learns the user's habits.
   - Each card shows "Ready to cook" or "2 missing: …".
   - Actions: Start cooking (cooking mode), Log it for today, Rate it, Spin instead.
 - **Spin:**

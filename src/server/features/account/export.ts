@@ -140,6 +140,7 @@ export async function buildDataExport(userId: string, now = new Date()) {
           textSize: profile.textSize,
           city: profile.city,
           dietaryPrefs: profile.dietaryPrefs,
+          mealTimes: profile.mealTimes,
           notificationsOff: profile.notificationsOff,
           onboardedAt: iso(profile.onboardedAt),
         }

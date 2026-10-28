@@ -1,6 +1,7 @@
 import { DicesIcon, PlusIcon, RefrigeratorIcon, XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Form from "next/form";
+import type { ReactNode } from "react";
 
 import { CollectionChips } from "@/components/collections/collection-chips";
 import { EmptyState } from "@/components/feedback/empty-state";
@@ -8,25 +9,53 @@ import { PendingResults, PendingScope } from "@/components/feedback/pending-resu
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "@/i18n/navigation";
+import type { MealSlot } from "@/lib/dishes";
 import { cn } from "@/lib/utils";
 import type { CookDto } from "@/server/features/cook/dto";
 
 import { CookCard } from "./cook-card";
+import { DayRail } from "./day-rail";
 
-/** Cook's URL for a what-if: extra ingredients, kitchen items left out, and the collection to choose from. */
-function cookHref(extras: string[], without: string[], collection: string | null) {
-  return { pathname: "/cook" as const, query: { with: extras, without, ...(collection ? { collection } : {}) } };
+type CookQuery = { extras: string[]; without: string[]; collection: string | null; meal: MealSlot | null };
+
+/** Cook's URL for a what-if: extra ingredients, kitchen items left out, the collection and the meal to choose for. */
+function cookHref({ extras, without, collection, meal }: CookQuery) {
+  return {
+    pathname: "/cook" as const,
+    query: { with: extras, without, ...(collection ? { collection } : {}), ...(meal ? { meal } : {}) },
+  };
 }
 
 /**
  * Cook (PRD §3.4): what to make now. Starts from My kitchen; the bar on top
  * tries "what if I also had… / didn't have…" without changing the kitchen.
  */
-export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
+export function CookView({
+  cook,
+  locale,
+  checklist = null,
+}: {
+  cook: CookDto;
+  locale: string;
+  /** The first-week checklist, while it's still useful. */
+  checklist?: ReactNode;
+}) {
   const t = useTranslations("cook");
   const tWeather = useTranslations("weather");
   const tSeason = useTranslations("dishes.season");
+  const tMeal = useTranslations("cook.meal.names");
   const without = cook.have.filter((h) => !h.active).map((h) => h.id);
+  // Only a meal picked on the rail goes in the URL; the next meal is the default.
+  const query: CookQuery = {
+    extras: cook.extras,
+    without,
+    collection: cook.collection,
+    meal: cook.meal?.picked ? cook.meal.slot : null,
+  };
+  const href = (change: Partial<CookQuery>) => cookHref({ ...query, ...change });
+  // With a meal in view, the best match is its pick, shown under the rail; the rest follow in the grid.
+  const [pick, ...others] = cook.meal ? cook.dishes : [];
+  const grid = pick ? others : cook.dishes;
 
   const moodNote = cook.weather
     ? cook.weather.mood === "neutral"
@@ -50,6 +79,24 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
           </Link>
         </Button>
       </div>
+
+      {checklist}
+
+      {cook.meal ? (
+        <DayRail
+          meal={cook.meal}
+          // The next meal is the rail's default, so picking it clears ?meal=.
+          hrefFor={(slot) => href({ meal: slot && slot !== cook.meal?.slot ? slot : null })}
+        />
+      ) : null}
+
+      {pick && cook.meal ? (
+        <section aria-label={t("pickLabel", { meal: tMeal(cook.meal.slot) })}>
+          <PendingResults>
+            <CookCard as="div" dish={pick} rank={0} meal={cook.meal} featured />
+          </PendingResults>
+        </section>
+      ) : null}
 
       <section aria-labelledby="cook-have" className="space-y-3 rounded-3xl border border-border bg-card p-5 sm:p-6">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -79,7 +126,7 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
               return (
                 <li key={item.id}>
                   <Link
-                    href={cookHref(cook.extras, next, cook.collection)}
+                    href={href({ without: next })}
                     scroll={false}
                     aria-pressed={item.active}
                     role="button"
@@ -99,11 +146,7 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
             {cook.extras.map((extra) => (
               <li key={`extra-${extra}`}>
                 <Link
-                  href={cookHref(
-                    cook.extras.filter((e) => e !== extra),
-                    without,
-                    cook.collection,
-                  )}
+                  href={href({ extras: cook.extras.filter((e) => e !== extra) })}
                   scroll={false}
                   className="inline-flex min-h-10 items-center gap-1 rounded-full border border-primary-strong bg-primary/15 ps-3.5 pe-2.5 text-sm font-medium pointer-coarse:min-h-11"
                 >
@@ -124,6 +167,7 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
               <input key={id} type="hidden" name="without" value={id} />
             ))}
             {cook.collection ? <input type="hidden" name="collection" value={cook.collection} /> : null}
+            {query.meal ? <input type="hidden" name="meal" value={query.meal} /> : null}
             <label htmlFor="cook-extra" className="sr-only">
               {t("addExtraLabel")}
             </label>
@@ -133,7 +177,7 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
               required
               maxLength={80}
               placeholder={t("addExtraPlaceholder")}
-              className="sm:max-w-xs h-9"
+              className="h-9 sm:max-w-xs"
             />
             <Button type="submit" variant="outline">
               <PlusIcon aria-hidden="true" data-icon="inline-start" />
@@ -166,7 +210,7 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
               <CollectionChips
                 collections={cook.collections}
                 activeId={cook.collection}
-                hrefFor={(id) => cookHref(cook.extras, without, id)}
+                hrefFor={(id) => href({ collection: id })}
                 label={t("collectionsLabel")}
               />
             </div>
@@ -180,7 +224,7 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
                 action={
                   <>
                     <Button asChild>
-                      <Link href={cookHref(cook.extras, without, null)} scroll={false}>
+                      <Link href={href({ collection: null })} scroll={false}>
                         {t("showAllDishes")}
                       </Link>
                     </Button>
@@ -190,13 +234,13 @@ export function CookView({ cook, locale }: { cook: CookDto; locale: string }) {
                   </>
                 }
               />
-            ) : (
+            ) : grid.length > 0 ? (
               <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {cook.dishes.map((dish, index) => (
-                  <CookCard key={dish.id} dish={dish} rank={index} />
+                {grid.map((dish, index) => (
+                  <CookCard key={dish.id} dish={dish} rank={pick ? index + 1 : index} meal={cook.meal} />
                 ))}
               </ol>
-            )}
+            ) : null}
           </PendingResults>
         </section>
       )}

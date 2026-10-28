@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { addDays, addMonths, dayIn, daysBetween, isDay, monthGrid, weekDays, weekStartOf } from "./dates";
+import { addDays, addMonths, dayIn, daysBetween, isDay, minutesIn, monthGrid, weekDays, weekStartOf } from "./dates";
 
 describe("dates", () => {
   it("reads today in the person's zone, not the server's", () => {
@@ -47,5 +47,17 @@ describe("weeks and months", () => {
     expect(monthGrid("2027-02")).toHaveLength(28); // Feb 2027 starts on a Monday
     expect(addMonths("2026-12", 1)).toBe("2027-01");
     expect(addMonths("2026-01", -1)).toBe("2025-12");
+  });
+});
+
+describe("minutesIn", () => {
+  it("reads the clock in the person's zone", () => {
+    // 09:15 UTC is 10:15 in Algiers (UTC+1, no daylight saving).
+    expect(minutesIn("Africa/Algiers", new Date("2026-10-28T09:15:00Z"))).toBe(10 * 60 + 15);
+  });
+
+  it("gives midnight as 0, never 24:00", () => {
+    expect(minutesIn("UTC", new Date("2026-10-28T00:00:00Z"))).toBe(0);
+    expect(minutesIn("UTC", new Date("2026-10-28T23:59:00Z"))).toBe(1439);
   });
 });

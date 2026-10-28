@@ -70,6 +70,52 @@ describe("rankDishes", () => {
     expect(ids(ranked)).toEqual(["stew", "bread", "salad"]);
   });
 
+  it("puts what's planned for the meal first, even when it's missing something", () => {
+    const ranked = rankDishes([dish("omelette", [line("Eggs")]), dish("tagine", [line("Chicken"), line("Olives")])], {
+      ...context,
+      have: have("eggs"),
+      meal: { planned: new Set(["tagine"]), usual: new Map() },
+    });
+    expect(ids(ranked)).toEqual(["tagine", "omelette"]);
+    expect(ranked[0]).toMatchObject({ planned: true, missing: ["Chicken", "Olives"] });
+  });
+
+  it("then lifts what the person usually has at that meal, above the weather", () => {
+    const ranked = rankDishes(
+      [
+        dish("stew", [line("Beef")], { seasons: ["winter"] }),
+        dish("once", [line("Rice")]),
+        dish("often", [line("Bread")]),
+      ],
+      {
+        ...context,
+        meal: {
+          planned: new Set(),
+          usual: new Map([
+            ["often", 4],
+            ["once", 1],
+          ]),
+        },
+      },
+    );
+    expect(ids(ranked)).toEqual(["often", "once", "stew"]);
+    expect(ranked.map((r) => r.usualCount)).toEqual([4, 1, 0]);
+  });
+
+  it("never lets a habit beat fewer missing ingredients", () => {
+    const ranked = rankDishes([dish("habit", [line("Lamb")]), dish("ready", [line("Eggs")])], {
+      ...context,
+      have: have("eggs"),
+      meal: { planned: new Set(), usual: new Map([["habit", 9]]) },
+    });
+    expect(ids(ranked)).toEqual(["ready", "habit"]);
+  });
+
+  it("without a meal, nothing is planned or usual", () => {
+    const [only] = rankDishes([dish("soup", [line("Lentils")])], context);
+    expect(only).toMatchObject({ planned: false, usualCount: 0 });
+  });
+
   it("then dietary fit", () => {
     const ranked = rankDishes(
       [dish("kebab", [line("Lamb")]), dish("falafel", [line("Chickpeas")], { dietaryTags: ["vegetarian", "vegan"] })],

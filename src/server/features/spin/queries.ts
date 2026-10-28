@@ -104,6 +104,8 @@ export async function drawSpin(
         weatherFit: choice.weatherFit === 2,
         dietFit: choice.dietFit,
         daysSinceCooked: choice.daysSinceCooked,
+        planned: choice.planned,
+        usualCount: choice.usualCount,
       },
     },
   };

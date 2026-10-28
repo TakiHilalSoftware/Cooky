@@ -51,6 +51,7 @@ export function OnboardingWizard({ kitchen, dishes, staples, initialStep }: Onbo
     latitude: kitchen.latitude,
     longitude: kitchen.longitude,
     dietaryPrefs: kitchen.dietaryPrefs,
+    mealTimes: kitchen.mealTimes,
   });
   const [cityError, setCityError] = useState<string | null>(null);
   const [picked, setPicked] = useState<string[]>([]);

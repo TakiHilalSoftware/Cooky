@@ -7,18 +7,22 @@ import { toast } from "sonner";
 import { useOnline } from "@/components/app-shell/use-online";
 import { toastUndo } from "@/components/feedback/toast-undo";
 import { useFormMessages } from "@/components/forms/use-form-messages";
-import type { CookSource } from "@/lib/dishes";
+import type { CookSource, MealSlot } from "@/lib/dishes";
 import { logCook, undoLogCook } from "@/server/actions/cook";
 
 /** "Log it for today", with Undo (PRD §3.10), from Cook, the dish page and cooking mode. */
 export function useLogCook() {
   const t = useTranslations("cook");
   const tCommon = useTranslations("common");
+  const tMeal = useTranslations("cook.meal.names");
   const messages = useFormMessages();
   const online = useOnline();
   const [pending, setPending] = useState<string | null>(null);
 
-  async function log(dish: { id: string; name: string }, options: { source?: CookSource; finished?: string[] } = {}) {
+  async function log(
+    dish: { id: string; name: string },
+    options: { source?: CookSource; finished?: string[]; mealSlot?: MealSlot | null } = {},
+  ) {
     if (!online) {
       toast.error(t("offline"));
       return false;
@@ -27,6 +31,7 @@ export function useLogCook() {
     const result = await logCook({
       dishId: dish.id,
       source: options.source ?? "cook",
+      mealSlot: options.mealSlot ?? null,
       finished: options.finished ?? [],
     });
     setPending(null);
@@ -35,7 +40,8 @@ export function useLogCook() {
       return false;
     }
     const entry = result.data;
-    toastUndo(t("logged", { name: dish.name }), {
+    const meal = options.mealSlot ? tMeal(options.mealSlot) : null;
+    toastUndo(meal ? t("loggedFor", { name: dish.name, meal }) : t("logged", { name: dish.name }), {
       undoLabel: tCommon("undo"),
       onUndo: () => void undoLogCook({ id: entry.id }),
     });

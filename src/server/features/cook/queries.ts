@@ -1,23 +1,32 @@
 import "server-only";
 
-import { and, eq, inArray, isNull, max, sql } from "drizzle-orm";
+import { and, count, eq, inArray, isNull, max, sql } from "drizzle-orm";
 import { cache } from "react";
 
 import type { AppLocale } from "@/i18n/routing";
 import { getSession } from "@/server/auth/session";
 import { getDb } from "@/server/db/client";
-import { catalogDishes, cookLog, dishes, dishIngredients, ingredients, pantryItems } from "@/server/db/schema";
+import {
+  catalogDishes,
+  cookLog,
+  dishes,
+  dishIngredients,
+  ingredients,
+  pantryItems,
+  plannedMeals,
+} from "@/server/db/schema";
 import { loadCollectionDishIds, loadCollections } from "@/server/features/collections/queries";
 import { dishSmallPhotoUrl } from "@/server/features/dishes/photo";
 import { catalogNamesFor } from "@/server/features/dishes/queries";
 import { resolveIngredientIds } from "@/server/features/ingredients/dictionary";
 import { allNames } from "@/server/features/ingredients/service";
 import { loadProfile } from "@/server/features/profile/queries";
-import { requestToday } from "@/server/time";
+import { requestClock, requestToday } from "@/server/time";
 import { loadWeatherContext } from "@/server/weather/queries";
 import { favouredSeasons } from "@/server/weather/service";
 
-import type { CookDto, CookHaveDto, ReadyDishDto, ReadyToCookDto } from "./dto";
+import type { CookDto, CookHaveDto, CookMealDto, ReadyDishDto, ReadyToCookDto } from "./dto";
+import { MEAL_GRACE_MINUTES, mealMoment, mealsOfDay, nextMeal, type MealMoment } from "./meal";
 import type { CookFilters } from "./schema";
 import { isHad, rankDishes, splitReady, type HaveItem, type RankableDish, type RankLine } from "./service";
 
@@ -131,21 +140,41 @@ export async function extraHave(names: string[]): Promise<HaveItem[]> {
   return names.map((name, i) => ({ names: [name], ingredientId: ids[i] ?? null }));
 }
 
+/** For the meal Cook suggests for: what's planned for it, and how often each dish was logged for it. */
+async function loadMealContext(userId: string, meal: MealMoment) {
+  const db = getDb();
+  const [planned, usual] = await Promise.all([
+    db
+      .select({ dishId: plannedMeals.dishId })
+      .from(plannedMeals)
+      .where(
+        and(eq(plannedMeals.userId, userId), eq(plannedMeals.date, meal.date), eq(plannedMeals.mealSlot, meal.slot)),
+      ),
+    db
+      .select({ dishId: cookLog.dishId, n: count() })
+      .from(cookLog)
+      .where(and(eq(cookLog.userId, userId), eq(cookLog.mealSlot, meal.slot)))
+      .groupBy(cookLog.dishId),
+  ]);
+  return { planned: new Set(planned.map((p) => p.dishId)), usual: new Map(usual.map((u) => [u.dishId, u.n])) };
+}
+
 /**
- * Cook (PRD §3.4): the person's dishes ranked by what they can make now,
- * then today's weather, their diet and how long since they cooked each.
+ * Cook (PRD §3.4): the person's dishes for their next meal (or one they pick),
+ * ranked by what's planned for it, what they can make now, what they usually
+ * have then, today's weather, their diet and how long since they cooked each.
  */
 export const getCook = cache(async (filters: CookFilters, locale: AppLocale): Promise<CookDto | null> => {
   const session = await getSession();
   if (!session) return null;
   const userId = session.user.id;
-  const [all, have, extras, weather, profile, today, userCollections, inCollection] = await Promise.all([
+  const [all, have, extras, weather, profile, clock, userCollections, inCollection] = await Promise.all([
     loadRankableDishes(userId, locale),
     loadHave(userId, locale),
     extraHave(filters.with),
     loadWeatherContext(userId),
     loadProfile(userId),
-    requestToday(),
+    requestClock(),
     loadCollections(userId),
     filters.collection ? loadCollectionDishIds(userId, filters.collection) : null,
   ]);
@@ -153,12 +182,19 @@ export const getCook = cache(async (filters: CookFilters, locale: AppLocale): Pr
   const collection = userCollections.some((c) => c.id === filters.collection) ? filters.collection : null;
   const rankable = collection && inCollection ? all.filter((d) => inCollection.has(d.id)) : all;
   const left = new Set(filters.without);
-  const ranked = rankDishes(rankable, {
+  const times = profile?.mealTimes ?? null;
+  const next = times ? nextMeal(times, clock) : null;
+  // A meal picked on the rail, if they have it; otherwise the next one.
+  const meal = (times && filters.meal ? mealMoment(filters.meal, times, clock) : null) ?? next;
+  const mealContext = meal ? await loadMealContext(userId, meal) : undefined;
+  const rankedAll = rankDishes(rankable, {
     have: [...have.filter((h) => !left.has(h.id)).map((h) => h.item), ...extras],
     favoured: favouredSeasons(weather.mood, weather.season),
     dietaryPrefs: profile?.dietaryPrefs ?? [],
-    today,
-  }).slice(0, SHOWN);
+    today: clock.today,
+    meal: mealContext,
+  });
+  const ranked = rankedAll.slice(0, SHOWN);
 
   const byId = new Map(rankable.map((d) => [d.id, d]));
   const cards = await Promise.all(
@@ -173,9 +209,27 @@ export const getCook = cache(async (filters: CookFilters, locale: AppLocale): Pr
         weatherFit: r.weatherFit === 2,
         dietFit: r.dietFit,
         daysSinceCooked: r.daysSinceCooked,
+        planned: r.planned,
+        usualCount: r.usualCount,
       };
     }),
   );
+  const mealDto: CookMealDto | null =
+    meal && times
+      ? {
+          slot: meal.slot,
+          at: meal.at,
+          when: meal.when,
+          inMinutes: meal.inMinutes,
+          picked: meal.slot !== next?.slot,
+          day: mealsOfDay(times).map((m) => ({ ...m, passed: clock.minutes >= m.at + MEAL_GRACE_MINUTES })),
+          now: clock.minutes,
+          plannedCount: rankedAll.filter((r) => r.planned).length,
+          usualCount: rankedAll.filter((r) => r.usualCount > 0).length,
+          // A cook logged now is today's; it belongs to this meal only if the meal is today's.
+          logAs: meal.when === "tomorrow" ? null : meal.slot,
+        }
+      : null;
   return {
     dishes: cards,
     total: all.length,
@@ -185,6 +239,7 @@ export const getCook = cache(async (filters: CookFilters, locale: AppLocale): Pr
     collection,
     weather: weather.weather,
     season: weather.season,
+    meal: mealDto,
   };
 });
 
