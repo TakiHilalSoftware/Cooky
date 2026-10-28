@@ -49,7 +49,12 @@ export function KitchenCard({ kitchen }: { kitchen: KitchenDto }) {
   return (
     <SettingsSection title={t("heading")} description={t("description")}>
       <form noValidate onSubmit={onSubmit} className="space-y-6">
-        <KitchenFields values={values} onChange={setValues} cityError={cityError} />
+        <KitchenFields
+          values={values}
+          onChange={setValues}
+          cityError={cityError}
+          suggestedCity={kitchen.suggestedCity}
+        />
         <div className="flex flex-wrap items-center gap-3">
           <Button type="submit" disabled={save.isPending}>
             {save.isPending ? <Spinner data-icon="inline-start" /> : null}

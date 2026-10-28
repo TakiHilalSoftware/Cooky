@@ -656,7 +656,7 @@
         },
         "collect": {
           "title": "Ce que nous collectons",
-          "body": "Compte : votre nom, votre adresse e-mail, votre mot de passe (conservé uniquement sous forme d'empreinte sécurisée) ou votre connexion Google/Apple, et la version de ces documents que vous avez acceptée.\n\nCe que vous ajoutez : recettes, photos, notes, notes et avis, votre cuisine, plannings, événements, listes de courses, conversations avec l'Assistant, amis, groupes, messages et signalements.\n\nRéglages : langue, apparence, unités, la ville choisie (ou des coordonnées approximatives de l'appareil, arrondies à environ 1 km, si vous choisissez « utiliser ma position »), préférences alimentaires et choix de notifications.\n\nTechnique : appareils connectés (navigateur et système) et une adresse IP conservée uniquement sous forme d'empreinte chiffrée pour la sécurité. Les rapports d'erreur excluent tout contenu personnel."
+          "body": "Compte : votre nom, votre adresse e-mail, votre mot de passe (conservé uniquement sous forme d'empreinte sécurisée) ou votre connexion Google/Apple, et la version de ces documents que vous avez acceptée.\n\nCe que vous ajoutez : recettes, photos, notes, notes et avis, votre cuisine, plannings, événements, listes de courses, conversations avec l'Assistant, amis, groupes, messages et signalements.\n\nRéglages : langue, apparence, unités, la ville choisie (ou des coordonnées approximatives de l'appareil, arrondies à environ 1 km, si vous choisissez « utiliser ma position »), préférences alimentaires et choix de notifications.\n\nTechnique : appareils connectés (navigateur et système) et une adresse IP conservée uniquement sous forme d'empreinte chiffrée pour la sécurité. Les rapports d'erreur excluent tout contenu personnel. Notre hébergeur nous indique aussi d’où vient approximativement chaque requête (ville, pays et fuseau horaire, déduits de l’adresse IP). Nous ne l’utilisons que pour cette requête : suggérer votre ville, afficher la météo tant que vous n’en avez pas choisi une, et afficher votre heure locale. Ce n’est pas conservé."
         },
         "use": {
           "title": "Comment nous les utilisons",
@@ -1461,7 +1461,10 @@
       "clearLocation": "Oublier ma position",
       "denied": "Votre navigateur n’a pas partagé votre position. Saisissez votre ville, ou autorisez la localisation dans les réglages du site.",
       "unavailable": "Impossible d’obtenir votre position. Saisissez votre ville.",
-      "privacy": "Nous ne gardons qu’une position approximative, jamais votre adresse."
+      "privacy": "Nous ne gardons qu’une position approximative, jamais votre adresse.",
+      "suggested": "Suggérée d’après votre connexion. Modifiez-la si ce n’est pas la bonne.",
+      "suggestedUse": "Utiliser {city}",
+      "suggestedHint": "Suggérée d’après votre connexion internet, donc approximative."
     },
     "diet": {
       "heading": "Quelque chose que vous ne mangez pas ?",
@@ -1541,7 +1544,11 @@
     "setCityHint": "Ajoutez votre ville pour voir la météo et des plats qui s'y prêtent.",
     "notFound": "Nous n'avons pas trouvé « {city} »",
     "notFoundHint": "Vérifiez l'orthographe dans les Paramètres, ou utilisez votre position.",
-    "openSettings": "Ouvrir les Paramètres"
+    "openSettings": "Ouvrir les Paramètres",
+    "approximate": "Près de {city}, d’après votre connexion.",
+    "approximateUnknown": "Près de chez vous, d’après votre connexion.",
+    "approximateHint": "Indiquez votre ville pour la météo là où vous cuisinez.",
+    "setCityExact": "Indiquer ma ville"
   },
   "kitchen": {
     "title": "Ma cuisine",

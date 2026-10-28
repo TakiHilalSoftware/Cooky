@@ -1,13 +1,14 @@
 import "server-only";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
-import { resolveTimeZone, TIME_ZONE_COOKIE } from "@/i18n/time-zone";
+import { IP_TIME_ZONE_HEADER, pickTimeZone, TIME_ZONE_COOKIE } from "@/i18n/time-zone";
 import { dayIn, minutesIn } from "@/lib/dates";
 
-/** The viewer's zone from the cookie the browser sets (UTC until it has). */
+/** The viewer's zone: the browser's, else their IP address's (see pickTimeZone), else UTC. */
 export async function requestTimeZone(): Promise<string> {
-  return resolveTimeZone((await cookies()).get(TIME_ZONE_COOKIE)?.value);
+  const [jar, list] = await Promise.all([cookies(), headers()]);
+  return pickTimeZone(jar.get(TIME_ZONE_COOKIE)?.value, list.get(IP_TIME_ZONE_HEADER));
 }
 
 /** "Today" for the person making this request, as "YYYY-MM-DD". */

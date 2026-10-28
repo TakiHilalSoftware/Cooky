@@ -1,9 +1,9 @@
 import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 import { routing } from "./routing";
-import { resolveTimeZone, TIME_ZONE_COOKIE } from "./time-zone";
+import { IP_TIME_ZONE_HEADER, pickTimeZone, TIME_ZONE_COOKIE } from "./time-zone";
 
 export default getRequestConfig(async ({ requestLocale }) => {
   const requested = await requestLocale;
@@ -15,6 +15,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
     // One clock and one zone for the server render and the browser, so dates
     // and "5 minutes ago" render identically on both (no hydration mismatch).
     now: new Date(),
-    timeZone: resolveTimeZone((await cookies()).get(TIME_ZONE_COOKIE)?.value),
+    timeZone: pickTimeZone((await cookies()).get(TIME_ZONE_COOKIE)?.value, (await headers()).get(IP_TIME_ZONE_HEADER)),
   };
 });
