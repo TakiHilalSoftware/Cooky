@@ -176,6 +176,13 @@
       "when": 1793128741943,
       "tag": "0024_catalog_photo_and_source",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1793174663605,
+      "tag": "0025_shopping_count_family",
+      "breakpoints": true
     }
   ]
 }
