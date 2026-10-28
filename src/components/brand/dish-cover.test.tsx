@@ -1,7 +1,6 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { COOKY_ICON_PATH } from "./brand-icon-path";
 import { DishCover } from "./dish-cover";
 
 describe("DishCover", () => {
@@ -11,26 +10,25 @@ describe("DishCover", () => {
     expect(img).toHaveAttribute("src", "https://r2.example/x.webp");
     expect(img).toHaveAttribute("alt", "");
     expect(img).toHaveAttribute("loading", "lazy");
-    expect(container.querySelector("svg")).toBeNull();
+    expect(container.querySelector("[data-cover]")).toBeNull();
   });
 
-  it("without a photo, lays a hidden brand cover in the course's colours", () => {
+  it("without a photo, shows one hidden illustration of the course in its colours", () => {
     const { container } = render(<DishCover photoUrl={null} course="dessert" seed="ghriba" />);
-    const tile = container.firstElementChild!;
-    expect(tile).toHaveAttribute("aria-hidden", "true");
+    const cover = container.firstElementChild!;
+    expect(cover).toHaveAttribute("aria-hidden", "true");
+    expect(cover).toHaveAttribute("data-cover", "dessert");
+    expect(cover.className).toContain("bg-primary");
     expect(container.querySelector("img")).toBeNull();
-    const ground = container.querySelector("pattern rect")!;
-    expect(ground.getAttribute("class")).toContain("fill-primary");
-    const path = container.querySelector("pattern path")!;
-    expect(path.getAttribute("d")).toBe(COOKY_ICON_PATH);
+    expect(container.querySelectorAll("svg")).toHaveLength(1);
+    expect(container.querySelector("svg")!.getAttribute("class")).toContain("lucide-cake-slice");
   });
 
-  it("offsets the tiles per dish, the same way every time", () => {
-    const x = (seed: string) =>
-      render(<DishCover photoUrl={null} course="main" seed={seed} />)
-        .container.querySelector("pattern")!
-        .getAttribute("x");
-    expect(x("tagine")).toBe(x("tagine"));
-    expect(new Set(["tagine", "harira", "couscous", "zaalouk"].map(x)).size).toBeGreaterThan(1);
+  it("varies the light per dish, the same way every time", () => {
+    const light = (seed: string) =>
+      render(<DishCover photoUrl={null} course="main" seed={seed} />).container.querySelector("[data-cover] > div")!
+        .className;
+    expect(light("tagine")).toBe(light("tagine"));
+    expect(new Set(["tagine", "harira", "couscous", "zaalouk", "chorba"].map(light)).size).toBeGreaterThan(1);
   });
 });

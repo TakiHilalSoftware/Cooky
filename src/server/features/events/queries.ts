@@ -12,7 +12,7 @@ import { getFeatureUsage } from "@/server/features/billing/queries";
 import { loadDishNames } from "@/server/features/planner/queries";
 import { getEntitlement, limitFor } from "@/server/quota/entitlement";
 import { hasFeature } from "@/server/quota/tries";
-import { smallPhotoUrl } from "@/server/storage/photos";
+import { dishSmallPhotoUrl } from "@/server/features/dishes/photo";
 import { requestToday } from "@/server/time";
 
 import type { EventDto, EventsPageDto, EventSummaryDto } from "./dto";
@@ -123,7 +123,7 @@ export const getEvent = cache(async (id: string, locale: AppLocale): Promise<Eve
           ? {
               id: dish.id,
               name: dish.name,
-              photoUrl: await smallPhotoUrl(dish.imageKey),
+              photoUrl: await dishSmallPhotoUrl(dish),
               servings: servingsOf.get(dish.id) ?? 1,
             }
           : null,

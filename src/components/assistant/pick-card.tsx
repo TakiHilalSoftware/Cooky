@@ -36,7 +36,7 @@ export function PickCard({ pick }: { pick: AssistantPickDto }) {
 
   return (
     <li className="flex gap-3 rounded-2xl border border-border bg-background p-3">
-      {pick.kind === "mine" && pick.photoUrl ? (
+      {pick.photoUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={pick.photoUrl}

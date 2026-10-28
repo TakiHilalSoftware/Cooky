@@ -22,7 +22,7 @@ import type { AppLocale } from "@/i18n/routing";
 import { loadCollectionAllowance, loadCollections, loadDishCollectionIds } from "@/server/features/collections/queries";
 import { getEntitlement, limitFor } from "@/server/quota/entitlement";
 import { matches } from "@/server/features/ingredients/service";
-import { photoUrls, smallPhotoUrl } from "@/server/storage/photos";
+import { photoUrls } from "@/server/storage/photos";
 import { storageConfigured } from "@/server/storage/r2";
 
 import type { PhotoSlotDto } from "@/server/features/photos/dto";
@@ -41,6 +41,7 @@ import type {
   StepDto,
 } from "./dto";
 import type { dishListFiltersSchema } from "./schema";
+import { dishPhoto, dishSmallPhotoUrl } from "./photo";
 import { findOwnDish } from "./policy";
 import { dishAllowance, scaleAmount } from "./service";
 
@@ -120,6 +121,7 @@ export const listMyDishes = cache(
         servings: dishes.servings,
         dietaryTags: dishes.dietaryTags,
         imageKey: dishes.imageKey,
+        catalogPhotoUrl: catalogDishes.photoUrl,
         favorite: sql<boolean>`${favorites.dishId} is not null`,
         ingredientCount: sql<number>`(select count(*)::int from ${dishIngredients} where ${dishIngredients.dishId} = ${outerDishId})`,
         stepCount: sql<number>`(select count(*)::int from ${dishSteps} where ${dishSteps.dishId} = ${outerDishId})`,
@@ -129,6 +131,7 @@ export const listMyDishes = cache(
       })
       .from(dishes)
       .leftJoin(favorites, and(eq(favorites.dishId, dishes.id), eq(favorites.userId, userId)))
+      .leftJoin(catalogDishes, eq(catalogDishes.id, dishes.catalogDishId))
       .where(
         and(
           own,
@@ -148,24 +151,24 @@ export const listMyDishes = cache(
       )
       .orderBy(desc(dishes.updatedAt));
 
-    const catalogDishIds = rows.map((r) => r.catalogDishId).filter((id): id is string => id !== null);
-    const [allowance, catalogNames, photoUrlList, catalogPhotos] = await Promise.all([
+    const [allowance, catalogNames, photoUrlList] = await Promise.all([
       loadDishAllowance(userId),
       catalogNamesFor(
         rows.filter((r) => r.followsCatalog && r.catalogDishId).map((r) => r.catalogDishId!),
         locale,
       ),
-      Promise.all(rows.map((r) => smallPhotoUrl(r.imageKey))),
-      catalogPhotosFor(catalogDishIds),
+      Promise.all(rows.map(dishSmallPhotoUrl)),
     ]);
     return {
-      dishes: rows.map(({ timerSeconds, followsCatalog, catalogDishId, imageKey: _key, ...row }, index) => ({
-        ...row,
-        photoUrl: photoUrlList[index] ?? (catalogDishId ? catalogPhotos.get(catalogDishId) : null) ?? null,
-        // A saved Discover dish shows its name in the viewer's language until it's edited.
-        name: (followsCatalog && catalogDishId && catalogNames.get(catalogDishId)) || row.name,
-        timerMinutes: timerSeconds ? Math.round(timerSeconds / 60) : null,
-      })),
+      dishes: rows.map(
+        ({ timerSeconds, followsCatalog, catalogDishId, imageKey: _key, catalogPhotoUrl: _photo, ...row }, index) => ({
+          ...row,
+          photoUrl: photoUrlList[index] ?? null,
+          // A saved Discover dish shows its name in the viewer's language until it's edited.
+          name: (followsCatalog && catalogDishId && catalogNames.get(catalogDishId)) || row.name,
+          timerMinutes: timerSeconds ? Math.round(timerSeconds / 60) : null,
+        }),
+      ),
       total: allowance.count,
       allowance,
       collections: userCollections,
@@ -244,13 +247,15 @@ export async function catalogNamesFor(ids: string[], locale: AppLocale): Promise
   return new Map(rows.map((r) => [r.id, inLocale({ en: r.en, fr: r.fr, ar: r.ar }, locale)]));
 }
 
-export async function catalogPhotosFor(ids: string[]): Promise<Map<string, string>> {
-  if (ids.length === 0) return new Map();
-  const rows = await getDb()
-    .select({ id: catalogDishes.id, photoUrl: catalogDishes.photoUrl })
+/** The photo of the Discover dish a saved copy came from, if any (see ./photo.ts). */
+async function catalogPhotoUrlOf(catalogDishId: string | null): Promise<string | null> {
+  if (!catalogDishId) return null;
+  const [row] = await getDb()
+    .select({ photoUrl: catalogDishes.photoUrl })
     .from(catalogDishes)
-    .where(inArray(catalogDishes.id, ids));
-  return new Map(rows.filter((r) => r.photoUrl).map((r) => [r.id, r.photoUrl!]));
+    .where(eq(catalogDishes.id, catalogDishId))
+    .limit(1);
+  return row?.photoUrl ?? null;
 }
 
 /** The dish page, with ingredients scaled to `servings` on the server. */
@@ -274,7 +279,6 @@ export const getDish = cache(
       [source],
       photo,
       cooking,
-      [catalogDish],
     ] = await Promise.all([
       contentsFor(dish, locale),
       db
@@ -296,15 +300,10 @@ export const getDish = cache(
         .from(dishSources)
         .where(eq(dishSources.dishId, dish.id))
         .limit(1),
-      photoUrls(dish.imageKey),
+      catalogPhotoUrlOf(dish.catalogDishId).then((catalogPhotoUrl) =>
+        dishPhoto({ imageKey: dish.imageKey, catalogPhotoUrl }),
+      ),
       loadDishCooking(userId, dish.id),
-      dish.catalogDishId
-        ? db
-            .select({ photoUrl: catalogDishes.photoUrl })
-            .from(catalogDishes)
-            .where(eq(catalogDishes.id, dish.catalogDishId))
-            .limit(1)
-        : Promise.resolve([]),
     ]);
     const [sharing, reviews] = await Promise.all([loadDishSharing(userId, dish), loadReviews(userId, dish)]);
 
@@ -334,8 +333,7 @@ export const getDish = cache(
       note: note?.text ?? null,
       readOnly: allowance.readOnly,
       source: source ?? null,
-      photo:
-        photo ?? (catalogDish?.photoUrl ? { url: catalogDish.photoUrl, smallUrl: catalogDish.photoUrl } : null),
+      photo,
       cooking,
       photosEnabled: storageConfigured(),
       collectionIds,
@@ -400,7 +398,9 @@ export const getFriendDish = cache(
     const [contents, [owner], photo, reviews, [copy]] = await Promise.all([
       contentsFor(dish, locale),
       loadPeople(viewerId, [dish.userId]),
-      photoUrls(dish.imageKey),
+      catalogPhotoUrlOf(dish.catalogDishId).then((catalogPhotoUrl) =>
+        dishPhoto({ imageKey: dish.imageKey, catalogPhotoUrl }),
+      ),
       loadReviews(viewerId, dish),
       getDb()
         .select({ id: dishes.id })

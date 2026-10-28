@@ -7,11 +7,11 @@ import type { AppLocale } from "@/i18n/routing";
 import { addDays, addMonths, monthGrid, weekDays, weekStartOf } from "@/lib/dates";
 import { getSession } from "@/server/auth/session";
 import { getDb } from "@/server/db/client";
-import { collectionDishes, cookLog, dishes, plannedMeals } from "@/server/db/schema";
+import { catalogDishes, collectionDishes, cookLog, dishes, plannedMeals } from "@/server/db/schema";
 import { loadCollections } from "@/server/features/collections/queries";
 import { loadEventsBetween } from "@/server/features/events/queries";
 import { catalogNamesFor } from "@/server/features/dishes/queries";
-import { smallPhotoUrl } from "@/server/storage/photos";
+import { dishSmallPhotoUrl } from "@/server/features/dishes/photo";
 import { requestToday } from "@/server/time";
 
 import type { CalendarDto, CalendarEntryDto, PlannerDto } from "./dto";
@@ -24,10 +24,12 @@ export async function loadDishNames(userId: string, locale: AppLocale) {
       name: dishes.name,
       course: dishes.course,
       imageKey: dishes.imageKey,
+      catalogPhotoUrl: catalogDishes.photoUrl,
       followsCatalog: dishes.followsCatalog,
       catalogDishId: dishes.catalogDishId,
     })
     .from(dishes)
+    .leftJoin(catalogDishes, eq(catalogDishes.id, dishes.catalogDishId))
     .where(and(eq(dishes.userId, userId), isNull(dishes.deletedAt)))
     .orderBy(asc(dishes.name));
   const catalogNames = await catalogNamesFor(
@@ -42,6 +44,7 @@ export async function loadDishNames(userId: string, locale: AppLocale) {
         name: (r.followsCatalog && r.catalogDishId && catalogNames.get(r.catalogDishId)) || r.name,
         course: r.course,
         imageKey: r.imageKey,
+        catalogPhotoUrl: r.catalogPhotoUrl,
       },
     ]),
   );
@@ -92,7 +95,7 @@ export const getPlanner = cache(async (week: string | undefined, locale: AppLoca
     meals: await Promise.all(
       shown.map(async (m) => {
         const dish = names.get(m.dishId)!;
-        return { ...m, name: dish.name, photoUrl: await smallPhotoUrl(dish.imageKey) };
+        return { ...m, name: dish.name, photoUrl: await dishSmallPhotoUrl(dish) };
       }),
     ),
     events: weekEvents,

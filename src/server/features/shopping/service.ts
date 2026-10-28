@@ -8,10 +8,11 @@ const MASS: Partial<Record<Unit, number>> = { g: 1, kg: 1000, oz: 28.3495, lb: 4
 const VOLUME: Partial<Record<Unit, number>> = { ml: 1, cl: 10, l: 1000, tsp: 5, tbsp: 15, cup: 240 };
 
 /** Amounts in the same family convert into each other; anything else only adds up with the same unit. */
-export type UnitFamily = "mass" | "volume" | Unit | "none";
+export type UnitFamily = "mass" | "volume" | Unit;
 
+/** A bare count ("2 carrots") is a count of pieces, so it merges with "4 pieces of carrot". */
 export function familyOf(unit: Unit | null): UnitFamily {
-  if (unit === null) return "none";
+  if (unit === null) return "piece";
   if (unit in MASS) return "mass";
   if (unit in VOLUME) return "volume";
   return unit;
@@ -39,8 +40,10 @@ export type Quantity = { amount: number | null; unit: Unit | null };
 export function combine(a: Quantity, b: Quantity): Quantity {
   if (a.amount === null) return b.amount === null ? { amount: null, unit: a.unit ?? b.unit } : b;
   if (b.amount === null) return a;
-  if (a.unit === b.unit) return { amount: roundAmount(a.amount + b.amount), unit: a.unit };
   const family = familyOf(a.unit);
+  // "2" and "4 pieces" are both counts: they sum, and say "pieces" if either did.
+  if (a.unit === b.unit || (family === "piece" && familyOf(b.unit) === "piece"))
+    return { amount: roundAmount(a.amount + b.amount), unit: a.unit ?? b.unit };
   if ((family === "mass" || family === "volume") && familyOf(b.unit) === family) {
     const table = family === "mass" ? MASS : VOLUME;
     return display(a.amount * table[a.unit!]! + b.amount * table[b.unit!]!, family);
@@ -50,7 +53,7 @@ export function combine(a: Quantity, b: Quantity): Quantity {
 }
 
 /** Things bought whole: half a lemon or 4.5 cloves of garlic means buying one more. */
-const WHOLE: ReadonlySet<UnitFamily> = new Set(["none", "piece", "clove", "slice", "can", "bunch"]);
+const WHOLE: ReadonlySet<UnitFamily> = new Set(["piece", "clove", "slice", "can", "bunch"]);
 
 /**
  * The amount to buy: counted things round up to whole numbers; measures stay

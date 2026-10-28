@@ -177,6 +177,9 @@ export const serverSchema = {
   // Open-Meteo (§12): the commercial key. Without it, development uses the free
   // (non-commercial) endpoint and deployed builds hide the weather chip.
   OPEN_METEO_API_KEY: z.string().min(1).optional(),
+  // "1" lets a deployed build use the free endpoint too: for a non-commercial
+  // deployment (a demo) only. Remove it once the app takes payments.
+  OPEN_METEO_FREE_TIER: z.literal("1").optional(),
 } as const;
 
 export const env = createEnv({

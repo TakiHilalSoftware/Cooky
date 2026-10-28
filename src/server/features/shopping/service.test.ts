@@ -22,6 +22,11 @@ describe("combine", () => {
     expect(combine({ amount: 800, unit: "ml" }, { amount: 1, unit: "cup" })).toEqual({ amount: 1.04, unit: "l" });
   });
 
+  it("sums a bare count and pieces, keeping the word pieces", () => {
+    expect(combine({ amount: 2, unit: null }, { amount: 4, unit: "piece" })).toEqual({ amount: 6, unit: "piece" });
+    expect(combine({ amount: 2, unit: null }, { amount: 1, unit: null })).toEqual({ amount: 3, unit: null });
+  });
+
   it("lets a real amount win over 'to taste'", () => {
     expect(combine({ amount: null, unit: null }, { amount: 2, unit: "tsp" })).toEqual({ amount: 2, unit: "tsp" });
     expect(combine({ amount: 1, unit: "pinch" }, { amount: null, unit: null })).toEqual({ amount: 1, unit: "pinch" });
@@ -35,7 +40,7 @@ describe("familyOf / roundAmount", () => {
       "mass",
       "volume",
       "clove",
-      "none",
+      "piece",
     ]);
     expect([roundAmount(0.3333), roundAmount(12.345), roundAmount(350.4)]).toEqual([0.33, 12.3, 350]);
   });
@@ -74,6 +79,18 @@ describe("mergeIntoList", () => {
       ["clove", 3],
       ["piece", 1],
     ]);
+  });
+
+  it("merges a bare count with pieces of the same thing (2 carrots + 4 pieces)", () => {
+    const merged = mergeIntoList(
+      [],
+      [
+        line({ key: "i:carrot", name: "Carrot", unit: null, amount: 2 }),
+        line({ key: "i:carrot", name: "Carrot", unit: "piece", amount: 4, dishId: "dish-b" }),
+      ],
+    );
+    expect(merged).toHaveLength(1);
+    expect(merged[0]).toMatchObject({ unitFamily: "piece", amount: 6, unit: "piece" });
   });
 
   it("adds to what's on the list and unticks an item that's needed again", () => {

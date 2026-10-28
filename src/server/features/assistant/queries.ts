@@ -12,7 +12,7 @@ import { loadHave, loadRankableDishes } from "@/server/features/cook/queries";
 import { missingFor } from "@/server/features/cook/service";
 import { toCatalogCards } from "@/server/features/discover/queries";
 import { env } from "@/server/env";
-import { smallPhotoUrl } from "@/server/storage/photos";
+import { dishSmallPhotoUrl } from "@/server/features/dishes/photo";
 
 import type { AssistantMessageDto, AssistantPageDto, AssistantPickDto } from "./dto";
 
@@ -61,7 +61,7 @@ export async function hydratePicks(
             dishId: dish.id,
             name: dish.name,
             why: pick.why,
-            photoUrl: await smallPhotoUrl(dish.imageKey),
+            photoUrl: await dishSmallPhotoUrl(dish),
             missing: missingFor(dish.lines, haveItems),
           });
         } else {
@@ -72,6 +72,7 @@ export async function hydratePicks(
             slug: card.slug,
             name: card.name,
             why: pick.why,
+            photoUrl: card.photoUrl,
             description: card.description,
             saved: card.saved,
           });

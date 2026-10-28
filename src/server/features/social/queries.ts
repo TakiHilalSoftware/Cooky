@@ -8,6 +8,7 @@ import { FRIEND_DISHES_PAGE_SIZE, type Relation } from "@/lib/social";
 import { getSession } from "@/server/auth/session";
 import { getDb, type Executor } from "@/server/db/client";
 import {
+  catalogDishes,
   conversationReads,
   conversations,
   dishes,
@@ -24,6 +25,7 @@ import {
 import { env } from "@/server/env";
 import { pushConfigured } from "@/server/notify/push";
 import { getEntitlement, limitFor } from "@/server/quota/entitlement";
+import { dishSmallPhotoUrl } from "@/server/features/dishes/photo";
 import { smallPhotoUrl } from "@/server/storage/photos";
 
 import type {
@@ -302,8 +304,10 @@ async function sharedDishesOf(viewerId: string, ownerId: string, page: number) {
         difficulty: dishes.difficulty,
         servings: dishes.servings,
         imageKey: dishes.imageKey,
+        catalogPhotoUrl: catalogDishes.photoUrl,
       })
       .from(dishes)
+      .leftJoin(catalogDishes, eq(catalogDishes.id, dishes.catalogDishId))
       .where(where)
       .orderBy(desc(dishes.createdAt), desc(dishes.id))
       .limit(FRIEND_DISHES_PAGE_SIZE + 1)
@@ -311,9 +315,9 @@ async function sharedDishesOf(viewerId: string, ownerId: string, page: number) {
     getDb().select({ n: count() }).from(dishes).where(where),
   ]);
   const cards: SharedDishCardDto[] = await Promise.all(
-    rows.slice(0, FRIEND_DISHES_PAGE_SIZE).map(async ({ imageKey, ...d }) => ({
+    rows.slice(0, FRIEND_DISHES_PAGE_SIZE).map(async ({ imageKey, catalogPhotoUrl, ...d }) => ({
       ...d,
-      photoUrl: await smallPhotoUrl(imageKey),
+      photoUrl: await dishSmallPhotoUrl({ imageKey, catalogPhotoUrl }),
     })),
   );
   return { cards, hasMore: rows.length > FRIEND_DISHES_PAGE_SIZE, total: total?.n ?? 0 };
