@@ -5,6 +5,14 @@ export function dayIn(timeZone: string, at: Date = new Date()): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).format(at);
 }
 
+/** Minutes after midnight (0–1439) on the clock in the given IANA zone. */
+export function minutesIn(timeZone: string, at: Date = new Date()): number {
+  const parts = new Intl.DateTimeFormat("en-GB", { timeZone, hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+    .formatToParts(at)
+    .reduce<Record<string, string>>((acc, part) => ({ ...acc, [part.type]: part.value }), {});
+  return Number(parts.hour) * 60 + Number(parts.minute);
+}
+
 /** Whole days from `from` to `to` (both "YYYY-MM-DD"). */
 export function daysBetween(from: string, to: string): number {
   return Math.round((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);

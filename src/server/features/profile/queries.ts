@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { cache } from "react";
 
 import { DEFAULT_APPEARANCE, type Appearance } from "@/lib/appearance";
+import { DEFAULT_MEAL_TIMES } from "@/lib/meal-times";
 import { getSession } from "@/server/auth/session";
 import { getDb } from "@/server/db/client";
 import { profiles } from "@/server/db/schema";
@@ -57,6 +58,7 @@ export const getKitchen = cache(async (): Promise<KitchenDto | null> => {
     latitude: profile?.latitude ?? null,
     longitude: profile?.longitude ?? null,
     dietaryPrefs: profile?.dietaryPrefs ?? [],
+    mealTimes: profile?.mealTimes ?? DEFAULT_MEAL_TIMES,
     onboarded: Boolean(profile?.onboardedAt),
   };
 });

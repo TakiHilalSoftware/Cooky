@@ -61,8 +61,8 @@ test("a new account goes through the starter pack and starts with its picks", as
   await expectAccessible(page);
   await finish.click();
 
-  await expect(page).toHaveURL(/\/en\/dishes$/);
+  await expect(page).toHaveURL(/\/en\/cook$/);
   await expect(page.getByText(/Welcome! 3 dishes are in your box\./)).toBeVisible();
-  await expect(page.locator("main ul.grid > li")).toHaveCount(3);
+  await expect(page.getByRole("region", { name: "Dishes, best match first" }).locator("ol > li")).toHaveCount(3);
   await expect(page.getByText("Finish setting up your kitchen")).toHaveCount(0);
 });

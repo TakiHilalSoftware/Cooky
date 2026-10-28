@@ -9,25 +9,29 @@ import { TextField } from "@/components/forms/text-field";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { DIETARY_TAGS, type DietaryTag } from "@/lib/dishes";
+import type { MealTimes } from "@/lib/meal-times";
+
+import { MealTimesFields } from "./meal-times-fields";
 
 export type KitchenValues = {
   city: string;
   latitude: number | null;
   longitude: number | null;
   dietaryPrefs: DietaryTag[];
+  mealTimes: MealTimes;
 };
 
-type Part = "city" | "diet";
+type Part = "city" | "diet" | "meals";
 
 /**
- * City (or the device's rough location) and dietary preferences: the same
- * fields in onboarding and Settings → Kitchen. Location comes from the
+ * City (or the device's rough location), dietary preferences and meal times:
+ * the same fields in onboarding and Settings → Kitchen. Location comes from the
  * browser only; nothing is sent anywhere until the person saves.
  */
 export function KitchenFields({
   values,
   onChange,
-  parts = ["city", "diet"],
+  parts = ["city", "diet", "meals"],
   cityError,
 }: {
   values: KitchenValues;
@@ -114,6 +118,9 @@ export function KitchenFields({
           onChange={(next) => onChange({ ...values, dietaryPrefs: DIETARY_TAGS.filter((d) => next.includes(d)) })}
           options={DIETARY_TAGS.map((d) => ({ value: d, label: tDishes(`diet.${d}`) }))}
         />
+      ) : null}
+      {parts.includes("meals") ? (
+        <MealTimesFields value={values.mealTimes} onChange={(mealTimes) => onChange({ ...values, mealTimes })} />
       ) : null}
     </div>
   );

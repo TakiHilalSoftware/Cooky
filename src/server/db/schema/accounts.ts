@@ -1,7 +1,8 @@
 import { sql } from "drizzle-orm";
-import { index, integer, numeric, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { index, integer, jsonb, numeric, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 import { ACCENTS, TEXT_SIZES, THEMES } from "@/lib/appearance";
+import { DEFAULT_MEAL_TIMES, type MealTimes } from "@/lib/meal-times";
 import { NOTIFICATION_KINDS } from "@/lib/social";
 
 import { id, timestamps } from "./_columns";
@@ -37,6 +38,8 @@ export const profiles = pgTable(
       .array()
       .notNull()
       .default(sql`'{}'`),
+    /** When they usually eat, in minutes after midnight (null: they skip that meal). Cook suggests for the next one. */
+    mealTimes: jsonb("meal_times").$type<MealTimes>().notNull().default(DEFAULT_MEAL_TIMES),
     /** Set when the starter pack is finished or skipped. */
     onboardedAt: timestamp("onboarded_at", { withTimezone: true }),
     /** Notification types switched off (PRD §3.6); empty = everything on. */

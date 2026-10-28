@@ -499,7 +499,7 @@
     },
     "kitchen": {
       "heading": "Kitchen",
-      "description": "Where you cook and what you eat. Cooky uses this for the weather, the season and suggestions.",
+      "description": "Where you cook, what you eat and when. Cooky uses this for the weather, the season and suggestions.",
       "save": "Save",
       "saving": "Saving…",
       "saved": "Kitchen saved",
@@ -580,6 +580,14 @@
       "unblock": "Unblock",
       "unblockLabel": "Unblock {name}",
       "unblocked": "{name} is unblocked."
+    },
+    "mealTimes": {
+      "label": "Meal times",
+      "hint": "When you usually eat. Cook suggests dishes for your next meal. Untick a meal you don't have.",
+      "timeLabel": "{meal} time",
+      "timeHint": "When you usually have {meal}",
+      "offHint": "Tick it to choose a time",
+      "allOff": "With every meal unticked, Cook ranks your dishes without a meal in mind."
     }
   },
   "legal": {
@@ -1630,7 +1638,43 @@
     "emptyCollectionTitle": "This collection is empty",
     "emptyCollectionBody": "Add dishes to it from My dishes, or rank all your dishes instead.",
     "showAllDishes": "Show all dishes",
-    "openCollection": "Open the collection"
+    "openCollection": "Open the collection",
+    "planned": "Planned for {meal}",
+    "plannedHint": "It's on your planner for {meal}.",
+    "usual": "Often your {meal}",
+    "usualHint": "You've had it for {meal} {count, plural, one {just once} other {# times}}.",
+    "logForHint": "Logs it as today's {meal}, so Cook learns what you like then.",
+    "loggedFor": "“{name}” logged for today's {meal}",
+    "meal": {
+      "names": {
+        "breakfast": "breakfast",
+        "lunch": "lunch",
+        "snack": "snack",
+        "dinner": "dinner"
+      },
+      "heading": {
+        "later": "{meal} at {time}",
+        "now": "{meal}, right now",
+        "tomorrow": "{meal} tomorrow at {time}"
+      },
+      "startsIn": "In {duration}",
+      "started": "Started at {time}",
+      "planned": "{count, plural, one {# dish is planned for it and comes first.} other {# dishes are planned for it and come first.}}",
+      "usual": "{after, select, planned {Then what you can make now} other {What you can make now comes first}}, with what you often have at this meal moved up.",
+      "learn": "{after, select, planned {Then what you can make now.} other {What you can make now comes first.}} Log what you cook for this meal, and Cook learns what you like then.",
+      "back": "Back to your next meal",
+      "backHint": "Show dishes for your next meal again",
+      "settings": "Meal times",
+      "settingsHint": "Change when you usually eat",
+      "railLabel": "Your meals today",
+      "now": "Now {time}",
+      "stopShown": "Showing dishes for {meal}",
+      "stopShow": "Show dishes for {meal}",
+      "stopPassed": "Already over today: shows dishes for tomorrow's {meal}"
+    },
+    "topPick": "Top pick for {meal}",
+    "topPickHint": "The best match for {meal} right now, from your planner, your kitchen and your habits.",
+    "pickLabel": "Top pick for {meal}"
   },
   "cooking": {
     "title": "Cooking {name}",

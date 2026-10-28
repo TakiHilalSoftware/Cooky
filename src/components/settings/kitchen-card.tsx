@@ -18,7 +18,7 @@ import { kitchenSchema } from "@/server/features/profile/schema";
 import { KitchenFields, type KitchenValues } from "./kitchen-fields";
 import { SettingsSection } from "./settings-section";
 
-/** Settings → Kitchen: city or rough location, and dietary preferences. */
+/** Settings → Kitchen: city or rough location, dietary preferences and meal times. */
 export function KitchenCard({ kitchen }: { kitchen: KitchenDto }) {
   const t = useTranslations("settings.kitchen");
   const messages = useFormMessages();
@@ -27,6 +27,7 @@ export function KitchenCard({ kitchen }: { kitchen: KitchenDto }) {
     latitude: kitchen.latitude,
     longitude: kitchen.longitude,
     dietaryPrefs: kitchen.dietaryPrefs,
+    mealTimes: kitchen.mealTimes,
   });
   const [cityError, setCityError] = useState<string | null>(null);
   const save = useAction(updateKitchen);

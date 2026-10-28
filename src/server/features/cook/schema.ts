@@ -8,13 +8,15 @@ const asList = (value: unknown) => (value === undefined ? [] : Array.isArray(val
 
 /**
  * Cook's what-if, from the URL: extra ingredients on top of My kitchen
- * (?with=), kitchen items to leave out (?without=), and one collection to
- * choose from (?collection=). Anything odd is ignored.
+ * (?with=), kitchen items to leave out (?without=), one collection to choose
+ * from (?collection=), and a meal other than the next one (?meal=). Anything
+ * odd is ignored.
  */
 export const cookFiltersSchema = z.object({
   with: z.preprocess(asList, z.array(z.string().trim().min(1).max(80)).max(10)).catch([]),
   without: z.preprocess(asList, z.array(z.uuid()).max(300)).catch([]),
   collection: z.uuid().nullable().default(null).catch(null),
+  meal: z.enum(MEAL_SLOTS).nullable().default(null).catch(null),
 });
 export type CookFilters = z.infer<typeof cookFiltersSchema>;
 

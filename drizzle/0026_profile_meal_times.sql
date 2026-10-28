@@ -1,0 +1,1 @@
+ALTER TABLE "profiles" ADD COLUMN "meal_times" jsonb DEFAULT '{"breakfast":480,"lunch":750,"snack":990,"dinner":1170}'::jsonb NOT NULL;

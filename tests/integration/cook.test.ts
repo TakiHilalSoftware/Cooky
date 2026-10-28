@@ -1,6 +1,8 @@
 import { eq } from "drizzle-orm";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { MealSlot } from "@/lib/dishes";
+
 import { browser } from "./support/browser";
 import { db, resetData, userByEmail } from "./support/db";
 import { logIn, signUpAndVerify } from "./support/flows";
@@ -58,7 +60,12 @@ async function addDish(name: string, ingredientNames: string[], extra: Partial<t
   return data!.id;
 }
 
-const NO_FILTERS = { with: [] as string[], without: [] as string[], collection: null as string | null };
+const NO_FILTERS = {
+  with: [] as string[],
+  without: [] as string[],
+  collection: null as string | null,
+  meal: null as MealSlot | null,
+};
 const ranked = async (filters = NO_FILTERS) => (await getCook(filters, "en"))!.dishes.map((d) => d.name);
 
 describe("Cook", () => {

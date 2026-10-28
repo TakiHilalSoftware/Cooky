@@ -46,7 +46,7 @@ test("sign up, confirm, log in, 2FA, revoke a device, log out", async ({ page, b
   // Log out, log back in with the password.
   await logOut(page);
   await logIn(page, email);
-  await expect(page).toHaveURL(/\/en\/dishes$/);
+  await expect(page).toHaveURL(/\/en\/cook$/);
 
   // Turn on 2FA.
   await page.goto("/en/settings/security");
@@ -69,7 +69,7 @@ test("sign up, confirm, log in, 2FA, revoke a device, log out", async ({ page, b
   await expect(other).toHaveURL(/\/en\/two-factor/);
   await other.locator("input").first().click();
   await other.keyboard.type(code());
-  await expect(other).toHaveURL(/\/en\/dishes$/);
+  await expect(other).toHaveURL(/\/en\/cook$/);
 
   // Sign the second device out from the first.
   await page.reload();

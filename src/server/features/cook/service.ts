@@ -27,6 +27,11 @@ export type RankContext = {
   favoured: readonly Season[];
   dietaryPrefs: readonly DietaryTag[];
   today: string;
+  /**
+   * The meal Cook suggests for: dishes planned for it come first, and dishes
+   * the person has logged for it before ("usual", times per dish) rise.
+   */
+  meal?: { planned: ReadonlySet<string>; usual: ReadonlyMap<string, number> };
 };
 
 export type RankedDish = {
@@ -37,6 +42,10 @@ export type RankedDish = {
   weatherFit: 0 | 1 | 2;
   dietFit: boolean;
   daysSinceCooked: number | null;
+  /** On the planner for the meal Cook suggests for. */
+  planned: boolean;
+  /** How many times it was logged for that meal before. */
+  usualCount: number;
 };
 
 /** Cooked within this many days: moved down, so the same dish doesn't top the list all week. */
@@ -73,8 +82,10 @@ function recencyScore(daysSince: number | null): number {
 }
 
 /**
- * Fewest missing ingredients first, then weather fit, dietary fit, and how
- * long since it was last cooked (ARCHITECTURE §5.7). Ties keep the input order.
+ * What's planned for the meal first (the person already chose it), then
+ * fewest missing ingredients, how often it's had at that meal, weather fit,
+ * dietary fit, and how long since it was last cooked (ARCHITECTURE §5.7).
+ * Ties keep the input order.
  */
 export function rankDishes(dishes: RankableDish[], context: RankContext): RankedDish[] {
   const ranked = dishes.map((dish, index) => {
@@ -88,11 +99,15 @@ export function rankDishes(dishes: RankableDish[], context: RankContext): Ranked
       weatherFit,
       dietFit: context.dietaryPrefs.every((pref) => dish.dietaryTags.includes(pref)),
       daysSinceCooked,
+      planned: context.meal?.planned.has(dish.id) ?? false,
+      usualCount: context.meal?.usual.get(dish.id) ?? 0,
     };
   });
   ranked.sort(
     (a, b) =>
+      Number(b.planned) - Number(a.planned) ||
       a.missing.length - b.missing.length ||
+      b.usualCount - a.usualCount ||
       b.weatherFit - a.weatherFit ||
       Number(b.dietFit) - Number(a.dietFit) ||
       recencyScore(b.daysSinceCooked) - recencyScore(a.daysSinceCooked) ||

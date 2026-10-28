@@ -166,7 +166,7 @@ describe("email confirmation and log in", () => {
     await signUpAndVerify();
     await expectRedirect(
       actions.signIn({ email: "amina@example.com", password: PASSWORD, next: "//evil.example", locale: "en" }),
-      "/en/dishes",
+      "/en/cook",
     );
   });
 
@@ -188,7 +188,7 @@ describe("log out", () => {
     await signUpAndVerify();
     await expectRedirect(
       actions.signIn({ email: "amina@example.com", password: PASSWORD, locale: "en" }),
-      "/en/dishes",
+      "/en/cook",
     );
     const current = (await getSession())!;
     const userId = current.user.id;
@@ -222,7 +222,7 @@ describe("password reset", () => {
     await signUpAndVerify();
     await expectRedirect(
       actions.signIn({ email: "amina@example.com", password: PASSWORD, locale: "en" }),
-      "/en/dishes",
+      "/en/cook",
     );
     browser.reset();
 
@@ -240,7 +240,7 @@ describe("password reset", () => {
     });
     await expectRedirect(
       actions.signIn({ email: "amina@example.com", password: NEW_PASSWORD, locale: "en" }),
-      "/en/dishes",
+      "/en/cook",
     );
 
     // The link works once.

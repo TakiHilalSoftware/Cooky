@@ -499,7 +499,7 @@
     },
     "kitchen": {
       "heading": "Cuisine",
-      "description": "Où vous cuisinez et ce que vous mangez. Cooky s’en sert pour la météo, la saison et les suggestions.",
+      "description": "Où vous cuisinez, ce que vous mangez et quand. Cooky s’en sert pour la météo, la saison et les suggestions.",
       "save": "Enregistrer",
       "saving": "Enregistrement…",
       "saved": "Cuisine enregistrée",
@@ -580,6 +580,14 @@
       "unblock": "Débloquer",
       "unblockLabel": "Débloquer {name}",
       "unblocked": "{name} est débloqué."
+    },
+    "mealTimes": {
+      "label": "Heures des repas",
+      "hint": "Quand vous mangez d’habitude. Cook propose des plats pour votre prochain repas. Décochez un repas que vous ne prenez pas.",
+      "timeLabel": "Heure : {meal}",
+      "timeHint": "Quand vous prenez {meal} d’habitude",
+      "offHint": "Cochez-le pour choisir une heure",
+      "allOff": "Sans aucun repas coché, Cook classe vos plats sans penser à un repas."
     }
   },
   "legal": {
@@ -1630,7 +1638,43 @@
     "emptyCollectionTitle": "Cette collection est vide",
     "emptyCollectionBody": "Ajoutez-y des plats depuis Mes plats, ou classez plutôt tous vos plats.",
     "showAllDishes": "Voir tous les plats",
-    "openCollection": "Ouvrir la collection"
+    "openCollection": "Ouvrir la collection",
+    "planned": "Prévu pour {meal}",
+    "plannedHint": "Dans votre planning pour {meal}.",
+    "usual": "Souvent pour {meal}",
+    "usualHint": "Vous l’avez pris pour {meal} {count, plural, one {une fois} other {# fois}}.",
+    "logForHint": "L’enregistre pour {meal} d’aujourd’hui, pour que Cook apprenne ce que vous aimez à ce moment-là.",
+    "loggedFor": "« {name} » noté pour {meal} d’aujourd’hui",
+    "meal": {
+      "names": {
+        "breakfast": "le petit-déjeuner",
+        "lunch": "le déjeuner",
+        "snack": "la collation",
+        "dinner": "le dîner"
+      },
+      "heading": {
+        "later": "{meal} à {time}",
+        "now": "{meal}, c’est maintenant",
+        "tomorrow": "{meal} demain à {time}"
+      },
+      "startsIn": "Dans {duration}",
+      "started": "Commencé à {time}",
+      "planned": "{count, plural, one {# plat est prévu pour ce repas et passe en premier.} other {# plats sont prévus pour ce repas et passent en premier.}}",
+      "usual": "{after, select, planned {Puis ce que vous pouvez cuisiner maintenant} other {Ce que vous pouvez cuisiner maintenant passe en premier}}, en remontant ce que vous prenez souvent à ce repas.",
+      "learn": "{after, select, planned {Puis ce que vous pouvez cuisiner maintenant.} other {Ce que vous pouvez cuisiner maintenant passe en premier.}} Notez ce que vous cuisinez pour ce repas, et Cook apprend vos goûts à ce moment-là.",
+      "back": "Revenir au prochain repas",
+      "backHint": "Afficher à nouveau les plats de votre prochain repas",
+      "settings": "Heures des repas",
+      "settingsHint": "Modifier les heures où vous mangez d’habitude",
+      "railLabel": "Vos repas aujourd’hui",
+      "now": "Maintenant {time}",
+      "stopShown": "Plats affichés pour {meal}",
+      "stopShow": "Afficher les plats pour {meal}",
+      "stopPassed": "Déjà passé aujourd’hui : affiche les plats de demain pour {meal}"
+    },
+    "topPick": "Notre choix pour {meal}",
+    "topPickHint": "Le meilleur choix pour {meal} en ce moment, d’après votre planning, votre cuisine et vos habitudes.",
+    "pickLabel": "Notre choix pour {meal}"
   },
   "cooking": {
     "title": "En cuisine : {name}",

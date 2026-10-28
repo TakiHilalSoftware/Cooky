@@ -2,6 +2,7 @@
 import type { AppLocale } from "@/i18n/routing";
 import type { Appearance } from "@/lib/appearance";
 import type { DietaryTag } from "@/lib/dishes";
+import type { MealTimes } from "@/lib/meal-times";
 import type { PhotoSlotDto } from "@/server/features/photos/dto";
 
 export type ProfileSettingsDto = Appearance & {
@@ -21,5 +22,6 @@ export type KitchenDto = {
   latitude: number | null;
   longitude: number | null;
   dietaryPrefs: DietaryTag[];
+  mealTimes: MealTimes;
   onboarded: boolean;
 };
