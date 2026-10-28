@@ -10,7 +10,8 @@ const TIMEOUT_MS = 3_000;
 
 /**
  * The commercial API with a key; without one, the free endpoint, and only in
- * development (it's non-commercial). Deployed builds without a key get null.
+ * development (it's non-commercial) unless OPEN_METEO_FREE_TIER opts a
+ * deployment in. Other deployed builds without a key get null.
  */
 function endpoint(kind: "forecast" | "geocoding"): { base: string; key: string | null } | null {
   const key = env.OPEN_METEO_API_KEY ?? null;
@@ -19,7 +20,7 @@ function endpoint(kind: "forecast" | "geocoding"): { base: string; key: string |
       ? { base: "https://customer-api.open-meteo.com/v1/forecast", key }
       : { base: "https://customer-geocoding-api.open-meteo.com/v1/search", key };
   }
-  if (isStrictEnv()) return null;
+  if (isStrictEnv() && !env.OPEN_METEO_FREE_TIER) return null;
   return kind === "forecast"
     ? { base: "https://api.open-meteo.com/v1/forecast", key: null }
     : { base: "https://geocoding-api.open-meteo.com/v1/search", key: null };
