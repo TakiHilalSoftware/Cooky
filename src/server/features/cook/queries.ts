@@ -6,13 +6,13 @@ import { cache } from "react";
 import type { AppLocale } from "@/i18n/routing";
 import { getSession } from "@/server/auth/session";
 import { getDb } from "@/server/db/client";
-import { cookLog, dishes, dishIngredients, ingredients, pantryItems } from "@/server/db/schema";
+import { catalogDishes, cookLog, dishes, dishIngredients, ingredients, pantryItems } from "@/server/db/schema";
 import { loadCollectionDishIds, loadCollections } from "@/server/features/collections/queries";
+import { dishSmallPhotoUrl } from "@/server/features/dishes/photo";
 import { catalogNamesFor } from "@/server/features/dishes/queries";
 import { resolveIngredientIds } from "@/server/features/ingredients/dictionary";
 import { allNames } from "@/server/features/ingredients/service";
 import { loadProfile } from "@/server/features/profile/queries";
-import { smallPhotoUrl } from "@/server/storage/photos";
 import { requestToday } from "@/server/time";
 import { loadWeatherContext } from "@/server/weather/queries";
 import { favouredSeasons } from "@/server/weather/service";
@@ -40,10 +40,12 @@ export async function loadRankableDishes(userId: string, locale: AppLocale) {
       seasons: dishes.seasons,
       dietaryTags: dishes.dietaryTags,
       imageKey: dishes.imageKey,
+      catalogPhotoUrl: catalogDishes.photoUrl,
       followsCatalog: dishes.followsCatalog,
       catalogDishId: dishes.catalogDishId,
     })
     .from(dishes)
+    .leftJoin(catalogDishes, eq(catalogDishes.id, dishes.catalogDishId))
     .where(and(eq(dishes.userId, userId), isNull(dishes.deletedAt)));
   if (own.length === 0) return [];
   const ids = own.map((d) => d.id);
@@ -83,6 +85,7 @@ export async function loadRankableDishes(userId: string, locale: AppLocale) {
     name: (d.followsCatalog && d.catalogDishId && catalogNames.get(d.catalogDishId)) || d.name,
     course: d.course,
     imageKey: d.imageKey,
+    catalogPhotoUrl: d.catalogPhotoUrl,
     seasons: d.seasons,
     dietaryTags: d.dietaryTags,
     lines: linesOf.get(d.id) ?? [],
@@ -165,7 +168,7 @@ export const getCook = cache(async (filters: CookFilters, locale: AppLocale): Pr
         id: dish.id,
         name: dish.name,
         course: dish.course,
-        photoUrl: await smallPhotoUrl(dish.imageKey),
+        photoUrl: await dishSmallPhotoUrl(dish),
         missing: r.missing,
         weatherFit: r.weatherFit === 2,
         dietFit: r.dietFit,
@@ -232,7 +235,7 @@ export async function loadReadyToCook(userId: string, locale: AppLocale): Promis
       id: dish.id,
       name: dish.name,
       course: dish.course,
-      photoUrl: await smallPhotoUrl(dish.imageKey),
+      photoUrl: await dishSmallPhotoUrl(dish),
       missing: r.missing,
     };
   };

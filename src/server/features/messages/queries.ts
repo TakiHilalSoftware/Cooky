@@ -5,11 +5,11 @@ import { cache } from "react";
 
 import { getSession } from "@/server/auth/session";
 import { getDb, type Executor } from "@/server/db/client";
-import { conversationReads, conversations, dishes, messages } from "@/server/db/schema";
+import { catalogDishes, conversationReads, conversations, dishes, messages } from "@/server/db/schema";
 import { areFriends, dishVisibleToSql, isBlockedEitherWay } from "@/server/features/social/policy";
 import { loadPeople } from "@/server/features/social/queries";
 import type { SharedDishCardDto } from "@/server/features/social/dto";
-import { smallPhotoUrl } from "@/server/storage/photos";
+import { dishSmallPhotoUrl } from "@/server/features/dishes/photo";
 
 import type {
   AttachableDishDto,
@@ -152,9 +152,11 @@ async function loadMessageDishes(readerId: string, dishIds: string[]): Promise<M
       name: dishes.name,
       course: dishes.course,
       imageKey: dishes.imageKey,
+      catalogPhotoUrl: catalogDishes.photoUrl,
       visible: sql<boolean>`${dishVisibleToSql(readerId)}`,
     })
     .from(dishes)
+    .leftJoin(catalogDishes, eq(catalogDishes.id, dishes.catalogDishId))
     .where(inArray(dishes.id, unique));
   const entries = await Promise.all(
     rows.map(async (d): Promise<[string, MessageDishDto]> => [
@@ -164,7 +166,7 @@ async function loadMessageDishes(readerId: string, dishIds: string[]): Promise<M
         // Nothing about a dish the reader can't open, beyond that it was one.
         name: d.visible ? d.name : "",
         course: d.course,
-        photoUrl: d.visible ? await smallPhotoUrl(d.imageKey) : null,
+        photoUrl: d.visible ? await dishSmallPhotoUrl(d) : null,
         available: d.visible,
       },
     ]),
@@ -246,21 +248,40 @@ async function sharedDishPreview(viewerId: string, ownerId: string): Promise<Sha
       difficulty: dishes.difficulty,
       servings: dishes.servings,
       imageKey: dishes.imageKey,
+      catalogPhotoUrl: catalogDishes.photoUrl,
     })
     .from(dishes)
+    .leftJoin(catalogDishes, eq(catalogDishes.id, dishes.catalogDishId))
     .where(and(eq(dishes.userId, ownerId), dishVisibleToSql(viewerId)))
     .orderBy(desc(dishes.createdAt))
     .limit(3);
-  return Promise.all(rows.map(async ({ imageKey, ...d }) => ({ ...d, photoUrl: await smallPhotoUrl(imageKey) })));
+  return Promise.all(
+    rows.map(async ({ imageKey, catalogPhotoUrl, ...d }) => ({
+      ...d,
+      photoUrl: await dishSmallPhotoUrl({ imageKey, catalogPhotoUrl }),
+    })),
+  );
 }
 
 /** The caller's dishes the friend can open: only those can go in a message. */
 export async function listAttachableDishes(ownerId: string, friendId: string): Promise<AttachableDishDto[]> {
   const rows = await getDb()
-    .select({ id: dishes.id, name: dishes.name, course: dishes.course, imageKey: dishes.imageKey })
+    .select({
+      id: dishes.id,
+      name: dishes.name,
+      course: dishes.course,
+      imageKey: dishes.imageKey,
+      catalogPhotoUrl: catalogDishes.photoUrl,
+    })
     .from(dishes)
+    .leftJoin(catalogDishes, eq(catalogDishes.id, dishes.catalogDishId))
     .where(and(eq(dishes.userId, ownerId), isNull(dishes.deletedAt), dishVisibleToSql(friendId)))
     .orderBy(dishes.name)
     .limit(200);
-  return Promise.all(rows.map(async ({ imageKey, ...d }) => ({ ...d, photoUrl: await smallPhotoUrl(imageKey) })));
+  return Promise.all(
+    rows.map(async ({ imageKey, catalogPhotoUrl, ...d }) => ({
+      ...d,
+      photoUrl: await dishSmallPhotoUrl({ imageKey, catalogPhotoUrl }),
+    })),
+  );
 }

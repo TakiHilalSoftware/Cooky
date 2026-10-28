@@ -15,7 +15,7 @@ import { rankDishes } from "@/server/features/cook/service";
 import { dictionaryMatcher } from "@/server/features/ingredients/dictionary";
 import { filterByIngredients } from "@/server/features/ingredients/service";
 import { loadProfile } from "@/server/features/profile/queries";
-import { smallPhotoUrl } from "@/server/storage/photos";
+import { dishSmallPhotoUrl } from "@/server/features/dishes/photo";
 import { requestToday } from "@/server/time";
 import { loadWeatherContext } from "@/server/weather/queries";
 import { favouredSeasons } from "@/server/weather/service";
@@ -99,7 +99,7 @@ export async function drawSpin(
         id: dish.id,
         name: dish.name,
         course: dish.course,
-        photoUrl: await smallPhotoUrl(dish.imageKey),
+        photoUrl: await dishSmallPhotoUrl(dish),
         missing: choice.missing,
         weatherFit: choice.weatherFit === 2,
         dietFit: choice.dietFit,
